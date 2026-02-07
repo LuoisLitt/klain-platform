@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inloggen — Dura Fulfilment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0f1117;
+            --gray-dark: #6b7084;
+            --gray-medium: #8e93a6;
+            --gray-light: #f7f8fa;
+            --white: #ffffff;
+            --blue: #2563eb;
+            --blue-hover: #1d4ed8;
+            --green: #16a34a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-light);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+        }
+
+        .login-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 48px 40px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--black);
+            letter-spacing: -1px;
+        }
+
+        .logo-text span {
+            color: var(--blue);
+        }
+
+        .logo-subtitle {
+            font-size: 14px;
+            color: var(--gray-medium);
+            margin-top: 8px;
+        }
+
+        .login-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--black);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            font-size: 15px;
+            color: var(--gray-dark);
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--black);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            font-family: inherit;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            background: var(--white);
+            color: var(--black);
+            transition: all 0.2s ease;
+        }
+
+        .form-input::placeholder {
+            color: var(--gray-medium);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .remember-me input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--blue);
+            cursor: pointer;
+        }
+
+        .remember-me span {
+            font-size: 14px;
+            color: var(--gray-dark);
+        }
+
+        .forgot-link {
+            font-size: 14px;
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--white);
+            background: var(--blue);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .login-btn:hover {
+            background: var(--blue-hover);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 28px 0;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: #d2d2d7;
+        }
+
+        .divider-text {
+            padding: 0 16px;
+            font-size: 13px;
+            color: var(--gray-medium);
+        }
+
+        .demo-notice {
+            text-align: center;
+            padding: 16px 20px;
+            background: var(--gray-light);
+            border-radius: 12px;
+        }
+
+        .demo-notice p {
+            font-size: 13px;
+            color: var(--gray-dark);
+        }
+
+        .demo-notice p:first-child {
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 4px;
+        }
+
+        .features {
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid #e8e8ed;
+        }
+
+        .features-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            text-align: center;
+        }
+
+        .feature-item {
+            padding: 16px 8px;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 12px;
+            background: var(--gray-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--blue);
+        }
+
+        .feature-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--gray-dark);
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 32px 24px;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo">
+                <div class="logo-text">Dura <span>Fulfilment</span></div>
+                <p class="logo-subtitle">Management Dashboard</p>
+            </div>
+
+            <h1 class="login-title">Welkom terug</h1>
+            <p class="login-subtitle">Log in om uw dashboard te openen</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">E-mailadres</label>
+                    <input type="email" class="form-input" placeholder="naam@bedrijf.nl" value="demo@durafulfilment.nl">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Wachtwoord</label>
+                    <input type="password" class="form-input" placeholder="Uw wachtwoord" value="demo123">
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" checked>
+                        <span>Onthoud mij</span>
+                    </label>
+                    <a href="#" class="forgot-link">Wachtwoord vergeten?</a>
+                </div>
+
+                <button type="submit" class="login-btn">Inloggen</button>
+            </form>
+
+            <div class="divider">
+                <div class="divider-line"></div>
+                <span class="divider-text">Demo</span>
+                <div class="divider-line"></div>
+            </div>
+
+            <div class="demo-notice">
+                <p>Demo-account</p>
+                <p>demo@durafulfilment.nl / demo123</p>
+            </div>
+
+            <div class="features">
+                <div class="features-title">Inzicht in</div>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                            </svg>
+                        </div>
+                        <div class="feature-label">Orders</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                            </svg>
+                        </div>
+                        <div class="feature-label">Verzending</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                            </svg>
+                        </div>
+                        <div class="feature-label">Voorraad</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            window.location.href = 'demo-dura-dashboard.html';
+        });
+    </script>
+</body>
+</html>

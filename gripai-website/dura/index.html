@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Dura Fulfilment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --black: #0f1117;
+            --gray-dark: #6b7084;
+            --gray-medium: #8e93a6;
+            --gray-light: #f7f8fa;
+            --gray-100: #eef0f5;
+            --white: #ffffff;
+            --blue: #2563eb;
+            --blue-hover: #1d4ed8;
+            --blue-light: #eff6ff;
+            --blue-muted: #dbeafe;
+            --green: #16a34a;
+            --green-light: #f0fdf4;
+            --orange: #ea580c;
+            --orange-light: #fff7ed;
+            --red: #dc2626;
+            --red-light: #fef2f2;
+            --purple: #7c3aed;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-light);
+            color: var(--black);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 48px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--black);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--gray-dark);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--black);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 88px 32px 48px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 32px;
+        }
+
+        .header-title h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .header-title p {
+            color: var(--gray-dark);
+            font-size: 15px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--black);
+            border: 1px solid #d2d2d7;
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-light);
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: var(--white);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-hover);
+        }
+
+        .btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .kpi-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .kpi-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .kpi-icon.blue { background: var(--blue-light); }
+        .kpi-icon.blue svg { stroke: var(--blue); }
+        .kpi-icon.green { background: var(--green-light); }
+        .kpi-icon.green svg { stroke: var(--green); }
+        .kpi-icon.orange { background: var(--orange-light); }
+        .kpi-icon.orange svg { stroke: var(--orange); }
+        .kpi-icon.red { background: var(--red-light); }
+        .kpi-icon.red svg { stroke: var(--red); }
+
+        .kpi-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .kpi-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .kpi-trend.up {
+            background: var(--green-light);
+            color: var(--green);
+        }
+
+        .kpi-trend.down {
+            background: var(--red-light);
+            color: var(--red);
+        }
+
+        .kpi-trend svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .kpi-value {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 4px;
+        }
+
+        .kpi-label {
+            font-size: 14px;
+            color: var(--gray-dark);
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .card-subtitle {
+            font-size: 13px;
+            color: var(--gray-medium);
+            margin-top: 2px;
+        }
+
+        .card-link {
+            font-size: 14px;
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .card-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Chart */
+        .chart-container {
+            height: 280px;
+            position: relative;
+        }
+
+        /* Carrier List */
+        .carrier-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .carrier-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--gray-light);
+            border-radius: 12px;
+        }
+
+        .carrier-logo {
+            width: 44px;
+            height: 44px;
+            background: var(--white);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 11px;
+            color: var(--gray-dark);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .carrier-info {
+            flex: 1;
+        }
+
+        .carrier-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .carrier-stats {
+            font-size: 13px;
+            color: var(--gray-medium);
+        }
+
+        .carrier-bar {
+            width: 80px;
+            height: 6px;
+            background: #e8e8ed;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .carrier-bar-fill {
+            height: 100%;
+            background: var(--green);
+            border-radius: 3px;
+        }
+
+        .carrier-percent {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--green);
+            width: 52px;
+            text-align: right;
+        }
+
+        /* Orders Table */
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .orders-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-medium);
+            border-bottom: 1px solid #e8e8ed;
+        }
+
+        .orders-table td {
+            padding: 16px;
+            font-size: 14px;
+            border-bottom: 1px solid #f0f0f2;
+        }
+
+        .orders-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .order-id {
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--blue);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status-badge.shipped {
+            background: var(--green-light);
+            color: var(--green);
+        }
+
+        .status-badge.processing {
+            background: var(--blue-light);
+            color: var(--blue);
+        }
+
+        .status-badge.pending {
+            background: var(--orange-light);
+            color: var(--orange);
+        }
+
+        .status-badge.delivered {
+            background: #f3e8ff;
+            color: var(--purple);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* Alerts */
+        .alerts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 12px;
+        }
+
+        .alert-item.critical {
+            background: var(--red-light);
+        }
+
+        .alert-item.warning {
+            background: var(--orange-light);
+        }
+
+        .alert-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .alert-item.critical .alert-icon {
+            background: rgba(255, 59, 48, 0.15);
+        }
+
+        .alert-item.warning .alert-icon {
+            background: rgba(255, 149, 0, 0.15);
+        }
+
+        .alert-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .alert-item.critical .alert-icon svg { stroke: var(--red); }
+        .alert-item.warning .alert-icon svg { stroke: var(--orange); }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 2px;
+        }
+
+        .alert-subtitle {
+            font-size: 13px;
+            color: var(--gray-dark);
+        }
+
+        .alert-count {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .alert-item.critical .alert-count { color: var(--red); }
+        .alert-item.warning .alert-count { color: var(--orange); }
+
+        /* AI Insight */
+        .ai-insight {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--blue-light);
+            border-radius: 12px;
+        }
+
+        .ai-insight-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .ai-insight-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--blue);
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-insight-icon svg {
+            width: 14px;
+            height: 14px;
+            stroke: white;
+        }
+
+        .ai-insight-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--blue);
+        }
+
+        .ai-insight-text {
+            font-size: 14px;
+            color: var(--black);
+            line-height: 1.6;
+        }
+
+        .ai-insight-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--blue);
+            cursor: pointer;
+        }
+
+        .ai-insight-action svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Mobile Hamburger */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .hamburger span {
+            width: 20px;
+            height: 2px;
+            background: var(--black);
+            border-radius: 1px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .kpi-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .main {
+                padding: 80px 16px 32px;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .header-actions .btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .orders-table {
+                font-size: 13px;
+            }
+
+            .orders-table th,
+            .orders-table td {
+                padding: 12px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="index.html" class="logo">Dura <span>Fulfilment</span></a>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Dashboard</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="voorraad.html">Voorraad</a></li>
+                    <li><a href="verzendingen.html">Verzendingen</a></li>
+                    <li><a href="rapportages.html">Rapportages</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <a href="warehouse.html" class="btn-warehouse" title="Warehouse Display" style="display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--blue-light); color: var(--blue); border-radius: 8px; font-size: 13px; font-weight: 500; text-decoration: none;">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
+                    </svg>
+                    Warehouse Display
+                </a>
+                <div class="nav-user">
+                    <div class="user-avatar">DF</div>
+                    <span class="user-name">Demo Account</span>
+                </div>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">
+                <h1>Dashboard</h1>
+                <p>Week 6, 2026 — Overzicht van uw fulfilment</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                    </svg>
+                    Week 6
+                </button>
+                <button class="btn btn-primary">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    Exporteer
+                </button>
+            </div>
+        </header>
+
+        <!-- AI Briefing Hero Card -->
+        <div class="ai-briefing">
+            <div class="ai-briefing-icon">
+                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+                </svg>
+            </div>
+            <div class="ai-briefing-content">
+                <div class="ai-briefing-header">
+                    <span class="ai-briefing-badge">AI Briefing</span>
+                    <span class="ai-briefing-time">Vandaag 07:00</span>
+                </div>
+                <h3 class="ai-briefing-title">Goedemorgen! Hier is uw dagelijkse samenvatting.</h3>
+                <p class="ai-briefing-text">
+                    Vandaag verwachten we <strong>~90 orders</strong> op basis van het weekpatroon. Let op: <strong>3 producten</strong> naderen kritieke voorraad, en er is een vertraging bij DHL (on-time rate gedaald naar <strong>82%</strong>).
+                </p>
+                <div class="ai-briefing-actions">
+                    <span class="ai-action warning">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 14px; height: 14px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                        </svg>
+                        Bestel vandaag bij leverancier X
+                    </span>
+                    <span class="ai-action info">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 14px; height: 14px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                        </svg>
+                        Overweeg PostNL voor spoedorders
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Grid -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-icon blue">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                        </svg>
+                    </div>
+                    <span class="kpi-trend up">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                        12.3%
+                    </span>
+                </div>
+                <div class="kpi-value">1,247</div>
+                <div class="kpi-label">Orders deze week</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-icon green">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <span class="kpi-trend up">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                        0.4%
+                    </span>
+                </div>
+                <div class="kpi-value">98.7%</div>
+                <div class="kpi-label">On-time delivery</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-icon blue">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <span class="kpi-trend up">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25" />
+                        </svg>
+                        18 sec
+                    </span>
+                </div>
+                <div class="kpi-value">4.2 min</div>
+                <div class="kpi-label">Gem. verwerkingstijd</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-icon orange">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                        </svg>
+                    </div>
+                    <span class="kpi-trend down">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                        0.3%
+                    </span>
+                </div>
+                <div class="kpi-value">2.1%</div>
+                <div class="kpi-label">Retourpercentage</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-icon green">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                        </svg>
+                    </div>
+                    <span class="kpi-trend up">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                        1.2%
+                    </span>
+                </div>
+                <div class="kpi-value">97.3%</div>
+                <div class="kpi-label">SLA performance</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-icon blue">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                        </svg>
+                    </div>
+                    <span class="kpi-trend up">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25" />
+                        </svg>
+                        €0.12
+                    </span>
+                </div>
+                <div class="kpi-value">€2.34</div>
+                <div class="kpi-label">Kosten per order</div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Orders per dag</div>
+                        <div class="card-subtitle">Afgelopen 7 dagen</div>
+                    </div>
+                    <a href="#" class="card-link">Bekijk alles</a>
+                </div>
+                <div class="chart-container">
+                    <canvas id="ordersChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Carrier Performance</div>
+                        <div class="card-subtitle">On-time delivery</div>
+                    </div>
+                </div>
+                <div class="carrier-list">
+                    <div class="carrier-item">
+                        <div class="carrier-logo">PostNL</div>
+                        <div class="carrier-info">
+                            <div class="carrier-name">PostNL</div>
+                            <div class="carrier-stats">847 zendingen</div>
+                        </div>
+                        <div class="carrier-bar">
+                            <div class="carrier-bar-fill" style="width: 99%"></div>
+                        </div>
+                        <div class="carrier-percent">99.1%</div>
+                    </div>
+
+                    <div class="carrier-item">
+                        <div class="carrier-logo">DHL</div>
+                        <div class="carrier-info">
+                            <div class="carrier-name">DHL Express</div>
+                            <div class="carrier-stats">312 zendingen</div>
+                        </div>
+                        <div class="carrier-bar">
+                            <div class="carrier-bar-fill" style="width: 98%"></div>
+                        </div>
+                        <div class="carrier-percent">98.4%</div>
+                    </div>
+
+                    <div class="carrier-item">
+                        <div class="carrier-logo">DPD</div>
+                        <div class="carrier-info">
+                            <div class="carrier-name">DPD</div>
+                            <div class="carrier-stats">88 zendingen</div>
+                        </div>
+                        <div class="carrier-bar">
+                            <div class="carrier-bar-fill" style="width: 96%"></div>
+                        </div>
+                        <div class="carrier-percent">96.2%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row -->
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Recente Orders</div>
+                        <div class="card-subtitle">Laatste 5 orders</div>
+                    </div>
+                    <a href="#" class="card-link">Alle orders</a>
+                </div>
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Klant</th>
+                            <th>Artikelen</th>
+                            <th>Status</th>
+                            <th>Carrier</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="order-id">#DF-24891</span></td>
+                            <td>Webshop Trendy</td>
+                            <td>3 items</td>
+                            <td><span class="status-badge shipped"><span class="status-dot"></span>Verzonden</span></td>
+                            <td>PostNL</td>
+                        </tr>
+                        <tr>
+                            <td><span class="order-id">#DF-24890</span></td>
+                            <td>Fashion Forward</td>
+                            <td>1 item</td>
+                            <td><span class="status-badge delivered"><span class="status-dot"></span>Afgeleverd</span></td>
+                            <td>DHL</td>
+                        </tr>
+                        <tr>
+                            <td><span class="order-id">#DF-24889</span></td>
+                            <td>Style Store NL</td>
+                            <td>5 items</td>
+                            <td><span class="status-badge processing"><span class="status-dot"></span>In verwerking</span></td>
+                            <td>PostNL</td>
+                        </tr>
+                        <tr>
+                            <td><span class="order-id">#DF-24888</span></td>
+                            <td>Gadget Galaxy</td>
+                            <td>2 items</td>
+                            <td><span class="status-badge shipped"><span class="status-dot"></span>Verzonden</span></td>
+                            <td>DPD</td>
+                        </tr>
+                        <tr>
+                            <td><span class="order-id">#DF-24887</span></td>
+                            <td>Home Essentials</td>
+                            <td>4 items</td>
+                            <td><span class="status-badge pending"><span class="status-dot"></span>Wacht op voorraad</span></td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Voorraad Alerts</div>
+                        <div class="card-subtitle">Actie vereist</div>
+                    </div>
+                </div>
+
+                <div class="alerts-list">
+                    <div class="alert-item critical">
+                        <div class="alert-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                            </svg>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Kritiek laag</div>
+                            <div class="alert-subtitle">SKU: BLK-HOOD-M</div>
+                        </div>
+                        <div class="alert-count">3</div>
+                    </div>
+
+                    <div class="alert-item critical">
+                        <div class="alert-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                            </svg>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Kritiek laag</div>
+                            <div class="alert-subtitle">SKU: WHT-TEE-L</div>
+                        </div>
+                        <div class="alert-count">5</div>
+                    </div>
+
+                    <div class="alert-item warning">
+                        <div class="alert-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                            </svg>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Onder bestelpunt</div>
+                            <div class="alert-subtitle">SKU: NVY-JEANS-32</div>
+                        </div>
+                        <div class="alert-count">12</div>
+                    </div>
+                </div>
+
+                <!-- AI Insight -->
+                <div class="ai-insight">
+                    <div class="ai-insight-header">
+                        <div class="ai-insight-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                            </svg>
+                        </div>
+                        <span class="ai-insight-label">AI-inzicht</span>
+                    </div>
+                    <p class="ai-insight-text">
+                        Op basis van historische data verwacht ik dat BLK-HOOD-M volgende week 40% meer verkocht wordt (Valentijnsdag). Adviseer bijbestelling van minimaal 50 stuks.
+                    </p>
+                    <div class="ai-insight-action">
+                        Bestelling voorbereiden
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Orders Chart
+        const ctx = document.getElementById('ordersChart').getContext('2d');
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+        gradient.addColorStop(0, 'rgba(0, 113, 227, 0.15)');
+        gradient.addColorStop(1, 'rgba(0, 113, 227, 0)');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'],
+                datasets: [{
+                    label: 'Orders',
+                    data: [156, 189, 203, 178, 245, 198, 78],
+                    borderColor: '#0071e3',
+                    backgroundColor: gradient,
+                    borderWidth: 2.5,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#0071e3',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#1d1d1f',
+                        titleColor: '#fff',
+                        bodyColor: 'rgba(255, 255, 255, 0.8)',
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' orders';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#86868b',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.04)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#86868b',
+                            font: {
+                                size: 12
+                            }
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

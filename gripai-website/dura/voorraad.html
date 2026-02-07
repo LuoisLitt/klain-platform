@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voorraad — Dura Fulfilment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="index.html" class="logo">Dura <span>Fulfilment</span></a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="voorraad.html" class="active">Voorraad</a></li>
+                    <li><a href="verzendingen.html">Verzendingen</a></li>
+                    <li><a href="rapportages.html">Rapportages</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <a href="warehouse.html" class="btn-warehouse" title="Warehouse Display">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
+                    </svg>
+                    Warehouse Display
+                </a>
+                <div class="nav-user">
+                    <div class="user-avatar">DF</div>
+                    <span class="user-name">Demo Account</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Header -->
+        <header class="page-header">
+            <div class="header-title">
+                <h1>Voorraad</h1>
+                <p>Realtime voorraadniveaus uit Goedgepickt</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="openAlertSettings()">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                    </svg>
+                    Alert Instellingen
+                </button>
+                <button class="btn btn-primary">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                    </svg>
+                    Sync Goedgepickt
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <span class="stat-value">1,247</span>
+                <span class="stat-label">Totaal producten</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value red">8</span>
+                <span class="stat-label">Kritiek laag</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value orange">23</span>
+                <span class="stat-label">Onder bestelpunt</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value green">€184.500</span>
+                <span class="stat-label">Voorraadwaarde</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value blue">3</span>
+                <span class="stat-label">Inbound leveringen</span>
+            </div>
+        </div>
+
+        <!-- Inbound Section -->
+        <div class="card" style="border-left: 4px solid var(--blue); margin-bottom: 24px;">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Verwachte Leveringen</div>
+                    <div class="card-subtitle">Inbound shipments onderweg naar magazijn</div>
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Leverancier</th>
+                        <th>Producten</th>
+                        <th>Aantal stuks</th>
+                        <th>ETA</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Fashion Wholesale BV</strong></td>
+                        <td>BLK-HOOD-M, WHT-TEE-L, BLK-JEANS-32</td>
+                        <td>450 stuks</td>
+                        <td><strong class="green">Morgen, 09:00</strong></td>
+                        <td><span class="status-badge ok"><span class="status-dot"></span>Onderweg</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Textile Import EU</strong></td>
+                        <td>NVY-JEANS-32, GRY-POLO-XL</td>
+                        <td>280 stuks</td>
+                        <td><strong>Dinsdag 11 feb</strong></td>
+                        <td><span class="status-badge pending"><span class="status-dot"></span>Gepland</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Premium Brands NL</strong></td>
+                        <td>Diverse items (12 SKU's)</td>
+                        <td>1.200 stuks</td>
+                        <td><strong>Vrijdag 14 feb</strong></td>
+                        <td><span class="status-badge pending"><span class="status-dot"></span>In productie</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Alerts Section -->
+        <div class="card" id="alertsCard" style="border-left: 4px solid var(--red);">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Voorraad Alerts</div>
+                    <div class="card-subtitle">Producten die onder het ingestelde niveau zitten</div>
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Product</th>
+                        <th>Voorraad</th>
+                        <th>Minimum</th>
+                        <th>Status</th>
+                        <th>Actie</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>BLK-HOOD-M</code></td>
+                        <td>Zwarte Hoodie - Maat M</td>
+                        <td><strong class="red">3</strong></td>
+                        <td>25</td>
+                        <td><span class="status-badge critical"><span class="status-dot"></span>Kritiek</span></td>
+                        <td><button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">Bestellen</button></td>
+                    </tr>
+                    <tr>
+                        <td><code>WHT-TEE-L</code></td>
+                        <td>Wit T-Shirt - Maat L</td>
+                        <td><strong class="red">5</strong></td>
+                        <td>30</td>
+                        <td><span class="status-badge critical"><span class="status-dot"></span>Kritiek</span></td>
+                        <td><button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">Bestellen</button></td>
+                    </tr>
+                    <tr>
+                        <td><code>BLK-JEANS-32</code></td>
+                        <td>Zwarte Jeans - W32</td>
+                        <td><strong class="red">7</strong></td>
+                        <td>20</td>
+                        <td><span class="status-badge critical"><span class="status-dot"></span>Kritiek</span></td>
+                        <td><button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">Bestellen</button></td>
+                    </tr>
+                    <tr>
+                        <td><code>NVY-JEANS-32</code></td>
+                        <td>Navy Jeans - W32</td>
+                        <td><strong class="orange">12</strong></td>
+                        <td>20</td>
+                        <td><span class="status-badge warning"><span class="status-dot"></span>Laag</span></td>
+                        <td><button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Bestellen</button></td>
+                    </tr>
+                    <tr>
+                        <td><code>GRY-SWEAT-XL</code></td>
+                        <td>Grijze Sweater - XL</td>
+                        <td><strong class="orange">15</strong></td>
+                        <td>25</td>
+                        <td><span class="status-badge warning"><span class="status-dot"></span>Laag</span></td>
+                        <td><button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Bestellen</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+            <div class="search-box">
+                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+                <input type="text" placeholder="Zoek op SKU of productnaam..." id="searchInput" onkeyup="filterProducts()">
+            </div>
+            <div class="filter-group">
+                <select id="categoryFilter" onchange="filterProducts()">
+                    <option value="">Alle categorieën</option>
+                    <option value="hoodies">Hoodies</option>
+                    <option value="tshirts">T-Shirts</option>
+                    <option value="jeans">Jeans</option>
+                    <option value="sweaters">Sweaters</option>
+                    <option value="accessoires">Accessoires</option>
+                </select>
+                <select id="stockFilter" onchange="filterProducts()">
+                    <option value="">Alle voorraad</option>
+                    <option value="critical">Kritiek laag</option>
+                    <option value="low">Onder bestelpunt</option>
+                    <option value="ok">Op peil</option>
+                    <option value="high">Hoog</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Alle Producten</div>
+                    <div class="card-subtitle">1,247 producten in voorraad</div>
+                </div>
+                <button class="btn btn-secondary" onclick="exportInventory()">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    Exporteer
+                </button>
+            </div>
+            <table class="data-table" id="productsTable">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Product</th>
+                        <th>Categorie</th>
+                        <th>Voorraad</th>
+                        <th>Min. niveau</th>
+                        <th>Locatie</th>
+                        <th>Status</th>
+                        <th>Acties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-category="hoodies" data-stock="critical">
+                        <td><code>BLK-HOOD-M</code></td>
+                        <td>Zwarte Hoodie - Maat M</td>
+                        <td>Hoodies</td>
+                        <td><strong class="red">3</strong></td>
+                        <td>25</td>
+                        <td>A-12-3</td>
+                        <td><span class="status-badge critical"><span class="status-dot"></span>Kritiek</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="editProduct('BLK-HOOD-M')" title="Bewerken">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-category="tshirts" data-stock="critical">
+                        <td><code>WHT-TEE-L</code></td>
+                        <td>Wit T-Shirt - Maat L</td>
+                        <td>T-Shirts</td>
+                        <td><strong class="red">5</strong></td>
+                        <td>30</td>
+                        <td>B-04-1</td>
+                        <td><span class="status-badge critical"><span class="status-dot"></span>Kritiek</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="editProduct('WHT-TEE-L')" title="Bewerken">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-category="jeans" data-stock="low">
+                        <td><code>NVY-JEANS-32</code></td>
+                        <td>Navy Jeans - W32</td>
+                        <td>Jeans</td>
+                        <td><strong class="orange">12</strong></td>
+                        <td>20</td>
+                        <td>C-08-2</td>
+                        <td><span class="status-badge warning"><span class="status-dot"></span>Laag</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="editProduct('NVY-JEANS-32')" title="Bewerken">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-category="hoodies" data-stock="ok">
+                        <td><code>BLK-HOOD-L</code></td>
+                        <td>Zwarte Hoodie - Maat L</td>
+                        <td>Hoodies</td>
+                        <td><strong>45</strong></td>
+                        <td>25</td>
+                        <td>A-12-4</td>
+                        <td><span class="status-badge ok"><span class="status-dot"></span>Op peil</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="editProduct('BLK-HOOD-L')" title="Bewerken">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-category="tshirts" data-stock="ok">
+                        <td><code>BLK-TEE-M</code></td>
+                        <td>Zwart T-Shirt - Maat M</td>
+                        <td>T-Shirts</td>
+                        <td><strong>67</strong></td>
+                        <td>30</td>
+                        <td>B-03-2</td>
+                        <td><span class="status-badge ok"><span class="status-dot"></span>Op peil</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="editProduct('BLK-TEE-M')" title="Bewerken">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-category="sweaters" data-stock="high">
+                        <td><code>GRY-SWEAT-M</code></td>
+                        <td>Grijze Sweater - Maat M</td>
+                        <td>Sweaters</td>
+                        <td><strong class="green">124</strong></td>
+                        <td>25</td>
+                        <td>D-01-1</td>
+                        <td><span class="status-badge ok"><span class="status-dot"></span>Op peil</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="editProduct('GRY-SWEAT-M')" title="Bewerken">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-category="jeans" data-stock="ok">
+                        <td><code>BLU-JEANS-34</code></td>
+                        <td>Blauwe Jeans - W34</td>
+                        <td>Jeans</td>
+                        <td><strong>38</strong></td>
+                        <td>20</td>
+                        <td>C-09-1</td>
+                        <td><span class="status-badge ok"><span class="status-dot"></span>Op peil</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="editProduct('BLU-JEANS-34')" title="Bewerken">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-category="accessoires" data-stock="ok">
+                        <td><code>BLK-CAP-OS</code></td>
+                        <td>Zwarte Pet - One Size</td>
+                        <td>Accessoires</td>
+                        <td><strong>89</strong></td>
+                        <td>15</td>
+                        <td>E-02-3</td>
+                        <td><span class="status-badge ok"><span class="status-dot"></span>Op peil</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="editProduct('BLK-CAP-OS')" title="Bewerken">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Alert Settings Modal -->
+    <div class="modal-overlay" id="alertSettingsModal" onclick="closeAlertSettings(event)">
+        <div class="modal" onclick="event.stopPropagation()" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>Voorraad Alert Instellingen</h2>
+                <button class="btn-close" onclick="closeAlertSettings()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--gray-dark); margin-bottom: 24px;">
+                    Stel per product of categorie in wanneer u een melding ontvangt over lage voorraad. 
+                    Alerts worden verzonden via e-mail en in het dashboard getoond.
+                </p>
+
+                <h3 style="font-size: 14px; font-weight: 600; color: var(--gray-medium); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">Globale Instellingen</h3>
+                
+                <div class="alert-setting">
+                    <div class="alert-setting-info">
+                        <span class="alert-setting-title">E-mail notificaties</span>
+                        <span class="alert-setting-desc">Ontvang dagelijks een overzicht van lage voorraad</span>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="alert-setting">
+                    <div class="alert-setting-info">
+                        <span class="alert-setting-title">Push notificaties</span>
+                        <span class="alert-setting-desc">Direct melding bij kritieke voorraad (&lt;10 stuks)</span>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <h3 style="font-size: 14px; font-weight: 600; color: var(--gray-medium); text-transform: uppercase; letter-spacing: 0.5px; margin: 32px 0 16px;">Standaard Minimumniveaus per Categorie</h3>
+
+                <div class="alert-setting">
+                    <div class="alert-setting-info">
+                        <span class="alert-setting-title">Hoodies</span>
+                        <span class="alert-setting-desc">Alert wanneer voorraad onder dit niveau komt</span>
+                    </div>
+                    <div class="alert-setting-input">
+                        <input type="number" value="25" min="0">
+                        <span style="color: var(--gray-medium);">stuks</span>
+                    </div>
+                </div>
+
+                <div class="alert-setting">
+                    <div class="alert-setting-info">
+                        <span class="alert-setting-title">T-Shirts</span>
+                        <span class="alert-setting-desc">Alert wanneer voorraad onder dit niveau komt</span>
+                    </div>
+                    <div class="alert-setting-input">
+                        <input type="number" value="30" min="0">
+                        <span style="color: var(--gray-medium);">stuks</span>
+                    </div>
+                </div>
+
+                <div class="alert-setting">
+                    <div class="alert-setting-info">
+                        <span class="alert-setting-title">Jeans</span>
+                        <span class="alert-setting-desc">Alert wanneer voorraad onder dit niveau komt</span>
+                    </div>
+                    <div class="alert-setting-input">
+                        <input type="number" value="20" min="0">
+                        <span style="color: var(--gray-medium);">stuks</span>
+                    </div>
+                </div>
+
+                <div class="alert-setting">
+                    <div class="alert-setting-info">
+                        <span class="alert-setting-title">Sweaters</span>
+                        <span class="alert-setting-desc">Alert wanneer voorraad onder dit niveau komt</span>
+                    </div>
+                    <div class="alert-setting-input">
+                        <input type="number" value="25" min="0">
+                        <span style="color: var(--gray-medium);">stuks</span>
+                    </div>
+                </div>
+
+                <div class="alert-setting">
+                    <div class="alert-setting-info">
+                        <span class="alert-setting-title">Accessoires</span>
+                        <span class="alert-setting-desc">Alert wanneer voorraad onder dit niveau komt</span>
+                    </div>
+                    <div class="alert-setting-input">
+                        <input type="number" value="15" min="0">
+                        <span style="color: var(--gray-medium);">stuks</span>
+                    </div>
+                </div>
+
+                <h3 style="font-size: 14px; font-weight: 600; color: var(--gray-medium); text-transform: uppercase; letter-spacing: 0.5px; margin: 32px 0 16px;">Kritiek Niveau</h3>
+
+                <div class="alert-setting" style="background: var(--red-light);">
+                    <div class="alert-setting-info">
+                        <span class="alert-setting-title" style="color: var(--red);">Kritiek niveau</span>
+                        <span class="alert-setting-desc">Onder dit aantal is de voorraad kritiek laag</span>
+                    </div>
+                    <div class="alert-setting-input">
+                        <input type="number" value="10" min="0" style="border-color: var(--red);">
+                        <span style="color: var(--gray-medium);">stuks</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 32px;">
+                    <button class="btn btn-secondary" onclick="closeAlertSettings()" style="flex: 1;">Annuleren</button>
+                    <button class="btn btn-primary" onclick="saveAlertSettings()" style="flex: 1;">Opslaan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal-overlay" id="editProductModal" onclick="closeEditProduct(event)">
+        <div class="modal" onclick="event.stopPropagation()" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Product Bewerken</h2>
+                <button class="btn-close" onclick="closeEditProduct()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">SKU</label>
+                    <input type="text" class="form-input" id="editSku" value="BLK-HOOD-M" readonly style="background: var(--gray-light);">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Productnaam</label>
+                    <input type="text" class="form-input" id="editName" value="Zwarte Hoodie - Maat M">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Minimum voorraad</label>
+                        <input type="number" class="form-input" id="editMinStock" value="25">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Locatie</label>
+                        <input type="text" class="form-input" id="editLocation" value="A-12-3">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Categorie</label>
+                    <select class="form-input" id="editCategory">
+                        <option value="hoodies" selected>Hoodies</option>
+                        <option value="tshirts">T-Shirts</option>
+                        <option value="jeans">Jeans</option>
+                        <option value="sweaters">Sweaters</option>
+                        <option value="accessoires">Accessoires</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button class="btn btn-secondary" onclick="closeEditProduct()" style="flex: 1;">Annuleren</button>
+                    <button class="btn btn-primary" onclick="saveProduct()" style="flex: 1;">Opslaan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterProducts() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const stock = document.getElementById('stockFilter').value;
+            const rows = document.querySelectorAll('#productsTable tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const rowCategory = row.dataset.category;
+                const rowStock = row.dataset.stock;
+                
+                const matchSearch = text.includes(search);
+                const matchCategory = !category || rowCategory === category;
+                const matchStock = !stock || rowStock === stock;
+                
+                row.style.display = matchSearch && matchCategory && matchStock ? '' : 'none';
+            });
+        }
+
+        function openAlertSettings() {
+            document.getElementById('alertSettingsModal').classList.add('active');
+        }
+
+        function closeAlertSettings(event) {
+            if (!event || event.target.classList.contains('modal-overlay')) {
+                document.getElementById('alertSettingsModal').classList.remove('active');
+            }
+        }
+
+        function saveAlertSettings() {
+            alert('Instellingen opgeslagen! In productie worden deze instellingen bewaard en toegepast op alle voorraadcontroles.');
+            closeAlertSettings();
+        }
+
+        function editProduct(sku) {
+            document.getElementById('editSku').value = sku;
+            document.getElementById('editProductModal').classList.add('active');
+        }
+
+        function closeEditProduct(event) {
+            if (!event || event.target.classList.contains('modal-overlay')) {
+                document.getElementById('editProductModal').classList.remove('active');
+            }
+        }
+
+        function saveProduct() {
+            alert('Product bijgewerkt! In productie wordt dit gesynchroniseerd met Goedgepickt.');
+            closeEditProduct();
+        }
+
+        function exportInventory() {
+            alert('Export functie: In productie zou dit een CSV/Excel export genereren vanuit Goedgepickt.');
+        }
+
+        // Close modals on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeAlertSettings();
+                closeEditProduct();
+            }
+        });
+    </script>
+</body>
+</html>

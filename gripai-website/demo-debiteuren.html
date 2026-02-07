@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debiteurenbeheer Demo | klain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0f1117;
+            --gray-dark: #6b7084;
+            --gray-medium: #d1d5e0;
+            --gray-light: #f7f8fa;
+            --white: #ffffff;
+            --blue: #2563eb;
+            --green: #16a34a;
+            --orange: #ea580c;
+            --red: #dc2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; height: 64px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: saturate(180%) blur(20px);
+            z-index: 1000; border-bottom: 1px solid var(--gray-medium);
+        }
+        .nav-inner {
+            max-width: 1400px; margin: 0 auto; padding: 0 24px;
+            height: 100%; display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 26px; font-weight: 700; color: var(--black);
+            text-decoration: none;
+        }
+        .nav-cta {
+            background: var(--black); color: var(--white); padding: 10px 22px;
+            border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 500;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-light);
+            min-height: 100vh;
+            color: var(--black);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .demo-banner {
+            background: var(--blue);
+            color: white;
+            text-align: center;
+            margin-top: 64px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .demo-banner a {
+            color: white;
+            margin-left: 12px;
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--gray-medium);
+        }
+
+        .page-title {
+            font-size: 16px;
+            color: var(--gray-dark);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--black);
+            border: 1px solid var(--gray-medium);
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0077ed;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 6px;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray-dark);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--black);
+        }
+
+        .stat-value.success { color: var(--green); }
+        .stat-value.warning { color: var(--orange); }
+        .stat-value.danger { color: var(--red); }
+
+        .stat-change {
+            font-size: 12px;
+            margin-top: 4px;
+            color: var(--gray-dark);
+        }
+
+        .stat-change.positive { color: var(--green); }
+        .stat-change.negative { color: var(--red); }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
+        }
+
+        .card:last-child {
+            margin-bottom: 0;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Aging Chart */
+        .aging-bar {
+            display: flex;
+            height: 40px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .aging-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .aging-segment:hover {
+            filter: brightness(1.1);
+        }
+
+        .aging-segment.current { background: var(--green); }
+        .aging-segment.days-30 { background: #30d158; }
+        .aging-segment.days-60 { background: var(--orange); }
+        .aging-segment.days-90 { background: #ff6b35; }
+        .aging-segment.days-over { background: var(--red); }
+
+        .aging-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        .legend-value {
+            font-weight: 600;
+            margin-left: 2px;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--gray-light);
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 14px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--gray-light);
+            vertical-align: middle;
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tr:hover {
+            background: var(--gray-light);
+        }
+
+        .customer-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .customer-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--gray-dark);
+        }
+
+        .customer-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .customer-name {
+            font-weight: 600;
+            color: var(--black);
+        }
+
+        .customer-email {
+            font-size: 12px;
+            color: var(--gray-dark);
+        }
+
+        .invoice-number {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 12px;
+            color: var(--gray-dark);
+            background: var(--gray-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .amount {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-current {
+            background: rgba(52, 199, 89, 0.12);
+            color: var(--green);
+        }
+
+        .status-warning {
+            background: rgba(255, 149, 0, 0.12);
+            color: var(--orange);
+        }
+
+        .status-overdue {
+            background: rgba(255, 59, 48, 0.12);
+            color: var(--red);
+        }
+
+        .prediction-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .prediction-date {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .prediction-confidence {
+            font-size: 11px;
+            color: var(--gray-dark);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-btn {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--gray-medium);
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .action-btn:hover {
+            background: var(--gray-light);
+        }
+
+        .action-btn.primary {
+            background: var(--blue);
+            color: white;
+            border-color: var(--blue);
+        }
+
+        .action-btn.whatsapp {
+            background: #25D366;
+            color: white;
+            border-color: #25D366;
+        }
+
+        /* Sidebar Cards */
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .ai-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-card {
+            background: var(--gray-light);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-card:hover {
+            background: #eaeaec;
+        }
+
+        .ai-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .ai-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .ai-card-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .ai-card-priority {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .ai-card-priority.urgent {
+            background: rgba(255, 59, 48, 0.12);
+            color: var(--red);
+        }
+
+        .ai-card-priority.high {
+            background: rgba(255, 149, 0, 0.12);
+            color: var(--orange);
+        }
+
+        .ai-card-priority.medium {
+            background: rgba(0, 113, 227, 0.12);
+            color: var(--blue);
+        }
+
+        .ai-card-text {
+            font-size: 13px;
+            color: var(--gray-dark);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .ai-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-card-amount {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--black);
+        }
+
+        /* Workflow */
+        .workflow {
+            margin-top: 8px;
+        }
+
+        .workflow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            position: relative;
+        }
+
+        .workflow-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 13px;
+            top: 36px;
+            bottom: 0;
+            width: 2px;
+            background: var(--gray-medium);
+        }
+
+        .workflow-step.completed::after {
+            background: var(--green);
+        }
+
+        .workflow-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-dark);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .workflow-step.active .workflow-number {
+            background: var(--blue);
+            color: white;
+        }
+
+        .workflow-step.completed .workflow-number {
+            background: var(--green);
+            color: white;
+        }
+
+        .workflow-info {
+            flex: 1;
+            padding-top: 4px;
+        }
+
+        .workflow-title {
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .workflow-desc {
+            font-size: 11px;
+            color: var(--gray-dark);
+        }
+
+        .workflow-status {
+            font-size: 11px;
+            color: var(--gray-dark);
+            padding-top: 4px;
+        }
+
+        .workflow-status.done {
+            color: var(--green);
+        }
+
+        /* Customer Profile Modal */
+        .profile-section {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .profile-section:last-child {
+            border-bottom: none;
+        }
+
+        .profile-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .profile-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        .profile-stat-label {
+            font-size: 13px;
+            color: var(--gray-dark);
+        }
+
+        .profile-stat-value {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .payment-history {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .payment-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .payment-dot.on-time { background: var(--green); }
+        .payment-dot.late { background: var(--orange); }
+        .payment-dot.very-late { background: var(--red); }
+
+        /* Timeline */
+        .timeline-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+        }
+
+        .timeline-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .timeline-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--gray-dark);
+        }
+
+        .timeline-icon.success { background: rgba(52, 199, 89, 0.12); }
+        .timeline-icon.success svg { stroke: var(--green); }
+        .timeline-icon.warning { background: rgba(255, 149, 0, 0.12); }
+        .timeline-icon.warning svg { stroke: var(--orange); }
+        .timeline-icon.action { background: rgba(0, 113, 227, 0.12); }
+        .timeline-icon.action svg { stroke: var(--blue); }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .timeline-desc {
+            font-size: 12px;
+            color: var(--gray-dark);
+        }
+
+        .timeline-time {
+            font-size: 11px;
+            color: var(--gray-dark);
+            white-space: nowrap;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--gray-dark);
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: var(--blue);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-row {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            .table-container {
+                margin: 0 -24px;
+                padding: 0 24px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 20px 16px;
+            }
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+            .card {
+                padding: 16px;
+            }
+            .stat-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">klain</a>
+            <a href="index.html#contact" class="nav-cta">Contact</a>
+        </div>
+    </nav>
+
+    <div class="demo-banner">
+        Dit is een demonstratie van klain's debiteurenbeheer functionaliteit
+        <a href="index.html">Terug naar klain</a>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">klain</div>
+                <div class="logo-divider"></div>
+                <div class="page-title">Debiteurenbeheer</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Exporteren
+                </button>
+                <button class="btn btn-primary" onclick="showBulkAction()">Bulk herinnering</button>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Totaal openstaand</div>
+                <div class="stat-value">€47.850</div>
+                <div class="stat-change negative">+€3.200 vs vorige maand</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">DSO (betaaltermijn)</div>
+                <div class="stat-value warning">34</div>
+                <div class="stat-change">dagen (doel: 30)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Op tijd betaald</div>
+                <div class="stat-value success">78%</div>
+                <div class="stat-change positive">+5% vs vorige maand</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Verwacht deze week</div>
+                <div class="stat-value">€12.400</div>
+                <div class="stat-change">AI voorspelling</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Actie vereist</div>
+                <div class="stat-value danger">4</div>
+                <div class="stat-change">facturen > 30 dagen</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Aging Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Ouderdomsanalyse</div>
+                        <div class="card-actions">
+                            <button class="btn-small btn-secondary">Deze maand</button>
+                        </div>
+                    </div>
+                    <div class="aging-bar">
+                        <div class="aging-segment current" style="width: 45%;" onclick="filterByAge('0-14')">€21.500</div>
+                        <div class="aging-segment days-30" style="width: 25%;" onclick="filterByAge('15-30')">€12.000</div>
+                        <div class="aging-segment days-60" style="width: 18%;" onclick="filterByAge('31-60')">€8.650</div>
+                        <div class="aging-segment days-90" style="width: 8%;" onclick="filterByAge('61-90')">€3.900</div>
+                        <div class="aging-segment days-over" style="width: 4%;" onclick="filterByAge('90+')">€1.800</div>
+                    </div>
+                    <div class="aging-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: var(--green);"></div>
+                            <span>0-14 dagen</span>
+                            <span class="legend-value">€21.500</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #30d158;"></div>
+                            <span>15-30 dagen</span>
+                            <span class="legend-value">€12.000</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: var(--orange);"></div>
+                            <span>31-60 dagen</span>
+                            <span class="legend-value">€8.650</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #ff6b35;"></div>
+                            <span>61-90 dagen</span>
+                            <span class="legend-value">€3.900</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: var(--red);"></div>
+                            <span>> 90 dagen</span>
+                            <span class="legend-value">€1.800</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invoices Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Openstaande facturen</div>
+                        <div class="card-actions">
+                            <button class="btn-small btn-secondary">Filter</button>
+                            <button class="btn-small btn-secondary">Sorteren</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Klant</th>
+                                    <th>Factuur</th>
+                                    <th>Bedrag</th>
+                                    <th>Status</th>
+                                    <th>AI Voorspelling</th>
+                                    <th>Actie</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr onclick="showCustomerProfile('pietersen')">
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar">FP</div>
+                                            <div class="customer-info">
+                                                <span class="customer-name">Fam. Pietersen</span>
+                                                <span class="customer-email">pietersen@email.nl</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="invoice-number">INV-2024-0089</span></td>
+                                    <td class="amount">€4.250</td>
+                                    <td><span class="status-badge status-overdue">54 dagen</span></td>
+                                    <td>
+                                        <div class="prediction-cell">
+                                            <span class="prediction-date">~3 dagen na bellen</span>
+                                            <span class="prediction-confidence">92% zekerheid</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn primary" onclick="event.stopPropagation(); makeCall('Pietersen')">Bellen</button>
+                                            <button class="action-btn whatsapp" onclick="event.stopPropagation(); sendWhatsApp('Pietersen')">WA</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr onclick="showCustomerProfile('klaassen')">
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar">HK</div>
+                                            <div class="customer-info">
+                                                <span class="customer-name">Dhr. Klaassen</span>
+                                                <span class="customer-email">h.klaassen@home.nl</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="invoice-number">INV-2024-0092</span></td>
+                                    <td class="amount">€2.890</td>
+                                    <td><span class="status-badge status-overdue">47 dagen</span></td>
+                                    <td>
+                                        <div class="prediction-cell">
+                                            <span class="prediction-date">Betalingsregeling nodig</span>
+                                            <span class="prediction-confidence">Historisch traag</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn" onclick="event.stopPropagation(); proposePaymentPlan('Klaassen')">Regeling</button>
+                                            <button class="action-btn" onclick="event.stopPropagation(); makeCall('Klaassen')">Bellen</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr onclick="showCustomerProfile('stoepje')">
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar">BS</div>
+                                            <div class="customer-info">
+                                                <span class="customer-name">Bakkerij 't Stoepje</span>
+                                                <span class="customer-email">info@hetstoepje.nl</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="invoice-number">INV-2025-0003</span></td>
+                                    <td class="amount">€8.650</td>
+                                    <td><span class="status-badge status-warning">27 dagen</span></td>
+                                    <td>
+                                        <div class="prediction-cell">
+                                            <span class="prediction-date">Verwacht: 3 feb</span>
+                                            <span class="prediction-confidence">78% zekerheid</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn" onclick="event.stopPropagation(); sendReminder('Stoepje')">Herinnering</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr onclick="showCustomerProfile('degroot')">
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar">DG</div>
+                                            <div class="customer-info">
+                                                <span class="customer-name">Fam. de Groot</span>
+                                                <span class="customer-email">degroot.jan@gmail.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="invoice-number">INV-2025-0008</span></td>
+                                    <td class="amount">€12.400</td>
+                                    <td><span class="status-badge status-warning">20 dagen</span></td>
+                                    <td>
+                                        <div class="prediction-cell">
+                                            <span class="prediction-date">Verwacht: 8 feb</span>
+                                            <span class="prediction-confidence">85% zekerheid</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn" onclick="event.stopPropagation(); sendReminder('De Groot')">Herinnering</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr onclick="showCustomerProfile('jansen')">
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar">FJ</div>
+                                            <div class="customer-info">
+                                                <span class="customer-name">Fam. Jansen</span>
+                                                <span class="customer-email">jansen.emmen@outlook.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="invoice-number">INV-2025-0012</span></td>
+                                    <td class="amount">€6.780</td>
+                                    <td><span class="status-badge status-current">13 dagen</span></td>
+                                    <td>
+                                        <div class="prediction-cell">
+                                            <span class="prediction-date">Verwacht: op tijd</span>
+                                            <span class="prediction-confidence">95% zekerheid</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn" disabled>Wachten</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr onclick="showCustomerProfile('vandijk')">
+                                    <td>
+                                        <div class="customer-cell">
+                                            <div class="customer-avatar">AD</div>
+                                            <div class="customer-info">
+                                                <span class="customer-name">Mevr. van Dijk</span>
+                                                <span class="customer-email">avdijk@hetnet.nl</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="invoice-number">INV-2025-0015</span></td>
+                                    <td class="amount">€9.350</td>
+                                    <td><span class="status-badge status-current">7 dagen</span></td>
+                                    <td>
+                                        <div class="prediction-cell">
+                                            <span class="prediction-date">Verwacht: op tijd</span>
+                                            <span class="prediction-confidence">98% zekerheid</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn" disabled>Wachten</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Customer Profile (shown on click) -->
+                <div class="card" id="customerProfile" style="display: none;">
+                    <div class="card-header">
+                        <div class="card-title">Klantprofiel: <span id="profileName">Fam. Pietersen</span></div>
+                        <button class="btn-small btn-secondary" onclick="hideProfile()">Sluiten</button>
+                    </div>
+                    
+                    <div class="profile-section">
+                        <div class="profile-section-title">Betaalgedrag</div>
+                        <div class="profile-stat">
+                            <span class="profile-stat-label">Gem. betaaltermijn</span>
+                            <span class="profile-stat-value">38 dagen</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat-label">Totaal gefactureerd (12 mnd)</span>
+                            <span class="profile-stat-value">€28.400</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="profile-stat-label">Op tijd betaald</span>
+                            <span class="profile-stat-value" style="color: var(--orange);">62%</span>
+                        </div>
+                        <div style="margin-top: 12px;">
+                            <span class="profile-stat-label">Laatste 8 facturen:</span>
+                            <div class="payment-history">
+                                <div class="payment-dot on-time" title="Op tijd">✓</div>
+                                <div class="payment-dot late" title="5 dagen te laat">5</div>
+                                <div class="payment-dot on-time" title="Op tijd">✓</div>
+                                <div class="payment-dot very-late" title="23 dagen te laat">23</div>
+                                <div class="payment-dot late" title="8 dagen te laat">8</div>
+                                <div class="payment-dot on-time" title="Op tijd">✓</div>
+                                <div class="payment-dot late" title="12 dagen te laat">12</div>
+                                <div class="payment-dot very-late" title="Nu: 54 dagen">54</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <div class="profile-section-title">AI Inzichten</div>
+                        <p style="font-size: 13px; color: var(--gray-dark); line-height: 1.6;">
+                            Deze klant betaalt historisch gezien <strong>binnen 3 dagen na telefonisch contact</strong>. 
+                            E-mail herinneringen hebben weinig effect. Aanbevolen: direct bellen, bij voorkeur 's ochtends.
+                        </p>
+                    </div>
+
+                    <div class="profile-section">
+                        <div class="profile-section-title">Communicatielog</div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon action">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">2e herinnering verstuurd</div>
+                                <div class="timeline-desc">Automatisch gegenereerd</div>
+                            </div>
+                            <div class="timeline-time">3 dagen</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon action">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">1e herinnering verstuurd</div>
+                                <div class="timeline-desc">Automatisch gegenereerd</div>
+                            </div>
+                            <div class="timeline-time">17 dagen</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon success">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Factuur verstuurd</div>
+                                <div class="timeline-desc">INV-2024-0089 - €4.250</div>
+                            </div>
+                            <div class="timeline-time">54 dagen</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- AI Recommendations -->
+                <div class="card">
+                    <div class="ai-header">
+                        <span class="ai-badge">AI Aanbevelingen</span>
+                    </div>
+                    
+                    <div class="ai-card" onclick="makeCall('Pietersen')">
+                        <div class="ai-card-header">
+                            <span class="ai-card-title">Fam. Pietersen bellen</span>
+                            <span class="ai-card-priority urgent">Urgent</span>
+                        </div>
+                        <div class="ai-card-text">
+                            Twee e-mails zonder reactie. Historisch betaalt deze klant binnen 3 dagen na telefonisch contact.
+                        </div>
+                        <div class="ai-card-meta">
+                            <span class="ai-card-amount">€4.250</span>
+                            <button class="action-btn primary" onclick="event.stopPropagation(); makeCall('Pietersen')">Nu bellen</button>
+                        </div>
+                    </div>
+
+                    <div class="ai-card" onclick="proposePaymentPlan('Klaassen')">
+                        <div class="ai-card-header">
+                            <span class="ai-card-title">Betalingsregeling Klaassen</span>
+                            <span class="ai-card-priority high">Hoog</span>
+                        </div>
+                        <div class="ai-card-text">
+                            Betaalpatroon wijst op cashflowproblemen. Een regeling in 3 termijnen heeft 85% succeskans.
+                        </div>
+                        <div class="ai-card-meta">
+                            <span class="ai-card-amount">€2.890</span>
+                            <button class="action-btn" onclick="event.stopPropagation(); proposePaymentPlan('Klaassen')">Voorstel</button>
+                        </div>
+                    </div>
+
+                    <div class="ai-card" onclick="sendReminder('Stoepje')">
+                        <div class="ai-card-header">
+                            <span class="ai-card-title">Preventief: Bakkerij 't Stoepje</span>
+                            <span class="ai-card-priority medium">Tip</span>
+                        </div>
+                        <div class="ai-card-text">
+                            Bereikt morgen 28 dagen. Een vriendelijke herinnering vandaag voorkomt escalatie.
+                        </div>
+                        <div class="ai-card-meta">
+                            <span class="ai-card-amount">€8.650</span>
+                            <button class="action-btn" onclick="event.stopPropagation(); sendReminder('Stoepje')">Versturen</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Automated Workflow -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Actieve workflow</div>
+                    </div>
+                    <p style="font-size: 12px; color: var(--gray-dark); margin-bottom: 12px;">
+                        Automatisch herinneringsproces per factuur:
+                    </p>
+                    <div class="workflow">
+                        <div class="workflow-step completed">
+                            <div class="workflow-number">✓</div>
+                            <div class="workflow-info">
+                                <div class="workflow-title">Factuur verstuurd</div>
+                                <div class="workflow-desc">Dag 0</div>
+                            </div>
+                        </div>
+                        <div class="workflow-step completed">
+                            <div class="workflow-number">✓</div>
+                            <div class="workflow-info">
+                                <div class="workflow-title">1e herinnering</div>
+                                <div class="workflow-desc">Dag 14 - Vriendelijk</div>
+                            </div>
+                        </div>
+                        <div class="workflow-step active">
+                            <div class="workflow-number">3</div>
+                            <div class="workflow-info">
+                                <div class="workflow-title">2e herinnering</div>
+                                <div class="workflow-desc">Dag 28 - Formeel</div>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-number">4</div>
+                            <div class="workflow-info">
+                                <div class="workflow-title">Telefonisch</div>
+                                <div class="workflow-desc">Dag 35</div>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-number">5</div>
+                            <div class="workflow-info">
+                                <div class="workflow-title">Aanmaning</div>
+                                <div class="workflow-desc">Dag 45</div>
+                            </div>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-number">6</div>
+                            <div class="workflow-info">
+                                <div class="workflow-title">Incasso</div>
+                                <div class="workflow-desc">Dag 60</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Recente activiteit</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon success">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Betaling ontvangen</div>
+                            <div class="timeline-desc">Fam. de Vries - €14.200</div>
+                        </div>
+                        <div class="timeline-time">2u</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon action">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Herinnering verstuurd</div>
+                            <div class="timeline-desc">Bakkerij 't Stoepje</div>
+                        </div>
+                        <div class="timeline-time">Gisteren</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon warning">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Geen gehoor</div>
+                            <div class="timeline-desc">Dhr. Klaassen</div>
+                        </div>
+                        <div class="timeline-time">Gisteren</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Automatisch gegenereerd door <a href="index.html">klain</a>
+        </div>
+    </div>
+
+    <script>
+        function makeCall(name) {
+            alert(`Bellen: ${name}\n\nTelefoonnummer gekopieerd naar klembord.\n\nIn de productieversie wordt het gesprek automatisch gelogd.`);
+        }
+
+        function sendWhatsApp(name) {
+            alert(`WhatsApp naar ${name}\n\nTemplate bericht:\n\n"Goedemiddag, wij hebben nog een openstaande factuur van u tegoed. Kunt u aangeven wanneer wij de betaling mogen verwachten? Alvast bedankt."\n\nIn de productieversie opent dit WhatsApp Web.`);
+        }
+
+        function sendReminder(name) {
+            alert(`Herinnering verstuurd naar ${name}\n\nE-mail template automatisch gegenereerd op basis van betaalhistorie en communicatievoorkeur.`);
+        }
+
+        function proposePaymentPlan(name) {
+            alert(`Betalingsregeling voor ${name}\n\nVoorgesteld:\n- 3 termijnen van €963,33\n- Eerste termijn binnen 7 dagen\n- Vervolgend maandelijks\n\nIn de productieversie wordt een PDF overeenkomst gegenereerd.`);
+        }
+
+        function showBulkAction() {
+            alert(`Bulk herinnering\n\n4 facturen geselecteerd (> 14 dagen):\n- Bakkerij 't Stoepje (€8.650)\n- Fam. de Groot (€12.400)\n- Fam. Pietersen (€4.250)\n- Dhr. Klaassen (€2.890)\n\nVerstuurt automatisch gepersonaliseerde herinneringen.`);
+        }
+
+        function filterByAge(range) {
+            alert(`Filter: ${range} dagen\n\nIn de productieversie filtert dit de tabel op de geselecteerde ouderdomscategorie.`);
+        }
+
+        function showCustomerProfile(customer) {
+            document.getElementById('customerProfile').style.display = 'block';
+            document.getElementById('customerProfile').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideProfile() {
+            document.getElementById('customerProfile').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Display — Dura Fulfilment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0f1117;
+            --gray-dark: #6b7084;
+            --gray-medium: #8e93a6;
+            --gray-light: #f7f8fa;
+            --white: #ffffff;
+            --blue: #2563eb;
+            --blue-light: #eff6ff;
+            --green: #16a34a;
+            --green-light: #f0fdf4;
+            --orange: #ea580c;
+            --orange-light: #fff7ed;
+            --red: #dc2626;
+            --red-light: #fef2f2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-light);
+            color: var(--black);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden;
+        }
+
+        .display-container {
+            height: 100vh;
+            padding: 32px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            grid-template-rows: auto 1fr auto;
+            gap: 24px;
+        }
+
+        /* Header */
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            padding: 20px 32px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--blue);
+        }
+
+        .header-date {
+            font-size: 16px;
+            color: var(--gray-dark);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--green-light);
+            border-radius: 20px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .live-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .clock {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* KPI Strip */
+        .kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .kpi-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            text-align: center;
+        }
+
+        .kpi-value {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .kpi-value.blue { color: var(--blue); }
+        .kpi-value.green { color: var(--green); }
+        .kpi-value.orange { color: var(--orange); }
+        .kpi-value.red { color: var(--red); }
+
+        .kpi-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-dark);
+        }
+
+        .kpi-sublabel {
+            font-size: 13px;
+            color: var(--gray-medium);
+            margin-top: 4px;
+        }
+
+        /* Team Performance */
+        .team-card {
+            flex: 1;
+            background: var(--white);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: var(--gray-medium);
+            margin-top: 4px;
+        }
+
+        .wms-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: var(--gray-light);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-dark);
+        }
+
+        .wms-badge svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--green);
+        }
+
+        /* Employee Grid */
+        .employee-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            flex: 1;
+        }
+
+        .employee-card {
+            background: var(--gray-light);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .employee-card.top-performer {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff4d6 100%);
+            border: 2px solid #ffd60a;
+        }
+
+        .employee-card.top-performer::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 24px;
+            height: 24px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffd60a'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/%3E%3C/svg%3E") no-repeat center;
+        }
+
+        .employee-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .employee-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .avatar-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .avatar-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .avatar-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .avatar-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .avatar-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .avatar-6 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; }
+
+        .employee-info {
+            flex: 1;
+        }
+
+        .employee-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .employee-role {
+            font-size: 13px;
+            color: var(--gray-medium);
+        }
+
+        .employee-stats {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .stat-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            background: var(--white);
+            border-radius: 10px;
+        }
+
+        .employee-card.top-performer .stat-item {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--black);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--gray-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .employee-progress {
+            margin-top: auto;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            font-size: 12px;
+            color: var(--gray-medium);
+        }
+
+        .progress-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--black);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--white);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .employee-card.top-performer .progress-bar {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--green);
+            transition: width 0.5s ease;
+        }
+
+        .progress-fill.excellent { background: var(--green); }
+        .progress-fill.good { background: var(--blue); }
+        .progress-fill.warning { background: var(--orange); }
+
+        /* Sidebar */
+        .sidebar {
+            grid-row: 2 / 4;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* Cutoff Timer */
+        .cutoff-card {
+            text-align: center;
+            background: linear-gradient(135deg, var(--blue) 0%, #0077ed 100%);
+            color: white;
+        }
+
+        .cutoff-card .sidebar-title {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .cutoff-time {
+            font-size: 56px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .cutoff-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Hourly Chart */
+        .hourly-chart {
+            flex: 1;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 160px;
+            padding-top: 20px;
+        }
+
+        .chart-bar-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+
+        .chart-bar {
+            width: 100%;
+            background: var(--blue);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
+            position: relative;
+        }
+
+        .chart-bar.current {
+            background: var(--green);
+        }
+
+        .chart-bar-value {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--black);
+        }
+
+        .chart-bar-label {
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--gray-medium);
+        }
+
+        /* Alerts */
+        .alerts-card {
+            flex: 1;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .alert-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .alert-item.urgent {
+            background: var(--red-light);
+        }
+
+        .alert-item.warning {
+            background: var(--orange-light);
+        }
+
+        .alert-item.info {
+            background: var(--blue-light);
+        }
+
+        .alert-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .alert-item.urgent .alert-icon { background: rgba(255, 59, 48, 0.15); }
+        .alert-item.warning .alert-icon { background: rgba(255, 149, 0, 0.15); }
+        .alert-item.info .alert-icon { background: rgba(0, 113, 227, 0.15); }
+
+        .alert-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .alert-item.urgent .alert-icon svg { stroke: var(--red); }
+        .alert-item.warning .alert-icon svg { stroke: var(--orange); }
+        .alert-item.info .alert-icon svg { stroke: var(--blue); }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .alert-subtitle {
+            font-size: 12px;
+            color: var(--gray-dark);
+        }
+
+        /* Footer */
+        .footer {
+            grid-column: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .footer-stat {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-stat-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gray-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-stat-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--gray-dark);
+        }
+
+        .footer-stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .footer-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .footer-stat-label {
+            font-size: 12px;
+            color: var(--gray-medium);
+        }
+
+        /* Responsive - for smaller displays */
+        @media (max-width: 1400px) {
+            .display-container {
+                padding: 20px;
+                gap: 16px;
+            }
+
+            .employee-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .kpi-value {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .display-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                grid-row: auto;
+                flex-direction: row;
+            }
+
+            .sidebar-card {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="display-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">Dura <span>Fulfilment</span></div>
+                <div class="header-date" id="currentDate">Woensdag 5 februari 2026</div>
+            </div>
+            <div class="header-right">
+                <div class="live-badge">
+                    <div class="live-dot"></div>
+                    <span class="live-text">Live uit Goedgepickt</span>
+                </div>
+                <div class="clock" id="clock">17:38:45</div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- KPI Strip -->
+            <div class="kpi-strip">
+                <div class="kpi-card">
+                    <div class="kpi-value blue">847</div>
+                    <div class="kpi-label">Orders vandaag</div>
+                    <div class="kpi-sublabel">Target: 900</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value green">798</div>
+                    <div class="kpi-label">Afgerond</div>
+                    <div class="kpi-sublabel">94% voltooid</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value orange">49</div>
+                    <div class="kpi-label">Nog te picken</div>
+                    <div class="kpi-sublabel">~35 minuten werk</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" id="pickRate">127</div>
+                    <div class="kpi-label">Orders/uur</div>
+                    <div class="kpi-sublabel">Team totaal</div>
+                </div>
+            </div>
+
+            <!-- Team Performance -->
+            <div class="team-card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Team Performance</div>
+                        <div class="card-subtitle">Verwerkte orders per medewerker vandaag</div>
+                    </div>
+                    <div class="wms-badge">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Goedgepickt sync
+                    </div>
+                </div>
+
+                <div class="employee-grid">
+                    <!-- Top Performer -->
+                    <div class="employee-card top-performer">
+                        <div class="employee-header">
+                            <div class="employee-avatar avatar-1">JV</div>
+                            <div class="employee-info">
+                                <div class="employee-name">Jasper Vermeer</div>
+                                <div class="employee-role">Senior Picker</div>
+                            </div>
+                        </div>
+                        <div class="employee-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">156</div>
+                                <div class="stat-label">Orders</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">24</div>
+                                <div class="stat-label">Per uur</div>
+                            </div>
+                        </div>
+                        <div class="employee-progress">
+                            <div class="progress-header">
+                                <span class="progress-label">Dagdoel (130)</span>
+                                <span class="progress-value">120%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill excellent" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-avatar avatar-2">SK</div>
+                            <div class="employee-info">
+                                <div class="employee-name">Sophie Kuiper</div>
+                                <div class="employee-role">Picker</div>
+                            </div>
+                        </div>
+                        <div class="employee-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">142</div>
+                                <div class="stat-label">Orders</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">22</div>
+                                <div class="stat-label">Per uur</div>
+                            </div>
+                        </div>
+                        <div class="employee-progress">
+                            <div class="progress-header">
+                                <span class="progress-label">Dagdoel (130)</span>
+                                <span class="progress-value">109%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill excellent" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-avatar avatar-3">MB</div>
+                            <div class="employee-info">
+                                <div class="employee-name">Milan Bakker</div>
+                                <div class="employee-role">Picker</div>
+                            </div>
+                        </div>
+                        <div class="employee-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">138</div>
+                                <div class="stat-label">Orders</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">21</div>
+                                <div class="stat-label">Per uur</div>
+                            </div>
+                        </div>
+                        <div class="employee-progress">
+                            <div class="progress-header">
+                                <span class="progress-label">Dagdoel (130)</span>
+                                <span class="progress-value">106%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill excellent" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-avatar avatar-4">LJ</div>
+                            <div class="employee-info">
+                                <div class="employee-name">Lisa Jansen</div>
+                                <div class="employee-role">Picker</div>
+                            </div>
+                        </div>
+                        <div class="employee-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">128</div>
+                                <div class="stat-label">Orders</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">20</div>
+                                <div class="stat-label">Per uur</div>
+                            </div>
+                        </div>
+                        <div class="employee-progress">
+                            <div class="progress-header">
+                                <span class="progress-label">Dagdoel (130)</span>
+                                <span class="progress-value">98%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill good" style="width: 98%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-avatar avatar-5">TH</div>
+                            <div class="employee-info">
+                                <div class="employee-name">Thomas Hendriks</div>
+                                <div class="employee-role">Picker</div>
+                            </div>
+                        </div>
+                        <div class="employee-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">119</div>
+                                <div class="stat-label">Orders</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">18</div>
+                                <div class="stat-label">Per uur</div>
+                            </div>
+                        </div>
+                        <div class="employee-progress">
+                            <div class="progress-header">
+                                <span class="progress-label">Dagdoel (130)</span>
+                                <span class="progress-value">92%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill good" style="width: 92%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-avatar avatar-6">EV</div>
+                            <div class="employee-info">
+                                <div class="employee-name">Emma de Vries</div>
+                                <div class="employee-role">Starter</div>
+                            </div>
+                        </div>
+                        <div class="employee-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">115</div>
+                                <div class="stat-label">Orders</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">18</div>
+                                <div class="stat-label">Per uur</div>
+                            </div>
+                        </div>
+                        <div class="employee-progress">
+                            <div class="progress-header">
+                                <span class="progress-label">Dagdoel (110)</span>
+                                <span class="progress-value">105%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill excellent" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Cutoff Timer -->
+            <div class="sidebar-card cutoff-card">
+                <div class="sidebar-title">Tijd tot cut-off</div>
+                <div class="cutoff-time" id="cutoffTimer">06:21:15</div>
+                <div class="cutoff-label">Cut-off: 23:59</div>
+            </div>
+
+            <!-- Hourly Performance -->
+            <div class="sidebar-card hourly-chart">
+                <div class="sidebar-title">Orders per uur</div>
+                <div class="chart-bars">
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="height: 45%">
+                            <span class="chart-bar-value">58</span>
+                        </div>
+                        <span class="chart-bar-label">09u</span>
+                    </div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="height: 78%">
+                            <span class="chart-bar-value">98</span>
+                        </div>
+                        <span class="chart-bar-label">10u</span>
+                    </div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="height: 95%">
+                            <span class="chart-bar-value">121</span>
+                        </div>
+                        <span class="chart-bar-label">11u</span>
+                    </div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="height: 88%">
+                            <span class="chart-bar-value">112</span>
+                        </div>
+                        <span class="chart-bar-label">12u</span>
+                    </div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="height: 55%">
+                            <span class="chart-bar-value">70</span>
+                        </div>
+                        <span class="chart-bar-label">13u</span>
+                    </div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="height: 100%">
+                            <span class="chart-bar-value">127</span>
+                        </div>
+                        <span class="chart-bar-label">14u</span>
+                    </div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="height: 92%">
+                            <span class="chart-bar-value">118</span>
+                        </div>
+                        <span class="chart-bar-label">15u</span>
+                    </div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="height: 85%">
+                            <span class="chart-bar-value">108</span>
+                        </div>
+                        <span class="chart-bar-label">16u</span>
+                    </div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar current" style="height: 60%">
+                            <span class="chart-bar-value">86</span>
+                        </div>
+                        <span class="chart-bar-label">17u</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts -->
+            <div class="sidebar-card alerts-card">
+                <div class="sidebar-title">Alerts</div>
+                <div class="alert-item warning">
+                    <div class="alert-icon">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                        </svg>
+                    </div>
+                    <div class="alert-content">
+                        <div class="alert-title">Voorraad laag</div>
+                        <div class="alert-subtitle">SKU BLK-HOOD-M: 3 stuks</div>
+                    </div>
+                </div>
+                <div class="alert-item info">
+                    <div class="alert-icon">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                        </svg>
+                    </div>
+                    <div class="alert-content">
+                        <div class="alert-title">PostNL ophalen</div>
+                        <div class="alert-subtitle">Over 2 uur 15 min</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-stat">
+                <div class="footer-stat-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="footer-stat-info">
+                    <span class="footer-stat-value">99.2%</span>
+                    <span class="footer-stat-label">Pick accuracy</span>
+                </div>
+            </div>
+            <div class="footer-stat">
+                <div class="footer-stat-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="footer-stat-info">
+                    <span class="footer-stat-value">3.8 min</span>
+                    <span class="footer-stat-label">Gem. pick tijd</span>
+                </div>
+            </div>
+            <div class="footer-stat">
+                <div class="footer-stat-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                    </svg>
+                </div>
+                <div class="footer-stat-info">
+                    <span class="footer-stat-value">2,847</span>
+                    <span class="footer-stat-label">Items gepickt</span>
+                </div>
+            </div>
+            <div class="footer-stat">
+                <div class="footer-stat-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                    </svg>
+                </div>
+                <div class="footer-stat-info">
+                    <span class="footer-stat-value">0</span>
+                    <span class="footer-stat-label">Mispicks vandaag</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Live clock
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            // Update cutoff timer (time until 23:59)
+            const cutoff = new Date(now);
+            cutoff.setHours(23, 59, 0, 0);
+            const diff = cutoff - now;
+            
+            if (diff > 0) {
+                const h = Math.floor(diff / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                document.getElementById('cutoffTimer').textContent = 
+                    `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            }
+        }
+        
+        // Update date
+        function updateDate() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const date = new Date().toLocaleDateString('nl-NL', options);
+            document.getElementById('currentDate').textContent = date.charAt(0).toUpperCase() + date.slice(1);
+        }
+        
+        // Simulate live pick rate changes
+        function simulatePickRate() {
+            const baseRate = 127;
+            const variation = Math.floor(Math.random() * 10) - 5;
+            const rate = baseRate + variation;
+            document.getElementById('pickRate').textContent = rate;
+            
+            // Color based on rate
+            const el = document.getElementById('pickRate');
+            if (rate >= 125) {
+                el.className = 'kpi-value green';
+            } else if (rate >= 100) {
+                el.className = 'kpi-value blue';
+            } else {
+                el.className = 'kpi-value orange';
+            }
+        }
+        
+        updateClock();
+        updateDate();
+        setInterval(updateClock, 1000);
+        setInterval(simulatePickRate, 5000);
+    </script>
+</body>
+</html>

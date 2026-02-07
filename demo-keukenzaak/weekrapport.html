@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekrapport - De Keukenloods</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        .header .subtitle {
+            color: #8892b0;
+            font-size: 14px;
+        }
+        .header .date {
+            color: #64ffda;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .card-large {
+            grid-column: span 2;
+        }
+        .card-full {
+            grid-column: span 4;
+        }
+        .metric-card {
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #64ffda;
+        }
+        .metric-value.warning {
+            color: #ffd93d;
+        }
+        .metric-value.danger {
+            color: #ff6b6b;
+        }
+        .metric-label {
+            color: #8892b0;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .metric-change {
+            font-size: 12px;
+            margin-top: 8px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .metric-change.positive {
+            background: rgba(100, 255, 218, 0.2);
+            color: #64ffda;
+        }
+        .metric-change.negative {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #ccd6f6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .funnel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .funnel-step {
+            text-align: center;
+            flex: 1;
+        }
+        .funnel-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #64ffda;
+        }
+        .funnel-label {
+            color: #8892b0;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .funnel-arrow {
+            color: #8892b0;
+            font-size: 24px;
+        }
+        .funnel-conversion {
+            font-size: 11px;
+            color: #64ffda;
+            margin-top: 3px;
+        }
+        .progress-bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 8px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #64ffda, #00bfa5);
+        }
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        .list-item-label {
+            color: #ccd6f6;
+        }
+        .list-item-value {
+            color: #64ffda;
+            font-weight: 600;
+        }
+        .alert-box {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        .alert-box.warning {
+            background: rgba(255, 217, 61, 0.1);
+            border-color: rgba(255, 217, 61, 0.3);
+        }
+        .alert-title {
+            color: #ff6b6b;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .alert-box.warning .alert-title {
+            color: #ffd93d;
+        }
+        .alert-text {
+            color: #ccd6f6;
+            font-size: 14px;
+        }
+        .planning-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .planning-day {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        .planning-day-name {
+            font-size: 12px;
+            color: #8892b0;
+            margin-bottom: 5px;
+        }
+        .planning-day-count {
+            font-size: 24px;
+            font-weight: 700;
+            color: #64ffda;
+        }
+        .planning-day-label {
+            font-size: 10px;
+            color: #8892b0;
+        }
+        .planning-day.busy {
+            border: 1px solid #ffd93d;
+        }
+        .planning-day.busy .planning-day-count {
+            color: #ffd93d;
+        }
+        .ai-insight {
+            background: linear-gradient(135deg, rgba(100, 255, 218, 0.1), rgba(0, 191, 165, 0.05));
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        .ai-insight-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #64ffda;
+            font-weight: 600;
+        }
+        .ai-insight-text {
+            color: #ccd6f6;
+            line-height: 1.6;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #8892b0;
+            font-size: 12px;
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .card-large, .card-full {
+                grid-column: span 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 De Keukenloods</h1>
+            <div class="subtitle">Weekrapport</div>
+            <div class="date">Week 5 • 27 jan - 2 feb 2026</div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid">
+            <div class="card metric-card">
+                <div class="metric-value">€89.400</div>
+                <div class="metric-label">Omzet deze week</div>
+                <div class="metric-change positive">↑ 12% vs vorige week</div>
+            </div>
+            <div class="card metric-card">
+                <div class="metric-value">6</div>
+                <div class="metric-label">Keukens verkocht</div>
+                <div class="metric-change positive">↑ 2 meer dan vorige week</div>
+            </div>
+            <div class="card metric-card">
+                <div class="metric-value">€14.900</div>
+                <div class="metric-label">Gem. orderwaarde</div>
+                <div class="metric-change negative">↓ 5% vs vorige week</div>
+            </div>
+            <div class="card metric-card">
+                <div class="metric-value warning">€23.500</div>
+                <div class="metric-label">Openstaand (debiteuren)</div>
+                <div class="metric-change">3 facturen &gt;30 dagen</div>
+            </div>
+        </div>
+
+        <!-- Sales Funnel -->
+        <div class="grid">
+            <div class="card card-full">
+                <div class="section-title">📊 Sales Funnel Deze Week</div>
+                <div class="funnel">
+                    <div class="funnel-step">
+                        <div class="funnel-number">18</div>
+                        <div class="funnel-label">Showroom bezoekers</div>
+                    </div>
+                    <div class="funnel-arrow">→</div>
+                    <div class="funnel-step">
+                        <div class="funnel-number">12</div>
+                        <div class="funnel-label">Offertes verstuurd</div>
+                        <div class="funnel-conversion">67% conversie</div>
+                    </div>
+                    <div class="funnel-arrow">→</div>
+                    <div class="funnel-step">
+                        <div class="funnel-number">6</div>
+                        <div class="funnel-label">Orders gesloten</div>
+                        <div class="funnel-conversion">50% conversie</div>
+                    </div>
+                    <div class="funnel-arrow">→</div>
+                    <div class="funnel-step">
+                        <div class="funnel-number">€89.400</div>
+                        <div class="funnel-label">Omzet</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pipeline & Planning -->
+        <div class="grid">
+            <div class="card card-large">
+                <div class="section-title">💰 Offerte Pipeline</div>
+                <div class="list-item">
+                    <span class="list-item-label">Openstaande offertes</span>
+                    <span class="list-item-value">14 stuks</span>
+                </div>
+                <div class="list-item">
+                    <span class="list-item-label">Totale pipeline waarde</span>
+                    <span class="list-item-value">€186.000</span>
+                </div>
+                <div class="list-item">
+                    <span class="list-item-label">Gem. ouderdom offertes</span>
+                    <span class="list-item-value">8 dagen</span>
+                </div>
+                <div class="list-item">
+                    <span class="list-item-label">Verwachte conversie (50%)</span>
+                    <span class="list-item-value">€93.000</span>
+                </div>
+                
+                <div class="alert-box warning">
+                    <div class="alert-title">⚠️ Actie nodig</div>
+                    <div class="alert-text">3 offertes zijn &gt;14 dagen oud zonder reactie. Follow-up aanbevolen voor: Fam. Jansen, Fam. de Vries, Bakkerij 't Stoepje.</div>
+                </div>
+            </div>
+
+            <div class="card card-large">
+                <div class="section-title">🔧 Montage Planning (komende week)</div>
+                <div class="planning-grid">
+                    <div class="planning-day">
+                        <div class="planning-day-name">Ma</div>
+                        <div class="planning-day-count">2</div>
+                        <div class="planning-day-label">montages</div>
+                    </div>
+                    <div class="planning-day busy">
+                        <div class="planning-day-name">Di</div>
+                        <div class="planning-day-count">3</div>
+                        <div class="planning-day-label">montages</div>
+                    </div>
+                    <div class="planning-day">
+                        <div class="planning-day-name">Wo</div>
+                        <div class="planning-day-count">2</div>
+                        <div class="planning-day-label">montages</div>
+                    </div>
+                    <div class="planning-day busy">
+                        <div class="planning-day-name">Do</div>
+                        <div class="planning-day-count">3</div>
+                        <div class="planning-day-label">montages</div>
+                    </div>
+                    <div class="planning-day">
+                        <div class="planning-day-name">Vr</div>
+                        <div class="planning-day-count">2</div>
+                        <div class="planning-day-label">montages</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <div class="list-item">
+                        <span class="list-item-label">Eigen monteurs bezet</span>
+                        <span class="list-item-value">85%</span>
+                    </div>
+                    <div class="list-item">
+                        <span class="list-item-label">Flex monteurs nodig</span>
+                        <span class="list-item-value">2 dagen</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Debiteuren & Alerts -->
+        <div class="grid">
+            <div class="card card-large">
+                <div class="section-title">🧾 Debiteuren Overzicht</div>
+                <div class="list-item">
+                    <span class="list-item-label">0-14 dagen</span>
+                    <span class="list-item-value" style="color: #64ffda;">€12.300 (2 facturen)</span>
+                </div>
+                <div class="list-item">
+                    <span class="list-item-label">15-30 dagen</span>
+                    <span class="list-item-value" style="color: #ffd93d;">€6.700 (1 factuur)</span>
+                </div>
+                <div class="list-item">
+                    <span class="list-item-label">31-60 dagen</span>
+                    <span class="list-item-value" style="color: #ff6b6b;">€4.500 (2 facturen)</span>
+                </div>
+                <div class="list-item">
+                    <span class="list-item-label">&gt;60 dagen</span>
+                    <span class="list-item-value" style="color: #ff6b6b;">€0</span>
+                </div>
+                
+                <div class="alert-box">
+                    <div class="alert-title">🚨 Direct actie</div>
+                    <div class="alert-text">Fam. Pietersen (€2.800) en Dhr. Klaassen (€1.700) staan &gt;30 dagen open. Bellen of incasso starten?</div>
+                </div>
+            </div>
+
+            <div class="card card-large">
+                <div class="section-title">📈 Maanddoel Voortgang (Februari)</div>
+                <div style="margin: 20px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span class="list-item-label">Keukens verkocht</span>
+                        <span class="list-item-value">6 / 20</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%;"></div>
+                    </div>
+                </div>
+                <div style="margin: 20px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span class="list-item-label">Omzet</span>
+                        <span class="list-item-value">€89.400 / €300.000</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%;"></div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: rgba(100, 255, 218, 0.1); border-radius: 8px;">
+                    <span style="color: #64ffda;">📅 Week 1 van 4</span>
+                    <span style="color: #8892b0; margin-left: 10px;">Op schema ✓</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Insights -->
+        <div class="grid">
+            <div class="card card-full">
+                <div class="section-title">🤖 AI Inzichten</div>
+                <div class="ai-insight">
+                    <div class="ai-insight-header">
+                        <span>💡</span>
+                        <span>Automatisch gegenereerde analyse</span>
+                    </div>
+                    <div class="ai-insight-text">
+                        <p><strong>Goed nieuws:</strong> De conversie van showroom naar offerte (67%) ligt boven jullie gemiddelde van 60%. Het verkoopteam doet goed werk in de showroom.</p>
+                        <br>
+                        <p><strong>Aandachtspunt:</strong> De gemiddelde orderwaarde is 5% gedaald. Dit kan komen door meer instapmodellen of kortingen. Check of de marge nog gezond is.</p>
+                        <br>
+                        <p><strong>Actie aanbevolen:</strong> 3 offertes zijn "koud" aan het worden (&gt;14 dagen). Een belletje deze week kan €47.000 aan pipeline redden. Prioriteer: Fam. Jansen (€18.500 offerte).</p>
+                        <br>
+                        <p><strong>Planning tip:</strong> Dinsdag en donderdag zijn vol. Als er nog orders binnenkomen, plan flex-monteurs alvast in voor volgende week.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Gegenereerd op maandag 3 feb 2026 om 07:00 • Powered by AI<br>
+            <span style="color: #64ffda;">Vragen? Neem contact op met Louis — jouw AI-partner</span>
+        </div>
+    </div>
+</body>
+</html>

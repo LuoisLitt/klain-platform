@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders — Dura Fulfilment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="index.html" class="logo">Dura <span>Fulfilment</span></a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="orders.html" class="active">Orders</a></li>
+                    <li><a href="voorraad.html">Voorraad</a></li>
+                    <li><a href="verzendingen.html">Verzendingen</a></li>
+                    <li><a href="rapportages.html">Rapportages</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <a href="warehouse.html" class="btn-warehouse" title="Warehouse Display">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
+                    </svg>
+                    Warehouse Display
+                </a>
+                <div class="nav-user">
+                    <div class="user-avatar">DF</div>
+                    <span class="user-name">Demo Account</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Header -->
+        <header class="page-header">
+            <div class="header-title">
+                <h1>Orders</h1>
+                <p>Beheer en volg alle orders uit Goedgepickt</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="exportOrders()">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    Exporteer
+                </button>
+                <button class="btn btn-primary">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                    </svg>
+                    Sync Goedgepickt
+                </button>
+            </div>
+        </header>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+            <div class="search-box">
+                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+                <input type="text" placeholder="Zoek op order ID, klant of product..." id="searchInput" onkeyup="filterOrders()">
+            </div>
+            <div class="filter-group">
+                <select id="statusFilter" onchange="filterOrders()">
+                    <option value="">Alle statussen</option>
+                    <option value="pending">Wacht op verwerking</option>
+                    <option value="picking">In picking</option>
+                    <option value="packed">Ingepakt</option>
+                    <option value="shipped">Verzonden</option>
+                    <option value="delivered">Afgeleverd</option>
+                </select>
+                <select id="carrierFilter" onchange="filterOrders()">
+                    <option value="">Alle carriers</option>
+                    <option value="postnl">PostNL</option>
+                    <option value="dhl">DHL</option>
+                    <option value="dpd">DPD</option>
+                </select>
+                <input type="date" id="dateFilter" onchange="filterOrders()">
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <span class="stat-value" id="totalOrders">156</span>
+                <span class="stat-label">Orders vandaag</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value orange" id="pendingOrders">23</span>
+                <span class="stat-label">Wacht op verwerking</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value blue" id="pickingOrders">12</span>
+                <span class="stat-label">In picking</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value green" id="shippedOrders">121</span>
+                <span class="stat-label">Verzonden</span>
+            </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="card">
+            <table class="data-table" id="ordersTable">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Klant</th>
+                        <th>Items</th>
+                        <th>Status</th>
+                        <th>Carrier</th>
+                        <th>Aangemaakt</th>
+                        <th>Acties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-status="pending" data-carrier="dhl" class="urgent-row" style="background: rgba(255,59,48,0.05);">
+                        <td><span class="order-id">#DF-24893</span><span class="priority-badge spoed">SPOED</span></td>
+                        <td>
+                            <div class="customer-info">
+                                <strong>Medical Supply BV</strong>
+                                <span>Groningen</span>
+                            </div>
+                        </td>
+                        <td>2 items</td>
+                        <td><span class="status-badge urgent"><span class="status-dot"></span>SPOED</span></td>
+                        <td><span class="carrier-badge dhl">DHL Express</span></td>
+                        <td>Vandaag, 15:01</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewOrder('DF-24893')" title="Bekijk details">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-status="pending" data-carrier="postnl" style="background: rgba(255,149,0,0.05);">
+                        <td><span class="order-id">#DF-24892</span><span class="priority-badge express">EXPRESS</span></td>
+                        <td>
+                            <div class="customer-info">
+                                <strong>Tech Direct</strong>
+                                <span>Eindhoven</span>
+                            </div>
+                        </td>
+                        <td>1 item</td>
+                        <td><span class="status-badge pending"><span class="status-dot"></span>Wacht</span></td>
+                        <td><span class="carrier-badge postnl">PostNL</span></td>
+                        <td>Vandaag, 14:55</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewOrder('DF-24892')" title="Bekijk details">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-status="shipped" data-carrier="postnl">
+                        <td><span class="order-id">#DF-24891</span></td>
+                        <td>
+                            <div class="customer-info">
+                                <strong>Webshop Trendy</strong>
+                                <span>Amsterdam</span>
+                            </div>
+                        </td>
+                        <td>3 items</td>
+                        <td><span class="status-badge shipped"><span class="status-dot"></span>Verzonden</span></td>
+                        <td><span class="carrier-badge postnl">PostNL</span></td>
+                        <td>Vandaag, 14:32</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewOrder('DF-24891')" title="Bekijk details">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-status="delivered" data-carrier="dhl">
+                        <td><span class="order-id">#DF-24890</span></td>
+                        <td>
+                            <div class="customer-info">
+                                <strong>Fashion Forward</strong>
+                                <span>Rotterdam</span>
+                            </div>
+                        </td>
+                        <td>1 item</td>
+                        <td><span class="status-badge delivered"><span class="status-dot"></span>Afgeleverd</span></td>
+                        <td><span class="carrier-badge dhl">DHL</span></td>
+                        <td>Vandaag, 13:15</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewOrder('DF-24890')" title="Bekijk details">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-status="picking" data-carrier="postnl">
+                        <td><span class="order-id">#DF-24889</span></td>
+                        <td>
+                            <div class="customer-info">
+                                <strong>Style Store NL</strong>
+                                <span>Utrecht</span>
+                            </div>
+                        </td>
+                        <td>5 items</td>
+                        <td><span class="status-badge picking"><span class="status-dot"></span>In picking</span></td>
+                        <td><span class="carrier-badge postnl">PostNL</span></td>
+                        <td>Vandaag, 12:48</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewOrder('DF-24889')" title="Bekijk details">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-status="shipped" data-carrier="dpd">
+                        <td><span class="order-id">#DF-24888</span></td>
+                        <td>
+                            <div class="customer-info">
+                                <strong>Gadget Galaxy</strong>
+                                <span>Den Haag</span>
+                            </div>
+                        </td>
+                        <td>2 items</td>
+                        <td><span class="status-badge shipped"><span class="status-dot"></span>Verzonden</span></td>
+                        <td><span class="carrier-badge dpd">DPD</span></td>
+                        <td>Vandaag, 11:22</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewOrder('DF-24888')" title="Bekijk details">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-status="pending" data-carrier="">
+                        <td><span class="order-id">#DF-24887</span></td>
+                        <td>
+                            <div class="customer-info">
+                                <strong>Home Essentials</strong>
+                                <span>Eindhoven</span>
+                            </div>
+                        </td>
+                        <td>4 items</td>
+                        <td><span class="status-badge pending"><span class="status-dot"></span>Wacht op voorraad</span></td>
+                        <td>—</td>
+                        <td>Vandaag, 10:55</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewOrder('DF-24887')" title="Bekijk details">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-status="packed" data-carrier="postnl">
+                        <td><span class="order-id">#DF-24886</span></td>
+                        <td>
+                            <div class="customer-info">
+                                <strong>Tech Solutions BV</strong>
+                                <span>Groningen</span>
+                            </div>
+                        </td>
+                        <td>8 items</td>
+                        <td><span class="status-badge packed"><span class="status-dot"></span>Ingepakt</span></td>
+                        <td><span class="carrier-badge postnl">PostNL</span></td>
+                        <td>Vandaag, 10:12</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewOrder('DF-24886')" title="Bekijk details">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-status="shipped" data-carrier="dhl">
+                        <td><span class="order-id">#DF-24885</span></td>
+                        <td>
+                            <div class="customer-info">
+                                <strong>Urban Lifestyle</strong>
+                                <span>Tilburg</span>
+                            </div>
+                        </td>
+                        <td>2 items</td>
+                        <td><span class="status-badge shipped"><span class="status-dot"></span>Verzonden</span></td>
+                        <td><span class="carrier-badge dhl">DHL</span></td>
+                        <td>Vandaag, 09:45</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewOrder('DF-24885')" title="Bekijk details">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr data-status="pending" data-carrier="">
+                        <td><span class="order-id">#DF-24884</span></td>
+                        <td>
+                            <div class="customer-info">
+                                <strong>Outdoor Adventures</strong>
+                                <span>Maastricht</span>
+                            </div>
+                        </td>
+                        <td>6 items</td>
+                        <td><span class="status-badge pending"><span class="status-dot"></span>Wacht op verwerking</span></td>
+                        <td>—</td>
+                        <td>Vandaag, 09:18</td>
+                        <td>
+                            <button class="btn-icon" onclick="viewOrder('DF-24884')" title="Bekijk details">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Order Detail Modal -->
+    <div class="modal-overlay" id="orderModal" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Order <span id="modalOrderId">#DF-24891</span></h2>
+                <button class="btn-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="order-detail-grid">
+                    <div class="detail-section">
+                        <h3>Klantgegevens</h3>
+                        <div class="detail-row">
+                            <span class="detail-label">Bedrijf</span>
+                            <span class="detail-value" id="modalCustomer">Webshop Trendy</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Adres</span>
+                            <span class="detail-value">Kalverstraat 123<br>1012 PA Amsterdam</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Contact</span>
+                            <span class="detail-value">info@webshoptrendy.nl</span>
+                        </div>
+                    </div>
+                    <div class="detail-section">
+                        <h3>Verzending</h3>
+                        <div class="detail-row">
+                            <span class="detail-label">Carrier</span>
+                            <span class="detail-value"><span class="carrier-badge postnl">PostNL</span></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Track & Trace</span>
+                            <span class="detail-value"><a href="#" class="link">3SYZTR123456789</a></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Verwachte levering</span>
+                            <span class="detail-value">Morgen, 12:00 - 14:00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section" style="margin-top: 24px;">
+                    <h3>Orderregels</h3>
+                    <table class="detail-table">
+                        <thead>
+                            <tr>
+                                <th>SKU</th>
+                                <th>Product</th>
+                                <th>Aantal</th>
+                                <th>Locatie</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>BLK-HOOD-M</code></td>
+                                <td>Zwarte Hoodie - Maat M</td>
+                                <td>1</td>
+                                <td>A-12-3</td>
+                            </tr>
+                            <tr>
+                                <td><code>WHT-TEE-L</code></td>
+                                <td>Wit T-Shirt - Maat L</td>
+                                <td>2</td>
+                                <td>B-04-1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="detail-section" style="margin-top: 24px;">
+                    <h3>Timeline</h3>
+                    <div class="timeline">
+                        <div class="timeline-item completed">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <strong>Order ontvangen</strong>
+                                <span>Vandaag, 14:32</span>
+                            </div>
+                        </div>
+                        <div class="timeline-item completed">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <strong>Picking gestart</strong>
+                                <span>Vandaag, 14:45 — Jasper V.</span>
+                            </div>
+                        </div>
+                        <div class="timeline-item completed">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <strong>Ingepakt</strong>
+                                <span>Vandaag, 14:52</span>
+                            </div>
+                        </div>
+                        <div class="timeline-item completed">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <strong>Verzonden</strong>
+                                <span>Vandaag, 17:30 — PostNL</span>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <strong>Afgeleverd</strong>
+                                <span>Verwacht morgen</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterOrders() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('statusFilter').value;
+            const carrier = document.getElementById('carrierFilter').value;
+            const rows = document.querySelectorAll('#ordersTable tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const rowStatus = row.dataset.status;
+                const rowCarrier = row.dataset.carrier;
+                
+                const matchSearch = text.includes(search);
+                const matchStatus = !status || rowStatus === status;
+                const matchCarrier = !carrier || rowCarrier === carrier;
+                
+                row.style.display = matchSearch && matchStatus && matchCarrier ? '' : 'none';
+            });
+        }
+
+        function viewOrder(orderId) {
+            document.getElementById('modalOrderId').textContent = '#' + orderId;
+            document.getElementById('orderModal').classList.add('active');
+        }
+
+        function closeModal(event) {
+            if (!event || event.target.classList.contains('modal-overlay')) {
+                document.getElementById('orderModal').classList.remove('active');
+            }
+        }
+
+        function exportOrders() {
+            alert('Export functie: In productie zou dit een CSV/Excel export genereren vanuit Goedgepickt.');
+        }
+
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>

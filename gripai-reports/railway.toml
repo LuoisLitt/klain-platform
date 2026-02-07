@@ -1,0 +1,11 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "python src/main.py"
+restartPolicyType = "on_failure"
+
+# Cron: elke vrijdag om 17:00 CET
+[[cron]]
+schedule = "0 16 * * 5"  # 16:00 UTC = 17:00 CET
+command = "python src/main.py --run-reports"

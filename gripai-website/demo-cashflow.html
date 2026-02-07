@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashflow Demo | klain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0f1117;
+            --gray-dark: #6b7084;
+            --gray-medium: #d1d5e0;
+            --gray-light: #f7f8fa;
+            --white: #ffffff;
+            --blue: #2563eb;
+            --green: #16a34a;
+            --orange: #ea580c;
+            --red: #dc2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; height: 64px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: saturate(180%) blur(20px);
+            z-index: 1000; border-bottom: 1px solid var(--gray-medium);
+        }
+        .nav-inner {
+            max-width: 1400px; margin: 0 auto; padding: 0 24px;
+            height: 100%; display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 26px; font-weight: 700; color: var(--black);
+            text-decoration: none;
+        }
+        .nav-cta {
+            background: var(--black); color: var(--white); padding: 10px 22px;
+            border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 500;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-light);
+            min-height: 100vh;
+            color: var(--black);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .demo-banner {
+            background: var(--blue);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 64px;
+        }
+
+        .demo-banner a {
+            color: white;
+            margin-left: 12px;
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--gray-medium);
+        }
+
+        .page-title {
+            font-size: 16px;
+            color: var(--gray-dark);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--black);
+            border: 1px solid var(--gray-medium);
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: white;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-card.highlight {
+            background: var(--black);
+            color: white;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray-dark);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card.highlight .stat-label {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--black);
+        }
+
+        .stat-card.highlight .stat-value {
+            color: white;
+        }
+
+        .stat-value.success { color: var(--green); }
+        .stat-value.warning { color: var(--orange); }
+        .stat-value.danger { color: var(--red); }
+
+        .stat-sub {
+            font-size: 12px;
+            margin-top: 4px;
+            color: var(--gray-dark);
+        }
+
+        .stat-card.highlight .stat-sub {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .stat-sub.positive { color: var(--green); }
+        .stat-sub.negative { color: var(--red); }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
+        }
+
+        .card:last-child {
+            margin-bottom: 0;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--gray-medium);
+            background: var(--white);
+            cursor: pointer;
+        }
+
+        .btn-small.active {
+            background: var(--black);
+            color: white;
+            border-color: var(--black);
+        }
+
+        /* Cashflow Chart */
+        .chart-container {
+            position: relative;
+            height: 280px;
+            margin-bottom: 16px;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 220px;
+            padding: 0 10px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .chart-week {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .chart-bar-group {
+            display: flex;
+            gap: 4px;
+            align-items: flex-end;
+            height: 180px;
+        }
+
+        .chart-bar {
+            width: 24px;
+            border-radius: 4px 4px 0 0;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+
+        .chart-bar.income {
+            background: var(--green);
+        }
+
+        .chart-bar.expense {
+            background: var(--red);
+        }
+
+        .chart-bar.net {
+            background: var(--blue);
+        }
+
+        .chart-label {
+            font-size: 11px;
+            color: var(--gray-dark);
+            text-align: center;
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--gray-dark);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        /* Balance Line */
+        .balance-forecast {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .balance-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .balance-row:last-child {
+            border-bottom: none;
+        }
+
+        .balance-week {
+            font-size: 13px;
+            color: var(--gray-dark);
+        }
+
+        .balance-amount {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .balance-amount.danger {
+            color: var(--red);
+        }
+
+        .balance-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--gray-light);
+            border-radius: 4px;
+            margin: 0 16px;
+            overflow: hidden;
+        }
+
+        .balance-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--green);
+            transition: width 0.3s;
+        }
+
+        .balance-fill.warning {
+            background: var(--orange);
+        }
+
+        .balance-fill.danger {
+            background: var(--red);
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .table td {
+            padding: 12px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tr:hover {
+            background: var(--gray-light);
+        }
+
+        .amount-in {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .amount-out {
+            color: var(--red);
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .status-expected {
+            background: rgba(0, 113, 227, 0.1);
+            color: var(--blue);
+        }
+
+        .status-late {
+            background: rgba(255, 149, 0, 0.1);
+            color: var(--orange);
+        }
+
+        .status-due {
+            background: rgba(255, 59, 48, 0.1);
+            color: var(--red);
+        }
+
+        .status-paid {
+            background: rgba(52, 199, 89, 0.1);
+            color: var(--green);
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .alert:last-child {
+            margin-bottom: 0;
+        }
+
+        .alert-warning {
+            background: rgba(255, 149, 0, 0.1);
+            border: 1px solid rgba(255, 149, 0, 0.2);
+        }
+
+        .alert-danger {
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+        }
+
+        .alert-info {
+            background: rgba(0, 113, 227, 0.1);
+            border: 1px solid rgba(0, 113, 227, 0.2);
+        }
+
+        .alert-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .alert-warning .alert-icon {
+            background: var(--orange);
+            color: white;
+        }
+
+        .alert-danger .alert-icon {
+            background: var(--red);
+            color: white;
+        }
+
+        .alert-info .alert-icon {
+            background: var(--blue);
+            color: white;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+
+        .alert-text {
+            font-size: 12px;
+            color: var(--gray-dark);
+        }
+
+        /* What-if Card */
+        .whatif-card {
+            background: var(--gray-light);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .whatif-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .whatif-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .whatif-title {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .whatif-toggle {
+            width: 44px;
+            height: 24px;
+            background: var(--gray-medium);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .whatif-toggle.active {
+            background: var(--blue);
+        }
+
+        .whatif-toggle::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .whatif-toggle.active::after {
+            left: 22px;
+        }
+
+        .whatif-impact {
+            font-size: 12px;
+            color: var(--gray-dark);
+        }
+
+        .whatif-impact strong {
+            color: var(--red);
+        }
+
+        .whatif-impact strong.positive {
+            color: var(--green);
+        }
+
+        /* Runway */
+        .runway-display {
+            text-align: center;
+            padding: 24px;
+        }
+
+        .runway-weeks {
+            font-size: 64px;
+            font-weight: 700;
+            color: var(--green);
+            line-height: 1;
+        }
+
+        .runway-weeks.warning {
+            color: var(--orange);
+        }
+
+        .runway-weeks.danger {
+            color: var(--red);
+        }
+
+        .runway-label {
+            font-size: 14px;
+            color: var(--gray-dark);
+            margin-top: 8px;
+        }
+
+        .runway-detail {
+            font-size: 12px;
+            color: var(--gray-dark);
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        /* Sidebar AI */
+        .ai-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--gray-dark);
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: var(--blue);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 20px 16px;
+            }
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            .card {
+                padding: 16px;
+            }
+            .chart-bar {
+                width: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">klain</a>
+            <a href="index.html#contact" class="nav-cta">Contact</a>
+        </div>
+    </nav>
+
+    <div class="demo-banner">
+        Dit is een demonstratie van klain's cashflow functionaliteit
+        <a href="index.html">Terug naar klain</a>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">klain</div>
+                <div class="logo-divider"></div>
+                <div class="page-title">Cashflow</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary">Exporteren</button>
+                <button class="btn btn-primary">Scenario opslaan</button>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card highlight">
+                <div class="stat-label">Huidige bankstand</div>
+                <div class="stat-value">€47.250</div>
+                <div class="stat-sub">Bijgewerkt: vandaag 09:00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Verwacht eind maand</div>
+                <div class="stat-value success">€52.800</div>
+                <div class="stat-sub positive">+€5.550 t.o.v. nu</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Nog te ontvangen</div>
+                <div class="stat-value">€38.400</div>
+                <div class="stat-sub">6 openstaande facturen</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Nog te betalen</div>
+                <div class="stat-value">€21.650</div>
+                <div class="stat-sub">8 facturen + vaste lasten</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Cashflow Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Cashflow forecast</div>
+                        <div class="card-actions">
+                            <button class="btn-small active">8 weken</button>
+                            <button class="btn-small">3 maanden</button>
+                            <button class="btn-small">6 maanden</button>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-bars">
+                            <div class="chart-week">
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar income" style="height: 120px;" title="Inkomend: €18.500"></div>
+                                    <div class="chart-bar expense" style="height: 80px;" title="Uitgaand: €12.200"></div>
+                                </div>
+                                <div class="chart-label">Week 6<br><small>Nu</small></div>
+                            </div>
+                            <div class="chart-week">
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar income" style="height: 90px;" title="Inkomend: €14.200"></div>
+                                    <div class="chart-bar expense" style="height: 100px;" title="Uitgaand: €15.800"></div>
+                                </div>
+                                <div class="chart-label">Week 7</div>
+                            </div>
+                            <div class="chart-week">
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar income" style="height: 140px;" title="Inkomend: €22.000"></div>
+                                    <div class="chart-bar expense" style="height: 70px;" title="Uitgaand: €10.500"></div>
+                                </div>
+                                <div class="chart-label">Week 8</div>
+                            </div>
+                            <div class="chart-week">
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar income" style="height: 60px;" title="Inkomend: €8.500"></div>
+                                    <div class="chart-bar expense" style="height: 110px;" title="Uitgaand: €16.900"></div>
+                                </div>
+                                <div class="chart-label">Week 9</div>
+                            </div>
+                            <div class="chart-week">
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar income" style="height: 100px;" title="Inkomend: €15.500"></div>
+                                    <div class="chart-bar expense" style="height: 85px;" title="Uitgaand: €13.200"></div>
+                                </div>
+                                <div class="chart-label">Week 10</div>
+                            </div>
+                            <div class="chart-week">
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar income" style="height: 75px;" title="Inkomend: €11.200"></div>
+                                    <div class="chart-bar expense" style="height: 95px;" title="Uitgaand: €14.500"></div>
+                                </div>
+                                <div class="chart-label">Week 11</div>
+                            </div>
+                            <div class="chart-week">
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar income" style="height: 130px;" title="Inkomend: €20.000"></div>
+                                    <div class="chart-bar expense" style="height: 75px;" title="Uitgaand: €11.400"></div>
+                                </div>
+                                <div class="chart-label">Week 12</div>
+                            </div>
+                            <div class="chart-week">
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar income" style="height: 85px;" title="Inkomend: €12.800"></div>
+                                    <div class="chart-bar expense" style="height: 90px;" title="Uitgaand: €13.900"></div>
+                                </div>
+                                <div class="chart-label">Week 13</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: var(--green);"></div>
+                            <span>Inkomend</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: var(--red);"></div>
+                            <span>Uitgaand</span>
+                        </div>
+                    </div>
+
+                    <div class="balance-forecast">
+                        <div class="card-title" style="margin-bottom: 16px; font-size: 14px;">Verwachte bankstand</div>
+                        <div class="balance-row">
+                            <span class="balance-week">Week 6 (nu)</span>
+                            <div class="balance-bar"><div class="balance-fill" style="width: 65%;"></div></div>
+                            <span class="balance-amount">€47.250</span>
+                        </div>
+                        <div class="balance-row">
+                            <span class="balance-week">Week 7</span>
+                            <div class="balance-bar"><div class="balance-fill" style="width: 60%;"></div></div>
+                            <span class="balance-amount">€45.650</span>
+                        </div>
+                        <div class="balance-row">
+                            <span class="balance-week">Week 8</span>
+                            <div class="balance-bar"><div class="balance-fill" style="width: 75%;"></div></div>
+                            <span class="balance-amount">€57.150</span>
+                        </div>
+                        <div class="balance-row">
+                            <span class="balance-week">Week 9</span>
+                            <div class="balance-bar"><div class="balance-fill warning" style="width: 50%;"></div></div>
+                            <span class="balance-amount">€48.750</span>
+                        </div>
+                        <div class="balance-row">
+                            <span class="balance-week">Week 10</span>
+                            <div class="balance-bar"><div class="balance-fill" style="width: 55%;"></div></div>
+                            <span class="balance-amount">€51.050</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inkomend -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Te ontvangen (debiteuren)</div>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Klant</th>
+                                    <th>Factuurnr</th>
+                                    <th>Bedrag</th>
+                                    <th>Vervaldatum</th>
+                                    <th>Verwacht</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Bakkerij 't Stoepje</td>
+                                    <td>INV-2025-0003</td>
+                                    <td class="amount-in">€8.650</td>
+                                    <td>3 feb</td>
+                                    <td><span class="status-badge status-expected">~5 feb</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Fam. de Groot</td>
+                                    <td>INV-2025-0008</td>
+                                    <td class="amount-in">€12.400</td>
+                                    <td>8 feb</td>
+                                    <td><span class="status-badge status-expected">~8 feb</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Fam. Jansen</td>
+                                    <td>INV-2025-0012</td>
+                                    <td class="amount-in">€6.780</td>
+                                    <td>15 feb</td>
+                                    <td><span class="status-badge status-paid">Op tijd</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Fam. Pietersen</td>
+                                    <td>INV-2024-0089</td>
+                                    <td class="amount-in">€4.250</td>
+                                    <td>12 dec</td>
+                                    <td><span class="status-badge status-late">Na bellen</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Dhr. Klaassen</td>
+                                    <td>INV-2024-0092</td>
+                                    <td class="amount-in">€2.890</td>
+                                    <td>19 dec</td>
+                                    <td><span class="status-badge status-late">Regeling?</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Mevr. van Dijk</td>
+                                    <td>INV-2025-0015</td>
+                                    <td class="amount-in">€3.430</td>
+                                    <td>20 feb</td>
+                                    <td><span class="status-badge status-paid">Op tijd</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Uitgaand -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Te betalen (crediteuren + vaste lasten)</div>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Omschrijving</th>
+                                    <th>Bedrag</th>
+                                    <th>Vervaldatum</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Salarissen februari</td>
+                                    <td class="amount-out">-€8.200</td>
+                                    <td>25 feb</td>
+                                    <td><span class="status-badge status-due">Vast</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Huur bedrijfspand</td>
+                                    <td class="amount-out">-€2.400</td>
+                                    <td>1 mrt</td>
+                                    <td><span class="status-badge status-due">Vast</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Leverancier Keukens BV</td>
+                                    <td class="amount-out">-€4.850</td>
+                                    <td>10 feb</td>
+                                    <td><span class="status-badge status-expected">Factuur</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Elektra + Gas</td>
+                                    <td class="amount-out">-€680</td>
+                                    <td>15 feb</td>
+                                    <td><span class="status-badge status-due">Vast</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Verzekeringen</td>
+                                    <td class="amount-out">-€520</td>
+                                    <td>1 mrt</td>
+                                    <td><span class="status-badge status-due">Vast</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Boekhouder</td>
+                                    <td class="amount-out">-€350</td>
+                                    <td>28 feb</td>
+                                    <td><span class="status-badge status-due">Vast</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Montage materialen</td>
+                                    <td class="amount-out">-€2.150</td>
+                                    <td>12 feb</td>
+                                    <td><span class="status-badge status-expected">Factuur</span></td>
+                                </tr>
+                                <tr>
+                                    <td>BTW aangifte Q4</td>
+                                    <td class="amount-out">-€2.500</td>
+                                    <td>28 feb</td>
+                                    <td><span class="status-badge status-due">Belasting</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Runway -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Runway</div>
+                    </div>
+                    <div class="runway-display">
+                        <div class="runway-weeks">12</div>
+                        <div class="runway-label">weken buffer</div>
+                        <div class="runway-detail">
+                            Bij huidige uitgaven kunt u 12 weken door zonder nieuwe inkomsten. Dat is gezond.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Alerts -->
+                <div class="card">
+                    <span class="ai-badge">AI Signalen</span>
+                    
+                    <div class="alert alert-warning">
+                        <div class="alert-icon">!</div>
+                        <div class="alert-content">
+                            <div class="alert-title">Week 9 wordt krap</div>
+                            <div class="alert-text">BTW + salarissen vallen samen. Zorg dat De Groot (€12.400) voor 20 feb betaalt.</div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-danger">
+                        <div class="alert-icon">!</div>
+                        <div class="alert-content">
+                            <div class="alert-title">€7.140 onzeker</div>
+                            <div class="alert-text">Pietersen en Klaassen staan >45 dagen open. Bel vandaag of start incasso.</div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <div class="alert-icon">i</div>
+                        <div class="alert-content">
+                            <div class="alert-title">Seizoenspatroon</div>
+                            <div class="alert-text">Maart is historisch 20% rustiger. Houd rekening met lagere inkomsten.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- What-if -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Wat als...</div>
+                    </div>
+
+                    <div class="whatif-card">
+                        <div class="whatif-header">
+                            <span class="whatif-title">De Groot 2 weken later betaalt?</span>
+                            <div class="whatif-toggle" onclick="this.classList.toggle('active')"></div>
+                        </div>
+                        <div class="whatif-impact">Week 9 wordt <strong>€4.200 negatief</strong>. Kredietlijn nodig.</div>
+                    </div>
+
+                    <div class="whatif-card">
+                        <div class="whatif-header">
+                            <span class="whatif-title">Nieuwe machine (€15.000)?</span>
+                            <div class="whatif-toggle" onclick="this.classList.toggle('active')"></div>
+                        </div>
+                        <div class="whatif-impact">Runway daalt naar <strong>6 weken</strong>. Liever financieren.</div>
+                    </div>
+
+                    <div class="whatif-card">
+                        <div class="whatif-header">
+                            <span class="whatif-title">Grote order binnenhalen (€25k)?</span>
+                            <div class="whatif-toggle" onclick="this.classList.toggle('active')"></div>
+                        </div>
+                        <div class="whatif-impact">Runway stijgt naar <strong class="positive">18 weken</strong>. Ruimte voor groei.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Automatisch gegenereerd door <a href="index.html">klain</a>
+        </div>
+    </div>
+</body>
+</html>

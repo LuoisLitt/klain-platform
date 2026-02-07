@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapportages — Dura Fulfilment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="index.html" class="logo">Dura <span>Fulfilment</span></a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="voorraad.html">Voorraad</a></li>
+                    <li><a href="verzendingen.html">Verzendingen</a></li>
+                    <li><a href="rapportages.html" class="active">Rapportages</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <a href="warehouse.html" class="btn-warehouse" title="Warehouse Display">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
+                    </svg>
+                    Warehouse Display
+                </a>
+                <div class="nav-user">
+                    <div class="user-avatar">DF</div>
+                    <span class="user-name">Demo Account</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Header -->
+        <header class="page-header">
+            <div class="header-title">
+                <h1>Rapportages</h1>
+                <p>Inzichten en analyses uit Goedgepickt</p>
+            </div>
+            <div class="header-actions">
+                <select class="form-input" style="width: auto; padding: 12px 16px;" id="periodSelect" onchange="updatePeriod()">
+                    <option value="week">Deze week</option>
+                    <option value="month">Deze maand</option>
+                    <option value="quarter">Dit kwartaal</option>
+                    <option value="year">Dit jaar</option>
+                </select>
+                <button class="btn btn-primary" onclick="downloadReport()">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    Download PDF
+                </button>
+            </div>
+        </header>
+
+        <!-- KPI Summary -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <span class="stat-value">5,847</span>
+                <span class="stat-label">Orders verwerkt</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value green">98.4%</span>
+                <span class="stat-label">On-time delivery</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value">4.1 min</span>
+                <span class="stat-label">Gem. verwerkingstijd</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value orange">2.3%</span>
+                <span class="stat-label">Retourpercentage</span>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px;">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Orders Trend</div>
+                        <div class="card-subtitle">Dagelijks overzicht</div>
+                    </div>
+                </div>
+                <div style="height: 300px;">
+                    <canvas id="ordersChart"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Verdeling per Carrier</div>
+                        <div class="card-subtitle">Deze week</div>
+                    </div>
+                </div>
+                <div style="height: 300px;">
+                    <canvas id="carrierChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Top Performers</div>
+                        <div class="card-subtitle">Medewerkers met hoogste output</div>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Medewerker</th>
+                            <th>Orders</th>
+                            <th>Gem. tijd</th>
+                            <th>Accuracy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span style="color: gold; font-size: 18px;">🥇</span></td>
+                            <td><strong>Jasper Vermeer</strong></td>
+                            <td>892</td>
+                            <td>3.8 min</td>
+                            <td><span style="color: var(--green); font-weight: 600;">99.8%</span></td>
+                        </tr>
+                        <tr>
+                            <td><span style="color: silver; font-size: 18px;">🥈</span></td>
+                            <td><strong>Sophie Kuiper</strong></td>
+                            <td>847</td>
+                            <td>4.0 min</td>
+                            <td><span style="color: var(--green); font-weight: 600;">99.5%</span></td>
+                        </tr>
+                        <tr>
+                            <td><span style="color: #cd7f32; font-size: 18px;">🥉</span></td>
+                            <td><strong>Milan Bakker</strong></td>
+                            <td>812</td>
+                            <td>4.1 min</td>
+                            <td><span style="color: var(--green); font-weight: 600;">99.2%</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Lisa Jansen</td>
+                            <td>756</td>
+                            <td>4.3 min</td>
+                            <td><span style="color: var(--green); font-weight: 600;">99.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Thomas Hendriks</td>
+                            <td>723</td>
+                            <td>4.4 min</td>
+                            <td><span style="color: var(--green); font-weight: 600;">98.8%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Piek Uren</div>
+                        <div class="card-subtitle">Orders per uur van de dag</div>
+                    </div>
+                </div>
+                <div style="height: 250px;">
+                    <canvas id="hoursChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly Reports -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Beschikbare Rapportages</div>
+                    <div class="card-subtitle">Wekelijkse en maandelijkse overzichten</div>
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Rapport</th>
+                        <th>Periode</th>
+                        <th>Gegenereerd</th>
+                        <th>Status</th>
+                        <th>Acties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Weekrapport Week 6</strong></td>
+                        <td>3 - 9 februari 2026</td>
+                        <td>Vandaag, 08:00</td>
+                        <td><span class="status-badge ok"><span class="status-dot"></span>Gereed</span></td>
+                        <td>
+                            <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;" onclick="downloadReport('week6')">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>
+                                PDF
+                            </button>
+                            <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;" onclick="downloadExcel('week6')">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125" />
+                                </svg>
+                                Excel
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Weekrapport Week 5</strong></td>
+                        <td>27 jan - 2 feb 2026</td>
+                        <td>3 feb, 08:00</td>
+                        <td><span class="status-badge ok"><span class="status-dot"></span>Gereed</span></td>
+                        <td>
+                            <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>
+                                PDF
+                            </button>
+                            <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125" />
+                                </svg>
+                                Excel
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Maandrapport Januari</strong></td>
+                        <td>1 - 31 januari 2026</td>
+                        <td>1 feb, 08:00</td>
+                        <td><span class="status-badge ok"><span class="status-dot"></span>Gereed</span></td>
+                        <td>
+                            <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>
+                                PDF
+                            </button>
+                            <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125" />
+                                </svg>
+                                Excel
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // Orders Trend Chart
+        const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+        const gradient = ordersCtx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(0, 113, 227, 0.15)');
+        gradient.addColorStop(1, 'rgba(0, 113, 227, 0)');
+
+        new Chart(ordersCtx, {
+            type: 'line',
+            data: {
+                labels: ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'],
+                datasets: [{
+                    label: 'Orders',
+                    data: [856, 923, 1045, 978, 1124, 687, 234],
+                    borderColor: '#0071e3',
+                    backgroundColor: gradient,
+                    borderWidth: 2.5,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#0071e3',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#86868b' } },
+                    y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#86868b' }, beginAtZero: true }
+                }
+            }
+        });
+
+        // Carrier Chart
+        new Chart(document.getElementById('carrierChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['PostNL', 'DHL', 'DPD'],
+                datasets: [{
+                    data: [68, 25, 7],
+                    backgroundColor: ['#ff9500', '#ffd60a', '#ff3b30'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // Hours Chart
+        new Chart(document.getElementById('hoursChart'), {
+            type: 'bar',
+            data: {
+                labels: ['8u', '9u', '10u', '11u', '12u', '13u', '14u', '15u', '16u', '17u'],
+                datasets: [{
+                    label: 'Orders',
+                    data: [45, 89, 156, 178, 98, 67, 145, 167, 134, 89],
+                    backgroundColor: '#0071e3',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#86868b' } },
+                    y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#86868b' }, beginAtZero: true }
+                }
+            }
+        });
+
+        function updatePeriod() {
+            alert('In productie zou dit de data updaten voor de geselecteerde periode.');
+        }
+
+        function downloadReport(period) {
+            alert('Download gestart: In productie zou dit een PDF rapport genereren.');
+        }
+
+        function downloadExcel(period) {
+            alert('Download gestart: In productie zou dit een Excel export genereren.');
+        }
+    </script>
+</body>
+</html>

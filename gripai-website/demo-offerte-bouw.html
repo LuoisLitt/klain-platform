@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offerte Generator Demo — Bouwbedrijf Driessen | klain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0f1117;
+            --gray-dark: #6b7084;
+            --gray-medium: #d1d5e0;
+            --gray-light: #f7f8fa;
+            --white: #ffffff;
+            --blue: #2563eb;
+            --green: #16a34a;
+            --orange: #ea580c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; height: 64px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: saturate(180%) blur(20px);
+            z-index: 1000; border-bottom: 1px solid var(--gray-medium);
+        }
+        .nav-inner {
+            max-width: 1400px; margin: 0 auto; padding: 0 24px;
+            height: 100%; display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 26px; font-weight: 700; color: var(--black);
+            text-decoration: none;
+        }
+        .nav-cta {
+            background: var(--black); color: var(--white); padding: 10px 22px;
+            border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 500;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-light);
+            min-height: 100vh;
+            color: var(--black);
+            line-height: 1.5;
+        }
+
+        .demo-banner {
+            background: var(--blue);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 64px;
+        }
+
+        .demo-banner a {
+            color: white;
+            margin-left: 12px;
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: #d97706;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+        }
+
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo-text span {
+            font-size: 13px;
+            color: var(--gray-dark);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--black);
+            border: 1px solid var(--gray-medium);
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0077ed;
+        }
+
+        .btn-success {
+            background: var(--green);
+            color: white;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gray-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--gray-dark);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-dark);
+            margin-bottom: 6px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--gray-medium);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 24px 0 16px;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .option-grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .option-card {
+            border: 2px solid var(--gray-medium);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-card:hover {
+            border-color: var(--blue);
+        }
+
+        .option-card.selected {
+            border-color: var(--blue);
+            background: rgba(0, 113, 227, 0.05);
+        }
+
+        .option-card .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .option-card .name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .option-card .price {
+            font-size: 12px;
+            color: var(--gray-dark);
+            margin-top: 4px;
+        }
+
+        .extras-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .extra-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--gray-light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .extra-item:hover {
+            background: #eee;
+        }
+
+        .extra-item.selected {
+            background: rgba(0, 113, 227, 0.1);
+            outline: 2px solid var(--blue);
+        }
+
+        .extra-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 12px;
+        }
+
+        .extra-info {
+            flex: 1;
+        }
+
+        .extra-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .extra-desc {
+            font-size: 12px;
+            color: var(--gray-dark);
+        }
+
+        .extra-price {
+            font-weight: 600;
+            color: var(--blue);
+        }
+
+        /* Preview */
+        .preview-card {
+            position: sticky;
+            top: 24px;
+        }
+
+        .quote-header {
+            text-align: center;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--gray-light);
+            margin-bottom: 24px;
+        }
+
+        .quote-company {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .quote-subtitle {
+            color: var(--gray-dark);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .quote-number {
+            display: inline-block;
+            background: var(--gray-light);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 12px;
+        }
+
+        .quote-section {
+            margin-bottom: 24px;
+        }
+
+        .quote-section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .quote-client {
+            font-size: 15px;
+        }
+
+        .quote-client strong {
+            display: block;
+            font-size: 17px;
+            margin-bottom: 4px;
+        }
+
+        .quote-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-light);
+            font-size: 14px;
+        }
+
+        .quote-line:last-child {
+            border-bottom: none;
+        }
+
+        .quote-line-name {
+            color: var(--black);
+        }
+
+        .quote-line-detail {
+            color: var(--gray-dark);
+            font-size: 12px;
+        }
+
+        .quote-line-price {
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .quote-total {
+            background: var(--black);
+            color: white;
+            margin: 24px -32px -32px;
+            padding: 24px 32px;
+            border-radius: 0 0 16px 16px;
+        }
+
+        .quote-total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .quote-total-row.final {
+            font-size: 24px;
+            font-weight: 700;
+            opacity: 1;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blue);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .ai-suggestion {
+            background: var(--gray-light);
+            border: 1px solid var(--gray-medium);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .ai-suggestion-header {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--blue);
+            margin-bottom: 8px;
+        }
+
+        .ai-suggestion p {
+            font-size: 14px;
+            color: var(--gray-dark);
+            line-height: 1.6;
+        }
+
+        .watermark {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--gray-light);
+            font-size: 12px;
+            color: var(--gray-dark);
+        }
+
+        .watermark a {
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .preview-card {
+                position: static;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .option-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 20px 16px;
+            }
+            .header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+            .option-grid {
+                grid-template-columns: 1fr;
+            }
+            .card {
+                padding: 20px;
+            }
+            input, select, textarea {
+                font-size: 16px;
+            }
+        }
+
+        @media print {
+            .demo-banner, .header-actions, .form-section {
+                display: none;
+            }
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            body {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">klain</a>
+            <a href="index.html#contact" class="nav-cta">Contact</a>
+        </div>
+    </nav>
+
+    <div class="demo-banner">
+        Dit is een demonstratie van klain's offerte automatisering voor bouwbedrijven
+        <a href="index.html">Terug naar klain</a>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>Bouwbedrijf Driessen</h1>
+                    <span>Offerte Systeem</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="resetForm()">Nieuw</button>
+                <button class="btn btn-primary" onclick="window.print()">Download PDF</button>
+                <button class="btn btn-success" onclick="sendQuote()">Verstuur offerte</button>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Input Form -->
+            <div class="form-section">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                            </svg>
+                        </div>
+                        <div class="card-title">Klantgegevens</div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Naam</label>
+                            <input type="text" id="clientName" placeholder="Fam. Bakker" oninput="updatePreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>Bedrijf (optioneel)</label>
+                            <input type="text" id="company" placeholder="" oninput="updatePreview()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Projectadres</label>
+                        <input type="text" id="address" placeholder="Dorpsstraat 45, 7891 CD Klazienaveen" oninput="updatePreview()">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>E-mail</label>
+                            <input type="email" id="email" placeholder="bakker@email.nl" oninput="updatePreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefoon</label>
+                            <input type="tel" id="phone" placeholder="06-12345678" oninput="updatePreview()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+                            </svg>
+                        </div>
+                        <div class="card-title">Project Details</div>
+                    </div>
+
+                    <div class="section-title">Type Project</div>
+                    <div class="option-grid">
+                        <div class="option-card selected" onclick="selectOption(this, 'projectType', 'aanbouw', 25000)">
+                            <div class="icon">🏗️</div>
+                            <div class="name">Aanbouw</div>
+                            <div class="price">Vanaf €25.000</div>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'projectType', 'dakkapel', 8500)">
+                            <div class="icon">🏠</div>
+                            <div class="name">Dakkapel</div>
+                            <div class="price">Vanaf €8.500</div>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'projectType', 'verbouw', 35000)">
+                            <div class="icon">🔨</div>
+                            <div class="name">Verbouwing</div>
+                            <div class="price">Vanaf €35.000</div>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'projectType', 'garage', 18000)">
+                            <div class="icon">🚗</div>
+                            <div class="name">Garage</div>
+                            <div class="price">Vanaf €18.000</div>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'projectType', 'renovatie', 15000)">
+                            <div class="icon">🔄</div>
+                            <div class="name">Renovatie</div>
+                            <div class="price">Vanaf €15.000</div>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'projectType', 'nieuwbouw', 150000)">
+                            <div class="icon">🏡</div>
+                            <div class="name">Nieuwbouw</div>
+                            <div class="price">Vanaf €150.000</div>
+                        </div>
+                    </div>
+
+                    <div class="section-title">Afmetingen</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Oppervlakte (m²)</label>
+                            <input type="number" id="sqm" value="25" min="5" max="500" step="1" oninput="updatePreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>Geschatte doorlooptijd</label>
+                            <select id="duration" onchange="updatePreview()">
+                                <option value="2">2-4 weken</option>
+                                <option value="6" selected>6-8 weken</option>
+                                <option value="12">3 maanden</option>
+                                <option value="24">6 maanden</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="section-title">Fundering & Constructie</div>
+                    <div class="option-grid option-grid-2">
+                        <div class="option-card selected" onclick="selectOption(this, 'foundation', 'strook', 0)">
+                            <div class="icon">▬</div>
+                            <div class="name">Strookfundering</div>
+                            <div class="price">Standaard</div>
+                        </div>
+                        <div class="option-card" onclick="selectOption(this, 'foundation', 'paal', 4500)">
+                            <div class="icon">▮</div>
+                            <div class="name">Paalfundering</div>
+                            <div class="price">+ €4.500</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <div class="card-title">Werkzaamheden</div>
+                    </div>
+
+                    <div class="extras-list">
+                        <label class="extra-item selected" onclick="toggleExtra(this, 'ruwbouw', 0)">
+                            <input type="checkbox" checked disabled>
+                            <div class="extra-info">
+                                <div class="extra-name">Ruwbouw</div>
+                                <div class="extra-desc">Fundering, muren, dak (basis)</div>
+                            </div>
+                            <div class="extra-price">Incl.</div>
+                        </label>
+                        <label class="extra-item" onclick="toggleExtra(this, 'isolatie', 85)">
+                            <input type="checkbox">
+                            <div class="extra-info">
+                                <div class="extra-name">Isolatie (HR++)</div>
+                                <div class="extra-desc">Vloer, wanden en dak isoleren</div>
+                            </div>
+                            <div class="extra-price">€85/m²</div>
+                        </label>
+                        <label class="extra-item" onclick="toggleExtra(this, 'elektra', 65)">
+                            <input type="checkbox">
+                            <div class="extra-info">
+                                <div class="extra-name">Elektra aanleg</div>
+                                <div class="extra-desc">Stopcontacten, verlichting, groepenkast</div>
+                            </div>
+                            <div class="extra-price">€65/m²</div>
+                        </label>
+                        <label class="extra-item" onclick="toggleExtra(this, 'sanitair', 3500)">
+                            <input type="checkbox">
+                            <div class="extra-info">
+                                <div class="extra-name">Sanitair</div>
+                                <div class="extra-desc">Leidingwerk, aansluiting</div>
+                            </div>
+                            <div class="extra-price">€3.500</div>
+                        </label>
+                        <label class="extra-item" onclick="toggleExtra(this, 'stucwerk', 45)">
+                            <input type="checkbox">
+                            <div class="extra-info">
+                                <div class="extra-name">Stucwerk</div>
+                                <div class="extra-desc">Wanden en plafond afwerken</div>
+                            </div>
+                            <div class="extra-price">€45/m²</div>
+                        </label>
+                        <label class="extra-item" onclick="toggleExtra(this, 'schilderwerk', 35)">
+                            <input type="checkbox">
+                            <div class="extra-info">
+                                <div class="extra-name">Schilderwerk</div>
+                                <div class="extra-desc">Binnen- en buitenschilderwerk</div>
+                            </div>
+                            <div class="extra-price">€35/m²</div>
+                        </label>
+                        <label class="extra-item" onclick="toggleExtra(this, 'vloer', 75)">
+                            <input type="checkbox">
+                            <div class="extra-info">
+                                <div class="extra-name">Vloer leggen</div>
+                                <div class="extra-desc">Tegels of laminaat naar keuze</div>
+                            </div>
+                            <div class="extra-price">€75/m²</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                            </svg>
+                        </div>
+                        <div class="card-title">Extra's & Garantie</div>
+                    </div>
+
+                    <div class="extras-list">
+                        <label class="extra-item" onclick="toggleExtra(this, 'vergunning', 850)">
+                            <input type="checkbox">
+                            <div class="extra-info">
+                                <div class="extra-name">Vergunning aanvraag</div>
+                                <div class="extra-desc">Wij regelen de omgevingsvergunning</div>
+                            </div>
+                            <div class="extra-price">€850</div>
+                        </label>
+                        <label class="extra-item" onclick="toggleExtra(this, 'tekeningen', 1200)">
+                            <input type="checkbox">
+                            <div class="extra-info">
+                                <div class="extra-name">Bouwtekeningen</div>
+                                <div class="extra-desc">Technische tekeningen door architect</div>
+                            </div>
+                            <div class="extra-price">€1.200</div>
+                        </label>
+                        <label class="extra-item" onclick="toggleExtra(this, 'garantie', 1500)">
+                            <input type="checkbox">
+                            <div class="extra-info">
+                                <div class="extra-name">Uitgebreide garantie</div>
+                                <div class="extra-desc">10 jaar i.p.v. standaard 5 jaar</div>
+                            </div>
+                            <div class="extra-price">€1.500</div>
+                        </label>
+                        <label class="extra-item" onclick="toggleExtra(this, 'onderhoud', 99)">
+                            <input type="checkbox">
+                            <div class="extra-info">
+                                <div class="extra-name">Onderhoudscontract</div>
+                                <div class="extra-desc">Jaarlijkse inspectie en klein onderhoud</div>
+                            </div>
+                            <div class="extra-price">€99/jaar</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                            </svg>
+                        </div>
+                        <div class="card-title">Opmerkingen</div>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="notes" placeholder="Bijzonderheden, wensen, speciale omstandigheden..." oninput="updatePreview()"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="preview-section">
+                <div class="card preview-card">
+                    <div class="ai-badge">AI-gegenereerde offerte</div>
+
+                    <div class="quote-header">
+                        <div class="quote-company">Bouwbedrijf Driessen</div>
+                        <div class="quote-subtitle">Vakwerk sinds 1987</div>
+                        <div class="quote-number">Offerte #2026-0087</div>
+                    </div>
+
+                    <div class="quote-section">
+                        <div class="quote-section-title">Opdrachtgever</div>
+                        <div class="quote-client">
+                            <strong id="previewName">Fam. Bakker</strong>
+                            <span id="previewAddress">Dorpsstraat 45, 7891 CD Klazienaveen</span>
+                        </div>
+                    </div>
+
+                    <div class="quote-section">
+                        <div class="quote-section-title">Project</div>
+                        <div id="quoteProject">
+                            <div class="quote-line">
+                                <div>
+                                    <div class="quote-line-name">Aanbouw</div>
+                                    <div class="quote-line-detail">25 m², doorlooptijd 6-8 weken</div>
+                                </div>
+                                <div class="quote-line-price">€25.000</div>
+                            </div>
+                            <div class="quote-line">
+                                <div>
+                                    <div class="quote-line-name">Strookfundering</div>
+                                    <div class="quote-line-detail">Standaard fundering</div>
+                                </div>
+                                <div class="quote-line-price">Incl.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quote-section">
+                        <div class="quote-section-title">Werkzaamheden</div>
+                        <div id="quoteWork">
+                            <div class="quote-line">
+                                <div>
+                                    <div class="quote-line-name">Ruwbouw</div>
+                                    <div class="quote-line-detail">Fundering, muren, dak</div>
+                                </div>
+                                <div class="quote-line-price">Incl.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quote-section">
+                        <div class="quote-section-title">Extra's</div>
+                        <div id="quoteExtras">
+                            <div class="quote-line">
+                                <div class="quote-line-name" style="color: #86868b;">Geen extra's geselecteerd</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-suggestion">
+                        <div class="ai-suggestion-header">AI Suggestie</div>
+                        <p id="aiSuggestion">Bij een aanbouw adviseren wij altijd isolatie mee te nemen. 78% van onze klanten kiest hiervoor - het bespaart later kosten en gedoe.</p>
+                    </div>
+
+                    <div class="quote-total">
+                        <div class="quote-total-row">
+                            <span>Subtotaal</span>
+                            <span id="subtotal">€25.000</span>
+                        </div>
+                        <div class="quote-total-row">
+                            <span>BTW (21%)</span>
+                            <span id="vat">€5.250</span>
+                        </div>
+                        <div class="quote-total-row final">
+                            <span>Totaal incl. BTW</span>
+                            <span id="total">€30.250</span>
+                        </div>
+                    </div>
+
+                    <div class="watermark">
+                        Automatisch gegenereerd door <a href="index.html">klain</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let config = {
+            projectType: { name: 'Aanbouw', value: 'aanbouw', price: 25000 },
+            foundation: { name: 'Strookfundering', value: 'strook', price: 0 },
+            extras: {
+                ruwbouw: { name: 'Ruwbouw', detail: 'Fundering, muren, dak', price: 0, selected: true, perSqm: false },
+                isolatie: { name: 'Isolatie (HR++)', detail: 'Vloer, wanden en dak', price: 85, selected: false, perSqm: true },
+                elektra: { name: 'Elektra aanleg', detail: 'Complete installatie', price: 65, selected: false, perSqm: true },
+                sanitair: { name: 'Sanitair', detail: 'Leidingwerk, aansluiting', price: 3500, selected: false, perSqm: false },
+                stucwerk: { name: 'Stucwerk', detail: 'Wanden en plafond', price: 45, selected: false, perSqm: true },
+                schilderwerk: { name: 'Schilderwerk', detail: 'Binnen en buiten', price: 35, selected: false, perSqm: true },
+                vloer: { name: 'Vloer leggen', detail: 'Tegels of laminaat', price: 75, selected: false, perSqm: true },
+                vergunning: { name: 'Vergunning aanvraag', detail: 'Omgevingsvergunning', price: 850, selected: false, perSqm: false, extra: true },
+                tekeningen: { name: 'Bouwtekeningen', detail: 'Technische tekeningen', price: 1200, selected: false, perSqm: false, extra: true },
+                garantie: { name: 'Uitgebreide garantie', detail: '10 jaar garantie', price: 1500, selected: false, perSqm: false, extra: true },
+                onderhoud: { name: 'Onderhoudscontract', detail: 'Jaarlijkse inspectie', price: 99, selected: false, perSqm: false, extra: true, yearly: true }
+            }
+        };
+
+        const projectNames = {
+            aanbouw: 'Aanbouw',
+            dakkapel: 'Dakkapel',
+            verbouw: 'Verbouwing',
+            garage: 'Garage',
+            renovatie: 'Renovatie',
+            nieuwbouw: 'Nieuwbouw'
+        };
+
+        const foundationNames = {
+            strook: 'Strookfundering',
+            paal: 'Paalfundering'
+        };
+
+        const durationLabels = {
+            '2': '2-4 weken',
+            '6': '6-8 weken',
+            '12': '3 maanden',
+            '24': '6 maanden'
+        };
+
+        function selectOption(el, category, value, price) {
+            el.parentElement.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
+            el.classList.add('selected');
+            
+            if (category === 'projectType') {
+                config.projectType = { name: projectNames[value], value, price };
+            } else if (category === 'foundation') {
+                config.foundation = { name: foundationNames[value], value, price };
+            }
+            updatePreview();
+        }
+
+        function toggleExtra(el, key, price) {
+            if (key === 'ruwbouw') return; // Can't toggle base
+            const checkbox = el.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            config.extras[key].selected = checkbox.checked;
+            el.classList.toggle('selected', checkbox.checked);
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const clientName = document.getElementById('clientName').value || 'Fam. Bakker';
+            const address = document.getElementById('address').value || 'Dorpsstraat 45, 7891 CD Klazienaveen';
+            const sqm = parseFloat(document.getElementById('sqm').value) || 25;
+            const duration = document.getElementById('duration').value;
+
+            document.getElementById('previewName').textContent = clientName;
+            document.getElementById('previewAddress').textContent = address;
+
+            // Project section
+            let projectHTML = `
+                <div class="quote-line">
+                    <div>
+                        <div class="quote-line-name">${config.projectType.name}</div>
+                        <div class="quote-line-detail">${sqm} m², doorlooptijd ${durationLabels[duration]}</div>
+                    </div>
+                    <div class="quote-line-price">€${config.projectType.price.toLocaleString()}</div>
+                </div>
+                <div class="quote-line">
+                    <div>
+                        <div class="quote-line-name">${config.foundation.name}</div>
+                        <div class="quote-line-detail">${config.foundation.value === 'strook' ? 'Standaard' : 'Voor slappe grond'}</div>
+                    </div>
+                    <div class="quote-line-price">${config.foundation.price > 0 ? '€' + config.foundation.price.toLocaleString() : 'Incl.'}</div>
+                </div>
+            `;
+            document.getElementById('quoteProject').innerHTML = projectHTML;
+
+            // Work section
+            let workHTML = '';
+            let extrasHTML = '';
+            
+            Object.entries(config.extras).forEach(([key, item]) => {
+                if (item.selected && !item.extra) {
+                    const itemPrice = item.perSqm ? item.price * sqm : item.price;
+                    workHTML += `
+                        <div class="quote-line">
+                            <div>
+                                <div class="quote-line-name">${item.name}</div>
+                                <div class="quote-line-detail">${item.detail}</div>
+                            </div>
+                            <div class="quote-line-price">${itemPrice > 0 ? '€' + itemPrice.toLocaleString() : 'Incl.'}</div>
+                        </div>
+                    `;
+                } else if (item.selected && item.extra) {
+                    extrasHTML += `
+                        <div class="quote-line">
+                            <div>
+                                <div class="quote-line-name">${item.name}</div>
+                                <div class="quote-line-detail">${item.detail}</div>
+                            </div>
+                            <div class="quote-line-price">€${item.price.toLocaleString()}${item.yearly ? '/jaar' : ''}</div>
+                        </div>
+                    `;
+                }
+            });
+
+            document.getElementById('quoteWork').innerHTML = workHTML || '<div class="quote-line"><div class="quote-line-name" style="color: #86868b;">Alleen ruwbouw</div></div>';
+            document.getElementById('quoteExtras').innerHTML = extrasHTML || '<div class="quote-line"><div class="quote-line-name" style="color: #86868b;">Geen extra\'s geselecteerd</div></div>';
+
+            // Calculate totals
+            let subtotal = config.projectType.price + config.foundation.price;
+            Object.entries(config.extras).forEach(([key, item]) => {
+                if (item.selected && !item.yearly) {
+                    subtotal += item.perSqm ? item.price * sqm : item.price;
+                }
+            });
+
+            const vat = Math.round(subtotal * 0.21);
+            const total = subtotal + vat;
+
+            document.getElementById('subtotal').textContent = '€' + subtotal.toLocaleString();
+            document.getElementById('vat').textContent = '€' + vat.toLocaleString();
+            document.getElementById('total').textContent = '€' + total.toLocaleString();
+
+            updateAISuggestion(sqm);
+        }
+
+        function updateAISuggestion(sqm) {
+            const suggestions = [];
+            
+            if (!config.extras.isolatie.selected) {
+                suggestions.push('Bij een ' + config.projectType.name.toLowerCase() + ' adviseren wij altijd isolatie mee te nemen. 78% van onze klanten kiest hiervoor - het bespaart later kosten en gedoe.');
+            }
+            if (config.projectType.value === 'aanbouw' && !config.extras.elektra.selected) {
+                suggestions.push('Elektra direct meenemen is €' + (65 * sqm).toLocaleString() + ' goedkoper dan achteraf laten aanleggen. Wij adviseren dit altijd bij een aanbouw.');
+            }
+            if (config.projectType.value === 'verbouw' && !config.extras.vergunning.selected) {
+                suggestions.push('Voor een verbouwing is vaak een omgevingsvergunning nodig. Wij kunnen dit volledig voor u regelen.');
+            }
+            if (config.foundation.value === 'strook' && config.projectType.value === 'nieuwbouw') {
+                suggestions.push('Voor nieuwbouw in deze regio adviseren wij vaak paalfundering. Wilt u dat we de grondgesteldheid onderzoeken?');
+            }
+            if (!config.extras.garantie.selected && config.projectType.price > 30000) {
+                suggestions.push('Bij projecten boven €30.000 kiezen 65% van de klanten voor uitgebreide garantie. Een kleine investering voor 10 jaar zekerheid.');
+            }
+
+            if (suggestions.length === 0) {
+                suggestions.push('Deze offerte ziet er compleet uit. Gemiddeld starten we projecten als deze binnen 3-4 weken na akkoord.');
+            }
+
+            document.getElementById('aiSuggestion').textContent = suggestions[0];
+        }
+
+        function resetForm() {
+            location.reload();
+        }
+
+        function sendQuote() {
+            const email = document.getElementById('email').value || 'klant@email.nl';
+            alert('Offerte wordt verstuurd naar ' + email + '\n\nDit is een demonstratie — in de productieversie wordt de offerte automatisch per e-mail verzonden met PDF bijlage.');
+        }
+
+        updatePreview();
+    </script>
+</body>
+</html>
