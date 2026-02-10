@@ -49,11 +49,11 @@
         nav {
             position: fixed; top: 0; left: 0; right: 0;
             height: 64px;
-            background: var(--blue);
+            background: rgba(255,255,255,0.85);
             backdrop-filter: saturate(180%) blur(20px);
             -webkit-backdrop-filter: saturate(180%) blur(20px);
             z-index: 1000;
-            border-bottom: none;
+            border-bottom: 1px solid var(--gray-100);
         }
         .nav-inner {
             max-width: 1200px; margin: 0 auto; padding: 0 24px;
@@ -61,15 +61,15 @@
         }
         .logo {
             font-family: 'Fraunces', serif;
-            font-size: 26px; font-weight: 700; color: var(--white);
+            font-size: 26px; font-weight: 700; color: var(--black);
             text-decoration: none; letter-spacing: -0.5px;
         }
         .nav-links { display: flex; gap: 32px; list-style: none; }
         .nav-links a {
-            color: rgba(255,255,255,0.85); text-decoration: none; font-size: 14px;
+            color: var(--gray-700); text-decoration: none; font-size: 14px;
             font-weight: 500; transition: color 0.2s;
         }
-        .nav-links a:hover { color: var(--white); }
+        .nav-links a:hover { color: var(--black); }
         .nav-cta {
             background: var(--blue); color: var(--white); padding: 10px 22px;
             border-radius: var(--radius-sm); text-decoration: none; font-size: 14px;
@@ -507,7 +507,7 @@
 
         /* ─── FOOTER ─── */
         footer {
-            background: var(--gray-50);
+            background: var(--white);
             border-top: 1px solid var(--gray-100);
             padding: 64px 24px 32px;
             color: var(--gray-700);
@@ -518,18 +518,18 @@
             gap: 48px; margin-bottom: 48px;
         }
         .footer-brand .logo {
-            font-size: 22px; display: inline-block; margin-bottom: 12px; color: var(--black);
+            font-size: 22px; display: inline-block; margin-bottom: 12px; color: var(--white);
         }
         .footer-brand p { font-size: 14px; color: var(--gray-500); line-height: 1.6; max-width: 280px; }
         .footer-col h4 {
-            font-size: 13px; font-weight: 600; color: var(--black);
+            font-size: 13px; font-weight: 600; color: var(--gray-700);
             text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;
         }
         .footer-col a {
             display: block; font-size: 14px; color: var(--gray-500);
             text-decoration: none; padding: 4px 0; transition: color 0.2s;
         }
-        .footer-col a:hover { color: var(--black); }
+        .footer-col a:hover { color: var(--gray-700); }
         .footer-bottom {
             max-width: 1200px; margin: 0 auto;
             display: flex; justify-content: space-between; align-items: center;
