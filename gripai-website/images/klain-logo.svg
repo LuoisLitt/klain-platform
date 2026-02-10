@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 40" fill="none">
-  <!-- Blue K -->
-  <text x="0" y="32" font-family="'Fraunces', Georgia, serif" font-size="36" font-weight="700" fill="#2563eb">K</text>
-  <!-- "lain" in dark -->
-  <text x="24" y="32" font-family="'Fraunces', Georgia, serif" font-size="36" font-weight="700" fill="#0f1117">lain</text>
-  <!-- Green accent dot -->
-  <circle cx="133" cy="8" r="4" fill="#16a34a"/>
-</svg>
