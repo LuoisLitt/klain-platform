@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.vercel/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Private OpenClaw files
+memory/
+MEMORY.md
+AGENTS.md
+SOUL.md
+USER.md
+IDENTITY.md
+TOOLS.md
+HEARTBEAT.md
+BOOTSTRAP.md
+iris-avatar.jpg
+
+# Separate repos
+dura-backend/
+klain/

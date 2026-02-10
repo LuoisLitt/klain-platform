@@ -7,6 +7,34 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .loading-spinner {
+            width: 24px; height: 24px;
+            border: 3px solid #e5e7eb;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .order-link {
+            color: #2563eb;
+            cursor: pointer;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .order-link:hover { text-decoration: underline; }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .detail-section h3 { font-size: 14px; font-weight: 600; color: #8e93a6; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f2; font-size: 14px; }
+        .detail-label { color: #6b7084; }
+        .detail-value { font-weight: 500; text-align: right; }
+        .detail-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .detail-table th { text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #8e93a6; border-bottom: 2px solid #e8e8ed; }
+        .detail-table td { padding: 12px; font-size: 14px; border-bottom: 1px solid #f0f0f2; }
+        @media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -23,6 +51,16 @@
                 </ul>
             </div>
             <div class="nav-right">
+                <div class="global-search" style="position:relative;">
+                    <input type="text" id="globalSearch" placeholder="Zoek order, klant, SKU..."
+                        style="width:220px;padding:8px 12px 8px 34px;border:1px solid #d2d2d7;border-radius:8px;font-size:13px;font-family:inherit;background:var(--gray-light);outline:none;transition:all 0.2s;"
+                        onfocus="this.style.width='300px';this.style.borderColor='var(--blue)';this.style.background='#fff'"
+                        onblur="this.style.width='220px';this.style.borderColor='#d2d2d7';this.style.background='var(--gray-light)'"
+                        onkeydown="if(event.key==='Enter'){var q=this.value.trim();if(q)window.location.href='orders.html?search='+encodeURIComponent(q);}">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#8e93a6;pointer-events:none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </div>
                 <a href="warehouse.html" class="btn-warehouse" title="Warehouse Display">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
@@ -30,8 +68,8 @@
                     Warehouse Display
                 </a>
                 <div class="nav-user">
-                    <div class="user-avatar">DF</div>
-                    <span class="user-name">Demo Account</span>
+                    <div class="user-avatar" id="userAvatar">DF</div>
+                    <span class="user-name" id="userName">Demo Account</span>
                 </div>
             </div>
         </div>
@@ -58,79 +96,35 @@
         <!-- Stats Row -->
         <div class="stats-row">
             <div class="stat-box">
-                <span class="stat-value blue">1,247</span>
-                <span class="stat-label">Verzendingen deze week</span>
+                <span class="stat-value blue" id="statShipTotal">—</span>
+                <span class="stat-label">Verzendingen vandaag</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value green">98.7%</span>
-                <span class="stat-label">On-time delivery</span>
+                <span class="stat-value green" id="statShipDelivered">—</span>
+                <span class="stat-label">Afgeleverd</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value">1.2</span>
-                <span class="stat-label">Gem. dagen tot levering</span>
+                <span class="stat-value" id="statShipTransit">—</span>
+                <span class="stat-label">Onderweg</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value orange">3</span>
-                <span class="stat-label">Problemen</span>
+                <span class="stat-value orange" id="statShipOther">—</span>
+                <span class="stat-label">Overig</span>
             </div>
         </div>
 
-        <!-- Carrier Performance -->
+        <!-- Carrier Performance (live) -->
         <div class="card">
             <div class="card-header">
                 <div>
-                    <div class="card-title">Carrier Performance</div>
-                    <div class="card-subtitle">Overzicht per vervoerder deze week</div>
+                    <div class="card-title">Carrier Verdeling</div>
+                    <div class="card-subtitle">Overzicht per vervoerder (live)</div>
                 </div>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                <div style="padding: 24px; background: var(--gray-light); border-radius: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <span class="carrier-badge postnl" style="font-size: 14px; padding: 6px 12px;">PostNL</span>
-                        <span style="font-size: 24px; font-weight: 700; color: var(--green);">99.1%</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div>
-                            <div style="font-size: 20px; font-weight: 700;">847</div>
-                            <div style="font-size: 12px; color: var(--gray-medium);">Zendingen</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 20px; font-weight: 700;">1.2d</div>
-                            <div style="font-size: 12px; color: var(--gray-medium);">Gem. levertijd</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="padding: 24px; background: var(--gray-light); border-radius: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <span class="carrier-badge dhl" style="font-size: 14px; padding: 6px 12px;">DHL</span>
-                        <span style="font-size: 24px; font-weight: 700; color: var(--green);">98.4%</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div>
-                            <div style="font-size: 20px; font-weight: 700;">312</div>
-                            <div style="font-size: 12px; color: var(--gray-medium);">Zendingen</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 20px; font-weight: 700;">0.9d</div>
-                            <div style="font-size: 12px; color: var(--gray-medium);">Gem. levertijd</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="padding: 24px; background: var(--gray-light); border-radius: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <span class="carrier-badge dpd" style="font-size: 14px; padding: 6px 12px;">DPD</span>
-                        <span style="font-size: 24px; font-weight: 700; color: var(--green);">96.2%</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div>
-                            <div style="font-size: 20px; font-weight: 700;">88</div>
-                            <div style="font-size: 12px; color: var(--gray-medium);">Zendingen</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 20px; font-weight: 700;">1.5d</div>
-                            <div style="font-size: 12px; color: var(--gray-medium);">Gem. levertijd</div>
-                        </div>
-                    </div>
+            <div id="carrierCards" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <div style="padding: 24px; background: var(--gray-light); border-radius: 12px; text-align:center; color:#999;">
+                    <div class="loading-spinner"></div>
+                    <div style="margin-top:8px;">Laden...</div>
                 </div>
             </div>
         </div>
@@ -141,7 +135,7 @@
                 <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                 </svg>
-                <input type="text" placeholder="Zoek op track & trace of order ID..." id="searchInput" onkeyup="filterShipments()">
+                <input type="text" placeholder="Zoek op track & trace, order ID of klantnaam..." id="searchInput" onkeyup="filterShipments()">
             </div>
             <div class="filter-group">
                 <select id="statusFilter" onchange="filterShipments()">
@@ -165,7 +159,7 @@
             <div class="card-header">
                 <div>
                     <div class="card-title">Alle Verzendingen</div>
-                    <div class="card-subtitle">Laatste 7 dagen</div>
+                    <div class="card-subtitle">Vandaag</div>
                 </div>
             </div>
             <table class="data-table" id="shipmentsTable">
@@ -177,156 +171,66 @@
                         <th>Carrier</th>
                         <th>Status</th>
                         <th>Verzonden</th>
-                        <th>Verwacht</th>
+                        <th>Afgeleverd</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr data-status="transit" data-carrier="postnl">
-                        <td><a href="#" class="link" onclick="viewTracking('3SYZTR123456789')">3SYZTR123456789</a></td>
-                        <td><span class="order-id">#DF-24891</span></td>
-                        <td>Webshop Trendy, Amsterdam</td>
-                        <td><span class="carrier-badge postnl">PostNL</span></td>
-                        <td><span class="status-badge shipped"><span class="status-dot"></span>Onderweg</span></td>
-                        <td>Vandaag, 17:30</td>
-                        <td>Morgen, 12:00</td>
-                    </tr>
-                    <tr data-status="delivered" data-carrier="dhl">
-                        <td><a href="#" class="link" onclick="viewTracking('JJD000390007123456')">JJD000390007123456</a></td>
-                        <td><span class="order-id">#DF-24890</span></td>
-                        <td>Fashion Forward, Rotterdam</td>
-                        <td><span class="carrier-badge dhl">DHL</span></td>
-                        <td><span class="status-badge delivered"><span class="status-dot"></span>Afgeleverd</span></td>
-                        <td>Gisteren, 16:45</td>
-                        <td>Vandaag, 14:22 ✓</td>
-                    </tr>
-                    <tr data-status="transit" data-carrier="postnl">
-                        <td><a href="#" class="link" onclick="viewTracking('3SYZTR987654321')">3SYZTR987654321</a></td>
-                        <td><span class="order-id">#DF-24886</span></td>
-                        <td>Tech Solutions BV, Groningen</td>
-                        <td><span class="carrier-badge postnl">PostNL</span></td>
-                        <td><span class="status-badge shipped"><span class="status-dot"></span>Onderweg</span></td>
-                        <td>Vandaag, 15:20</td>
-                        <td>Morgen, 14:00</td>
-                    </tr>
-                    <tr data-status="problem" data-carrier="dpd">
-                        <td><a href="#" class="link" onclick="viewTracking('05132861234567')">05132861234567</a></td>
-                        <td><span class="order-id">#DF-24880</span></td>
-                        <td>Urban Style, Breda</td>
-                        <td><span class="carrier-badge dpd">DPD</span></td>
-                        <td><span class="status-badge critical"><span class="status-dot"></span>Adres probleem</span></td>
-                        <td>Gisteren, 14:10</td>
-                        <td>Actie vereist</td>
-                    </tr>
-                    <tr data-status="delivered" data-carrier="postnl">
-                        <td><a href="#" class="link" onclick="viewTracking('3SYZTR456789123')">3SYZTR456789123</a></td>
-                        <td><span class="order-id">#DF-24878</span></td>
-                        <td>Lifestyle Store, Utrecht</td>
-                        <td><span class="carrier-badge postnl">PostNL</span></td>
-                        <td><span class="status-badge delivered"><span class="status-dot"></span>Afgeleverd</span></td>
-                        <td>Maandag, 17:00</td>
-                        <td>Dinsdag, 11:34 ✓</td>
-                    </tr>
-                    <tr data-status="delivered" data-carrier="dhl">
-                        <td><a href="#" class="link" onclick="viewTracking('JJD000390007654321')">JJD000390007654321</a></td>
-                        <td><span class="order-id">#DF-24875</span></td>
-                        <td>Mode Express, Den Haag</td>
-                        <td><span class="carrier-badge dhl">DHL</span></td>
-                        <td><span class="status-badge delivered"><span class="status-dot"></span>Afgeleverd</span></td>
-                        <td>Maandag, 15:30</td>
-                        <td>Dinsdag, 09:15 ✓</td>
-                    </tr>
-                    <tr data-status="transit" data-carrier="dpd">
-                        <td><a href="#" class="link" onclick="viewTracking('05132867654321')">05132867654321</a></td>
-                        <td><span class="order-id">#DF-24888</span></td>
-                        <td>Gadget Galaxy, Den Haag</td>
-                        <td><span class="carrier-badge dpd">DPD</span></td>
-                        <td><span class="status-badge shipped"><span class="status-dot"></span>Onderweg</span></td>
-                        <td>Vandaag, 11:22</td>
-                        <td>Morgen, 16:00</td>
-                    </tr>
-                    <tr data-status="problem" data-carrier="postnl">
-                        <td><a href="#" class="link" onclick="viewTracking('3SYZTR111222333')">3SYZTR111222333</a></td>
-                        <td><span class="order-id">#DF-24870</span></td>
-                        <td>Home Decor Plus, Almere</td>
-                        <td><span class="carrier-badge postnl">PostNL</span></td>
-                        <td><span class="status-badge warning"><span class="status-dot"></span>Niet thuis</span></td>
-                        <td>Gisteren, 16:00</td>
-                        <td>2e poging morgen</td>
-                    </tr>
+                <tbody id="shipmentBody">
+                    <tr><td colspan="7" style="text-align:center;padding:40px;color:#999;">
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                            <div class="loading-spinner"></div>
+                            Bezig met laden...
+                        </div>
+                    </td></tr>
                 </tbody>
             </table>
         </div>
     </main>
 
-    <!-- Tracking Modal -->
-    <div class="modal-overlay" id="trackingModal" onclick="closeTracking(event)">
-        <div class="modal" onclick="event.stopPropagation()">
+    <!-- Order Detail Modal (voor klikken op order nummer) -->
+    <div class="modal-overlay" id="orderModal" onclick="closeOrderModal(event)">
+        <div class="modal" onclick="event.stopPropagation()" style="max-width: 800px;">
             <div class="modal-header">
-                <h2>Track & Trace</h2>
-                <button class="btn-close" onclick="closeTracking()">&times;</button>
+                <h2>Order <span id="modalOrderId"></span></h2>
+                <button class="btn-close" onclick="closeOrderModal()">&times;</button>
             </div>
-            <div class="modal-body">
-                <div style="text-align: center; padding: 20px; background: var(--gray-light); border-radius: 12px; margin-bottom: 24px;">
-                    <div style="font-size: 12px; color: var(--gray-medium); margin-bottom: 4px;">TRACKING CODE</div>
-                    <div style="font-size: 20px; font-weight: 700; font-family: monospace;" id="trackingCode">3SYZTR123456789</div>
-                    <a href="#" class="link" style="font-size: 14px; margin-top: 8px; display: inline-block;">Bekijk op PostNL.nl →</a>
-                </div>
-
-                <div class="timeline" style="padding-left: 32px;">
-                    <div class="timeline-item completed">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <strong>Pakket aangemeld</strong>
-                            <span>Vandaag, 14:52 — Dura Fulfilment, Emmen</span>
-                        </div>
-                    </div>
-                    <div class="timeline-item completed">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <strong>Opgehaald door PostNL</strong>
-                            <span>Vandaag, 17:30</span>
-                        </div>
-                    </div>
-                    <div class="timeline-item completed">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <strong>In sorteercentrum</strong>
-                            <span>Vandaag, 21:15 — Sorteercentrum Zwolle</span>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <strong>Onderweg naar bestemming</strong>
-                            <span>Verwacht morgen</span>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <strong>Afgeleverd</strong>
-                            <span>Verwacht morgen, 12:00 - 14:00</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="margin-top: 24px; padding: 16px; background: var(--blue-light); border-radius: 10px;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--blue)" style="width: 24px; height: 24px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                        </svg>
-                        <div>
-                            <div style="font-weight: 600; color: var(--blue);">Bestemming</div>
-                            <div style="font-size: 14px;">Kalverstraat 123, 1012 PA Amsterdam</div>
-                        </div>
-                    </div>
+            <div class="modal-body" id="modalBody">
+                <div style="text-align:center;padding:40px;color:#999;">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top:12px;">Order details laden...</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        const API_BASE = 'https://dura-backend-production.up.railway.app';
+
+        const STATUS_MAP = {
+            'open': 'Nieuw',
+            'processing': 'In verwerking',
+            'picked': 'Gepickt',
+            'packed': 'Ingepakt',
+            'shipped': 'Verzonden',
+            'completed': 'Afgerond',
+            'delivered': 'Afgeleverd',
+            'ready_for_picking': 'Klaar voor picking',
+            'backorder': 'Backorder',
+            'on_hold': 'On hold'
+        };
+
+        const STATUS_CLASS_MAP = {
+            'open': 'pending',
+            'processing': 'picking',
+            'picked': 'picking',
+            'packed': 'packed',
+            'shipped': 'shipped',
+            'completed': 'delivered',
+            'delivered': 'delivered',
+            'ready_for_picking': 'pending',
+            'backorder': 'critical',
+            'on_hold': 'processing'
+        };
+
         function filterShipments() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const status = document.getElementById('statusFilter').value;
@@ -346,24 +250,404 @@
             });
         }
 
-        function viewTracking(code) {
-            document.getElementById('trackingCode').textContent = code;
-            document.getElementById('trackingModal').classList.add('active');
-        }
-
-        function closeTracking(event) {
+        function closeOrderModal(event) {
             if (!event || event.target.classList.contains('modal-overlay')) {
-                document.getElementById('trackingModal').classList.remove('active');
+                document.getElementById('orderModal').classList.remove('active');
             }
         }
 
         function exportShipments() {
-            alert('Export functie: In productie zou dit een CSV/Excel export genereren.');
+            const rows = document.querySelectorAll('#shipmentsTable tbody tr');
+            if (!rows.length) { alert('Geen data om te exporteren.'); return; }
+            const headers = ['Track & Trace', 'Order', 'Klant', 'Carrier', 'Status', 'Verzonden', 'Afgeleverd'];
+            const csvRows = [headers.join(';')];
+            rows.forEach(row => {
+                if (row.style.display === 'none') return;
+                const cells = row.querySelectorAll('td');
+                if (cells.length < 7) return;
+                const vals = Array.from(cells).map(c => '"' + (c.textContent || '').trim().replace(/"/g, '""').replace(/\n/g, ' ') + '"');
+                csvRows.push(vals.join(';'));
+            });
+            const blob = new Blob(['\uFEFF' + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'verzendingen_' + new Date().toISOString().slice(0,10) + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeTracking();
+            if (e.key === 'Escape') closeOrderModal();
         });
+
+        // ============ LIVE API INTEGRATION ============
+        const shipmentStatusMap = {
+            'pending_registered': { label: 'Aangemeld', class: 'processing' },
+            'pending': { label: 'Wacht', class: 'processing' },
+            'shipped': { label: 'Onderweg', class: 'shipped' },
+            'in_transit': { label: 'Onderweg', class: 'shipped' },
+            'out_for_delivery': { label: 'Bezorging', class: 'shipped' },
+            'delivered_at_recipient': { label: 'Afgeleverd', class: 'delivered' },
+            'delivered': { label: 'Afgeleverd', class: 'delivered' },
+            'returned': { label: 'Retour', class: 'critical' },
+            'problem': { label: 'Probleem', class: 'critical' },
+            '': { label: 'Verwerkt', class: 'processing' },
+            'no_update_supported': { label: 'Verwerkt', class: 'processing' }
+        };
+
+        function extractCarrier(shipment) {
+            const method = (shipment.shippingMethod || shipment.shippingCarrier || shipment.carrier || '').toLowerCase();
+            if (method.includes('dhl')) return { name: 'DHL', class: 'dhl' };
+            if (method.includes('postnl') || method.includes('tnt')) return { name: 'PostNL', class: 'postnl' };
+            if (method.includes('dpd')) return { name: 'DPD', class: 'dpd' };
+            if (method.includes('ups')) return { name: 'UPS', class: 'postnl' };
+            return { name: method.substring(0, 20) || 'Onbekend', class: 'postnl' };
+        }
+
+        function extractCarrierLabel(shippingMethod) {
+            if (!shippingMethod) return '—';
+            const upper = shippingMethod.toUpperCase();
+            if (upper.includes('DHL')) return 'DHL';
+            if (upper.includes('POSTNL') || upper.includes('POST NL') || upper.includes('MYPARCEL')) return 'PostNL';
+            if (upper.includes('TNT')) return 'TNT';
+            if (upper.includes('DPD')) return 'DPD';
+            if (upper.includes('UPS')) return 'UPS';
+            return '—';
+        }
+
+        function formatDateNL(dateStr) {
+            if (!dateStr) return '—';
+            const d = new Date(dateStr);
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
+            const dateOnly = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            const time = d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+
+            if (dateOnly.getTime() === today.getTime()) return `Vandaag, ${time}`;
+            if (dateOnly.getTime() === yesterday.getTime()) return `Gisteren, ${time}`;
+            return d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' }) + `, ${time}`;
+        }
+
+        function formatCurrency(amount) {
+            if (!amount || amount === '0.00') return '—';
+            return '€ ' + parseFloat(amount).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Pagination state
+        let shipCurrentPage = 1;
+        let shipTotalPages = 1;
+        let shipTotalCount = 0;
+        let _shipApiLastPage = null;
+
+        async function loadShipments(page) {
+            shipCurrentPage = page || 1;
+            try {
+                const today = new Date().toISOString().slice(0, 10);
+
+                if (_shipApiLastPage === null) {
+                    const probe = await fetch(`${API_BASE}/api/shipments?created_after=${today}&page=1&limit=50`);
+                    if (!probe.ok) throw new Error('Shipments API error');
+                    const probeJson = await probe.json();
+                    _shipApiLastPage = probeJson.lastPage || 1;
+                    shipTotalPages = _shipApiLastPage;
+                    shipTotalCount = probeJson.total || 0;
+                }
+
+                const apiPage = Math.max(1, _shipApiLastPage - (shipCurrentPage - 1));
+                const res = await fetch(`${API_BASE}/api/shipments?created_after=${today}&page=${apiPage}&limit=50`);
+                if (!res.ok) throw new Error('Shipments API error');
+                const json = await res.json();
+                const shipments = json.data || [];
+                shipTotalPages = json.lastPage || _shipApiLastPage || 1;
+                shipTotalCount = json.total || 0;
+                _shipApiLastPage = shipTotalPages;
+
+                shipments.sort((a, b) => (b.createDate || '').localeCompare(a.createDate || ''));
+                renderShipments(shipments);
+                updateShipPagination();
+            } catch (e) {
+                console.log('Shipments API niet beschikbaar:', e.message);
+            }
+        }
+
+        function renderShipments(shipments) {
+            const tbody = document.querySelector('#shipmentsTable tbody');
+            tbody.innerHTML = '';
+
+            if (!shipments || !shipments.length) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#999;">Geen verzendingen gevonden</td></tr>';
+                return;
+            }
+
+            shipments.forEach(s => {
+                const status = shipmentStatusMap[s.status] || { label: s.status || 'Onbekend', class: 'processing' };
+                const carrier = extractCarrier(s);
+                const trackCode = s.trackTraceCode || s.trackTrace || s.externalId || '—';
+                const trackUrl = s.trackTraceUrl || '#';
+                const orderId = s.referenceText || s.externalId || '—';
+                const klant = [s.shippingFirstName, s.shippingLastName].filter(Boolean).join(' ') || '—';
+                const city = s.shippingCity ? `, ${s.shippingCity}` : '';
+
+                // Order UUID from linkedOrder
+                const orderUuid = (s.linkedOrder && s.linkedOrder.uuid) ? s.linkedOrder.uuid : '';
+                const orderClickHtml = orderUuid
+                    ? `<a class="order-link" onclick="viewOrderFromShipment('${orderUuid}')" title="Bekijk order details">${orderId}</a>`
+                    : `<span class="order-id">${orderId}</span>`;
+
+                const tr = document.createElement('tr');
+                tr.dataset.status = s.status;
+                tr.dataset.carrier = carrier.class;
+                tr.innerHTML = `
+                    <td>${trackUrl !== '#' ? `<a href="${trackUrl}" target="_blank" class="link">${trackCode}</a>` : trackCode}</td>
+                    <td>${orderClickHtml}</td>
+                    <td>${klant}${city}</td>
+                    <td><span class="carrier-badge ${carrier.class}">${carrier.name}</span></td>
+                    <td><span class="status-badge ${status.class}"><span class="status-dot"></span>${status.label}</span></td>
+                    <td>${formatDateNL(s.createDate)}</td>
+                    <td>${s.deliveredDate ? formatDateNL(s.deliveredDate) + ' ✓' : '—'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateShipPagination() {
+            let pagDiv = document.getElementById('shipPagination');
+            if (!pagDiv) {
+                pagDiv = document.createElement('div');
+                pagDiv.id = 'shipPagination';
+                pagDiv.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:12px;padding:20px 0;';
+                document.querySelector('#shipmentsTable').closest('.card').appendChild(pagDiv);
+            }
+
+            if (shipTotalPages <= 1) {
+                pagDiv.innerHTML = `<span style="color:#8e93a6;font-size:14px;">Pagina 1 van 1 (${shipTotalCount.toLocaleString('nl-NL')} verzendingen)</span>`;
+                return;
+            }
+
+            const p = shipCurrentPage;
+            const tp = shipTotalPages;
+            pagDiv.innerHTML = `
+                <button onclick="loadShipments(1)" ${p<=1?'disabled':''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${p<=1?'#f3f4f6':'#fff'};cursor:${p<=1?'default':'pointer'};color:${p<=1?'#ccc':'#333'}">« Eerste</button>
+                <button onclick="loadShipments(${p-1})" ${p<=1?'disabled':''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${p<=1?'#f3f4f6':'#fff'};cursor:${p<=1?'default':'pointer'};color:${p<=1?'#ccc':'#333'}">‹ Vorige</button>
+                <span style="font-size:14px;color:#6b7084;">Pagina <strong>${p}</strong> van <strong>${tp}</strong> (${shipTotalCount.toLocaleString('nl-NL')} verzendingen)</span>
+                <button onclick="loadShipments(${p+1})" ${p>=tp?'disabled':''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${p>=tp?'#f3f4f6':'#fff'};cursor:${p>=tp?'default':'pointer'};color:${p>=tp?'#ccc':'#333'}">Volgende ›</button>
+                <button onclick="loadShipments(${tp})" ${p>=tp?'disabled':''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${p>=tp?'#f3f4f6':'#fff'};cursor:${p>=tp?'default':'pointer'};color:${p>=tp?'#ccc':'#333'}">Laatste »</button>
+            `;
+        }
+
+        // ============ FAST COMBINED LOAD ============
+        async function loadAllShipments() {
+            try {
+                const res = await fetch(`${API_BASE}/api/page-data/shipments`);
+                if (!res.ok) throw new Error('Page data error');
+                const json = await res.json();
+                const d = json.data;
+
+                // Stats
+                const total = d.total || 0;
+                document.getElementById('statShipTotal').textContent = total.toLocaleString('nl-NL');
+
+                // Paginering setup
+                _shipApiLastPage = d.lastPage || 1;
+                shipTotalPages = _shipApiLastPage;
+                shipTotalCount = d.total || 0;
+                shipCurrentPage = 1;
+
+                if (d.shipments && d.shipments.length > 0) {
+                    // Stats uit shipments data
+                    let delivered = 0, transit = 0;
+                    d.shipments.forEach(s => {
+                        if (s.status === 'delivered_at_recipient' || s.status === 'delivered') delivered++;
+                        if (s.status === 'shipped' || s.status === 'in_transit' || s.status === 'out_for_delivery' || s.status === 'registered') transit++;
+                    });
+                    document.getElementById('statShipDelivered').textContent = delivered;
+                    document.getElementById('statShipTransit').textContent = transit;
+                    document.getElementById('statShipOther').textContent = Math.max(0, d.shipments.length - delivered - transit);
+
+                    // Carrier cards
+                    const carriers = {};
+                    d.shipments.forEach(s => {
+                        const c = extractCarrier(s);
+                        if (!carriers[c.name]) carriers[c.name] = { count: 0, class: c.class };
+                        carriers[c.name].count++;
+                    });
+                    const carrierCards = document.getElementById('carrierCards');
+                    const sorted = Object.entries(carriers).sort((a, b) => b[1].count - a[1].count);
+                    const cols = Math.min(sorted.length, 4);
+                    carrierCards.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+                    carrierCards.innerHTML = '';
+                    sorted.forEach(([name, info]) => {
+                        const pct = ((info.count / d.shipments.length) * 100).toFixed(1);
+                        carrierCards.innerHTML += `
+                            <div style="padding: 24px; background: var(--gray-light); border-radius: 12px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                    <span class="carrier-badge ${info.class}" style="font-size: 14px; padding: 6px 12px;">${name}</span>
+                                    <span style="font-size: 24px; font-weight: 700; color: var(--blue);">${pct}%</span>
+                                </div>
+                                <div>
+                                    <div style="font-size: 20px; font-weight: 700;">${info.count}</div>
+                                    <div style="font-size: 12px; color: var(--gray-medium);">Zendingen</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    // Tabel
+                    renderShipments(d.shipments);
+                }
+                updateShipPagination();
+            } catch (e) {
+                console.log('Combined load failed, falling back:', e.message);
+                loadShipments(1);
+            }
+        }
+
+        // ============ ORDER DETAIL MODAL ============
+        async function viewOrderFromShipment(orderUuid) {
+            if (!orderUuid) return;
+
+            document.getElementById('modalOrderId').textContent = '';
+            document.getElementById('modalBody').innerHTML = `
+                <div style="text-align:center;padding:40px;color:#999;">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top:12px;">Order details laden...</p>
+                </div>
+            `;
+            document.getElementById('orderModal').classList.add('active');
+
+            try {
+                const res = await fetch(`${API_BASE}/api/orders/${orderUuid}`);
+                if (!res.ok) throw new Error('Kan order niet ophalen');
+                const json = await res.json();
+                const order = json.data;
+
+                const displayId = order.externalDisplayId || order.uuid.slice(0, 8);
+                document.getElementById('modalOrderId').textContent = '#' + displayId;
+
+                const customerName = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || '—';
+                const shippingAddress = [order.shippingAddress, order.shippingHouseNumber, order.shippingHousenumberAddition || order.shippingHouseNumberAddition].filter(Boolean).join(' ');
+                const shippingCityLine = [order.shippingZipcode, order.shippingCity].filter(Boolean).join(' ');
+                const email = order.billingEmail || order.shippingEmail || '—';
+                const webshop = order.webshopName || '—';
+                const statusLabel = STATUS_MAP[order.status] || order.status || '—';
+                const statusClass = STATUS_CLASS_MAP[order.status] || 'pending';
+                const carrierLabel = extractCarrierLabel(order.shippingMethod);
+
+                // Products table
+                const products = order.products || [];
+                let productsHtml = '';
+                products.forEach(p => {
+                    productsHtml += `
+                        <tr>
+                            <td><code>${p.sku || '—'}</code></td>
+                            <td>${p.productName || '—'}</td>
+                            <td style="text-align:center;">${p.productQuantity || 0}</td>
+                            <td style="text-align:center;">${p.pickedQuantity || 0}</td>
+                            <td style="text-align:right;">${formatCurrency(p.productPrice)}</td>
+                        </tr>
+                    `;
+                });
+
+                // Shipments info
+                const shipments = order.shipments || [];
+                let shipmentsHtml = '';
+                if (shipments.length > 0) {
+                    shipments.forEach(s => {
+                        const code = s.trackTraceCode || '—';
+                        const url = s.trackTraceUrl || '#';
+                        shipmentsHtml += `<div style="margin-bottom:4px;">${url !== '#' ? `<a href="${url}" target="_blank" style="color:#2563eb;">${code}</a>` : code}</div>`;
+                    });
+                } else {
+                    shipmentsHtml = '<span style="color:#999;">Geen tracking info</span>';
+                }
+
+                document.getElementById('modalBody').innerHTML = `
+                    <div style="margin-bottom:16px;">
+                        <span class="status-badge ${statusClass}" style="font-size:14px;"><span class="status-dot"></span>${statusLabel}</span>
+                        <span style="margin-left:12px;font-size:13px;color:#6b7084;">${webshop}</span>
+                        ${order.totalPaid && order.totalPaid !== '0.00' ? `<span style="margin-left:12px;font-weight:600;">${formatCurrency(order.totalPaid)}</span>` : ''}
+                    </div>
+
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h3>Klantgegevens</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Naam</span>
+                                <span class="detail-value">${customerName}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">E-mail</span>
+                                <span class="detail-value"><a href="mailto:${email}" style="color:#2563eb;">${email}</a></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Verzendadres</span>
+                                <span class="detail-value" style="text-align:right;">${shippingAddress}<br>${shippingCityLine}${order.shippingCountry ? ', ' + order.shippingCountry : ''}</span>
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <h3>Verzending</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Methode</span>
+                                <span class="detail-value">${order.shippingMethod || '—'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Carrier</span>
+                                <span class="detail-value">${carrierLabel}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Track & Trace</span>
+                                <span class="detail-value">${shipmentsHtml}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Aangemaakt</span>
+                                <span class="detail-value">${formatDateNL(order.createDate)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section" style="margin-top: 24px;">
+                        <h3>Bestelde producten (${products.length})</h3>
+                        <table class="detail-table">
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Product</th>
+                                    <th style="text-align:center;">Aantal</th>
+                                    <th style="text-align:center;">Gepickt</th>
+                                    <th style="text-align:right;">Prijs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${productsHtml || '<tr><td colspan="5" style="text-align:center;color:#999;padding:20px;">Geen producten</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } catch (e) {
+                document.getElementById('modalBody').innerHTML = `
+                    <div style="text-align:center;padding:40px;color:#c00;">
+                        <p>Fout bij laden van order: ${e.message}</p>
+                        <button class="btn btn-secondary" onclick="closeOrderModal()" style="margin-top:16px;">Sluiten</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Initial load
+        loadAllShipments();
+    </script>
+    <script>
+    // User session
+    (function() {
+        var user = JSON.parse(sessionStorage.getItem('dura_user') || 'null');
+        if (!user) { window.location.href = '../demo-dura-login.html'; return; }
+        var avatar = document.getElementById('userAvatar');
+        var uname = document.getElementById('userName');
+        if (avatar) avatar.textContent = user.name.charAt(0).toUpperCase();
+        if (uname) uname.textContent = user.name;
+    })();
     </script>
 </body>
 </html>

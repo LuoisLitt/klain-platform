@@ -24,6 +24,16 @@
                 </ul>
             </div>
             <div class="nav-right">
+                <div class="global-search" style="position:relative;">
+                    <input type="text" id="globalSearch" placeholder="Zoek order, klant, SKU..."
+                        style="width:220px;padding:8px 12px 8px 34px;border:1px solid #d2d2d7;border-radius:8px;font-size:13px;font-family:inherit;background:var(--gray-light);outline:none;transition:all 0.2s;"
+                        onfocus="this.style.width='300px';this.style.borderColor='var(--blue)';this.style.background='#fff'"
+                        onblur="this.style.width='220px';this.style.borderColor='#d2d2d7';this.style.background='var(--gray-light)'"
+                        onkeydown="if(event.key==='Enter'){var q=this.value.trim();if(q)window.location.href='orders.html?search='+encodeURIComponent(q);}">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#8e93a6;pointer-events:none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </div>
                 <a href="warehouse.html" class="btn-warehouse" title="Warehouse Display">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
@@ -31,8 +41,8 @@
                     Warehouse Display
                 </a>
                 <div class="nav-user">
-                    <div class="user-avatar">DF</div>
-                    <span class="user-name">Demo Account</span>
+                    <div class="user-avatar" id="userAvatar">DF</div>
+                    <span class="user-name" id="userName">Demo Account</span>
                 </div>
             </div>
         </div>
@@ -62,23 +72,23 @@
             </div>
         </header>
 
-        <!-- KPI Summary -->
+        <!-- KPI Summary (live) -->
         <div class="stats-row">
             <div class="stat-box">
-                <span class="stat-value">5,847</span>
-                <span class="stat-label">Orders verwerkt</span>
+                <span class="stat-value" id="rapOrdersWeek">—</span>
+                <span class="stat-label">Orders deze week</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value green">98.4%</span>
-                <span class="stat-label">On-time delivery</span>
+                <span class="stat-value green" id="rapOrdersToday">—</span>
+                <span class="stat-label">Orders vandaag</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value">4.1 min</span>
-                <span class="stat-label">Gem. verwerkingstijd</span>
+                <span class="stat-value" id="rapShipmentsWeek">—</span>
+                <span class="stat-label">Verzendingen deze week</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value orange">2.3%</span>
-                <span class="stat-label">Retourpercentage</span>
+                <span class="stat-value orange" id="rapShipmentsToday">—</span>
+                <span class="stat-label">Verzendingen vandaag</span>
             </div>
         </div>
 
@@ -127,43 +137,7 @@
                             <th>Accuracy</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td><span style="color: gold; font-size: 18px;">🥇</span></td>
-                            <td><strong>Jasper Vermeer</strong></td>
-                            <td>892</td>
-                            <td>3.8 min</td>
-                            <td><span style="color: var(--green); font-weight: 600;">99.8%</span></td>
-                        </tr>
-                        <tr>
-                            <td><span style="color: silver; font-size: 18px;">🥈</span></td>
-                            <td><strong>Sophie Kuiper</strong></td>
-                            <td>847</td>
-                            <td>4.0 min</td>
-                            <td><span style="color: var(--green); font-weight: 600;">99.5%</span></td>
-                        </tr>
-                        <tr>
-                            <td><span style="color: #cd7f32; font-size: 18px;">🥉</span></td>
-                            <td><strong>Milan Bakker</strong></td>
-                            <td>812</td>
-                            <td>4.1 min</td>
-                            <td><span style="color: var(--green); font-weight: 600;">99.2%</span></td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Lisa Jansen</td>
-                            <td>756</td>
-                            <td>4.3 min</td>
-                            <td><span style="color: var(--green); font-weight: 600;">99.0%</span></td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Thomas Hendriks</td>
-                            <td>723</td>
-                            <td>4.4 min</td>
-                            <td><span style="color: var(--green); font-weight: 600;">98.8%</span></td>
-                        </tr>
-                    </tbody>
+                    <tbody id="rapportBody"><tr><td colspan="5" style="text-align:center;padding:40px;color:#999;">Bezig met laden...</td></tr></tbody>
                 </table>
             </div>
             <div class="card">
@@ -264,19 +238,88 @@
     </main>
 
     <script>
-        // Orders Trend Chart
+        const API_BASE = 'https://dura-backend-production.up.railway.app';
+
+        // ============ LIVE DATA LADEN ============
+        async function loadRapportageData() {
+            try {
+                const res = await fetch(`${API_BASE}/api/dashboard`);
+                if (!res.ok) throw new Error('Dashboard API error');
+                const json = await res.json();
+                const d = json.data;
+
+                document.getElementById('rapOrdersWeek').textContent = (d.orders.week || 0).toLocaleString('nl-NL');
+                document.getElementById('rapOrdersToday').textContent = (d.orders.today || 0).toLocaleString('nl-NL');
+                document.getElementById('rapShipmentsWeek').textContent = (d.shipments.week || 0).toLocaleString('nl-NL');
+                document.getElementById('rapShipmentsToday').textContent = (d.shipments.today || 0).toLocaleString('nl-NL');
+
+                // Update orders chart met orders per dag
+                if (d.orders_per_day && ordersChartInstance) {
+                    const dagNamen = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
+                    const sortedDates = Object.keys(d.orders_per_day).sort();
+                    const labels = [], values = [];
+                    for (let i = 0; i < sortedDates.length; i++) {
+                        const date = new Date(sortedDates[i] + 'T00:00:00');
+                        labels.push(dagNamen[date.getDay()].charAt(0).toUpperCase() + dagNamen[date.getDay()].slice(1) + ' ' + date.getDate());
+                        if (i < sortedDates.length - 1) {
+                            values.push(Math.max(0, (d.orders_per_day[sortedDates[i]] || 0) - (d.orders_per_day[sortedDates[i + 1]] || 0)));
+                        } else {
+                            values.push(d.orders_per_day[sortedDates[i]] || 0);
+                        }
+                    }
+                    ordersChartInstance.data.labels = labels;
+                    ordersChartInstance.data.datasets[0].data = values;
+                    ordersChartInstance.update();
+                }
+            } catch (e) {
+                console.log('Dashboard data niet beschikbaar:', e.message);
+            }
+        }
+
+        // Carrier chart live uit shipments
+        async function loadCarrierChart() {
+            try {
+                const res = await fetch(`${API_BASE}/api/shipments/latest?limit=50`);
+                if (!res.ok) return;
+                const json = await res.json();
+                const shipments = json.data || [];
+                const carriers = {};
+                shipments.forEach(s => {
+                    const method = (s.shippingCarrier || s.shippingProvider || s.shippingMethod || '').toUpperCase();
+                    let name = 'Overig';
+                    if (method.includes('POSTNL') || method.includes('POST NL') || method.includes('MYPARCEL')) name = 'PostNL';
+                    else if (method.includes('DHL')) name = 'DHL';
+                    else if (method.includes('DPD')) name = 'DPD';
+                    else if (method.includes('UPS')) name = 'UPS';
+                    carriers[name] = (carriers[name] || 0) + 1;
+                });
+                if (carrierChartInstance) {
+                    carrierChartInstance.data.labels = Object.keys(carriers);
+                    carrierChartInstance.data.datasets[0].data = Object.values(carriers);
+                    carrierChartInstance.update();
+                }
+            } catch (e) {
+                console.log('Carrier data niet beschikbaar:', e.message);
+            }
+        }
+
+        // Top performers placeholder
+        const rapportBody = document.getElementById('rapportBody');
+        if (rapportBody) rapportBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:#999;">Medewerker data niet beschikbaar via API — wordt in toekomstige versie gekoppeld</td></tr>';
+
+        // ============ CHARTS INIT ============
         const ordersCtx = document.getElementById('ordersChart').getContext('2d');
         const gradient = ordersCtx.createLinearGradient(0, 0, 0, 300);
         gradient.addColorStop(0, 'rgba(0, 113, 227, 0.15)');
         gradient.addColorStop(1, 'rgba(0, 113, 227, 0)');
 
-        new Chart(ordersCtx, {
+        let ordersChartInstance = new Chart(ordersCtx, {
             type: 'line',
             data: {
-                labels: ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'],
+                labels: ['—'],
                 datasets: [{
                     label: 'Orders',
-                    data: [856, 923, 1045, 978, 1124, 687, 234],
+                    data: [0],
                     borderColor: '#0071e3',
                     backgroundColor: gradient,
                     borderWidth: 2.5,
@@ -299,60 +342,73 @@
             }
         });
 
-        // Carrier Chart
-        new Chart(document.getElementById('carrierChart'), {
+        let carrierChartInstance = new Chart(document.getElementById('carrierChart'), {
             type: 'doughnut',
             data: {
-                labels: ['PostNL', 'DHL', 'DPD'],
+                labels: ['Laden...'],
                 datasets: [{
-                    data: [68, 25, 7],
-                    backgroundColor: ['#ff9500', '#ffd60a', '#ff3b30'],
+                    data: [1],
+                    backgroundColor: ['#e5e7eb'],
                     borderWidth: 0
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom' }
-                }
+                plugins: { legend: { position: 'bottom' } }
             }
         });
 
-        // Hours Chart
-        new Chart(document.getElementById('hoursChart'), {
-            type: 'bar',
-            data: {
-                labels: ['8u', '9u', '10u', '11u', '12u', '13u', '14u', '15u', '16u', '17u'],
-                datasets: [{
-                    label: 'Orders',
-                    data: [45, 89, 156, 178, 98, 67, 145, 167, 134, 89],
-                    backgroundColor: '#0071e3',
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { display: false }, ticks: { color: '#86868b' } },
-                    y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#86868b' }, beginAtZero: true }
+        // Piek uren chart - verberg (geen live data beschikbaar)
+        const hoursCanvas = document.getElementById('hoursChart');
+        if (hoursCanvas) {
+            new Chart(hoursCanvas, {
+                type: 'bar',
+                data: {
+                    labels: ['Geen data'],
+                    datasets: [{ label: 'Orders', data: [0], backgroundColor: '#e5e7eb', borderRadius: 4 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { grid: { display: false } }, y: { beginAtZero: true } }
                 }
-            }
-        });
+            });
+            // Add overlay message
+            hoursCanvas.parentElement.style.position = 'relative';
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.8);border-radius:8px;font-size:14px;color:#999;';
+            overlay.textContent = 'Piek uren data niet beschikbaar via API';
+            hoursCanvas.parentElement.appendChild(overlay);
+        }
+
+        // ============ LOAD ============
+        loadRapportageData();
+        loadCarrierChart();
 
         function updatePeriod() {
-            alert('In productie zou dit de data updaten voor de geselecteerde periode.');
+            alert('Periode selectie: in een toekomstige versie wordt dit gekoppeld aan de API.');
         }
 
         function downloadReport(period) {
-            alert('Download gestart: In productie zou dit een PDF rapport genereren.');
+            alert('Download: in een toekomstige versie wordt dit gekoppeld aan een export functie.');
         }
 
         function downloadExcel(period) {
-            alert('Download gestart: In productie zou dit een Excel export genereren.');
+            alert('Download: in een toekomstige versie wordt dit gekoppeld aan een export functie.');
         }
+    </script>
+    <script>
+    // User session
+    (function() {
+        var user = JSON.parse(sessionStorage.getItem('dura_user') || 'null');
+        if (!user) { window.location.href = '../demo-dura-login.html'; return; }
+        var avatar = document.getElementById('userAvatar');
+        var uname = document.getElementById('userName');
+        if (avatar) avatar.textContent = user.name.charAt(0).toUpperCase();
+        if (uname) uname.textContent = user.name;
+    })();
     </script>
 </body>
 </html>

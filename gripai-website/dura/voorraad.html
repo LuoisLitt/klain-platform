@@ -7,6 +7,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .loading-spinner {
+            width: 24px; height: 24px;
+            border: 3px solid #e5e7eb;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -23,6 +34,16 @@
                 </ul>
             </div>
             <div class="nav-right">
+                <div class="global-search" style="position:relative;">
+                    <input type="text" id="globalSearch" placeholder="Zoek order, klant, SKU..."
+                        style="width:220px;padding:8px 12px 8px 34px;border:1px solid #d2d2d7;border-radius:8px;font-size:13px;font-family:inherit;background:var(--gray-light);outline:none;transition:all 0.2s;"
+                        onfocus="this.style.width='300px';this.style.borderColor='var(--blue)';this.style.background='#fff'"
+                        onblur="this.style.width='220px';this.style.borderColor='#d2d2d7';this.style.background='var(--gray-light)'"
+                        onkeydown="if(event.key==='Enter'){var q=this.value.trim();if(q)window.location.href='orders.html?search='+encodeURIComponent(q);}">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#8e93a6;pointer-events:none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </div>
                 <a href="warehouse.html" class="btn-warehouse" title="Warehouse Display">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
@@ -30,8 +51,8 @@
                     Warehouse Display
                 </a>
                 <div class="nav-user">
-                    <div class="user-avatar">DF</div>
-                    <span class="user-name">Demo Account</span>
+                    <div class="user-avatar" id="userAvatar">DF</div>
+                    <span class="user-name" id="userName">Demo Account</span>
                 </div>
             </div>
         </div>
@@ -64,131 +85,38 @@
         <!-- Stats Row -->
         <div class="stats-row">
             <div class="stat-box">
-                <span class="stat-value">1,247</span>
+                <span class="stat-value" id="statTotalProducts">—</span>
                 <span class="stat-label">Totaal producten</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value red">8</span>
-                <span class="stat-label">Kritiek laag</span>
+                <span class="stat-value red" id="statCritical">—</span>
+                <span class="stat-label">Kritiek laag (≤5)</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value orange">23</span>
-                <span class="stat-label">Onder bestelpunt</span>
+                <span class="stat-value orange" id="statWarning">—</span>
+                <span class="stat-label">Laag (≤25)</span>
             </div>
-            <div class="stat-box">
-                <span class="stat-value green">€184.500</span>
-                <span class="stat-label">Voorraadwaarde</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-value blue">3</span>
-                <span class="stat-label">Inbound leveringen</span>
-            </div>
-        </div>
-
-        <!-- Inbound Section -->
-        <div class="card" style="border-left: 4px solid var(--blue); margin-bottom: 24px;">
-            <div class="card-header">
-                <div>
-                    <div class="card-title">Verwachte Leveringen</div>
-                    <div class="card-subtitle">Inbound shipments onderweg naar magazijn</div>
-                </div>
-            </div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Leverancier</th>
-                        <th>Producten</th>
-                        <th>Aantal stuks</th>
-                        <th>ETA</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Fashion Wholesale BV</strong></td>
-                        <td>BLK-HOOD-M, WHT-TEE-L, BLK-JEANS-32</td>
-                        <td>450 stuks</td>
-                        <td><strong class="green">Morgen, 09:00</strong></td>
-                        <td><span class="status-badge ok"><span class="status-dot"></span>Onderweg</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Textile Import EU</strong></td>
-                        <td>NVY-JEANS-32, GRY-POLO-XL</td>
-                        <td>280 stuks</td>
-                        <td><strong>Dinsdag 11 feb</strong></td>
-                        <td><span class="status-badge pending"><span class="status-dot"></span>Gepland</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Premium Brands NL</strong></td>
-                        <td>Diverse items (12 SKU's)</td>
-                        <td>1.200 stuks</td>
-                        <td><strong>Vrijdag 14 feb</strong></td>
-                        <td><span class="status-badge pending"><span class="status-dot"></span>In productie</span></td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
 
         <!-- Alerts Section -->
-        <div class="card" id="alertsCard" style="border-left: 4px solid var(--red);">
+        <div class="card" id="alertsCard" style="border-left: 4px solid var(--red); margin-bottom: 24px;">
             <div class="card-header">
                 <div>
                     <div class="card-title">Voorraad Alerts</div>
-                    <div class="card-subtitle">Producten die onder het ingestelde niveau zitten</div>
+                    <div class="card-subtitle">Producten met lage voorraad (live uit Goedgepickt)</div>
                 </div>
             </div>
-            <table class="data-table">
+            <table class="data-table" id="alertsTable">
                 <thead>
                     <tr>
                         <th>SKU</th>
                         <th>Product</th>
                         <th>Voorraad</th>
-                        <th>Minimum</th>
                         <th>Status</th>
-                        <th>Actie</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td><code>BLK-HOOD-M</code></td>
-                        <td>Zwarte Hoodie - Maat M</td>
-                        <td><strong class="red">3</strong></td>
-                        <td>25</td>
-                        <td><span class="status-badge critical"><span class="status-dot"></span>Kritiek</span></td>
-                        <td><button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">Bestellen</button></td>
-                    </tr>
-                    <tr>
-                        <td><code>WHT-TEE-L</code></td>
-                        <td>Wit T-Shirt - Maat L</td>
-                        <td><strong class="red">5</strong></td>
-                        <td>30</td>
-                        <td><span class="status-badge critical"><span class="status-dot"></span>Kritiek</span></td>
-                        <td><button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">Bestellen</button></td>
-                    </tr>
-                    <tr>
-                        <td><code>BLK-JEANS-32</code></td>
-                        <td>Zwarte Jeans - W32</td>
-                        <td><strong class="red">7</strong></td>
-                        <td>20</td>
-                        <td><span class="status-badge critical"><span class="status-dot"></span>Kritiek</span></td>
-                        <td><button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">Bestellen</button></td>
-                    </tr>
-                    <tr>
-                        <td><code>NVY-JEANS-32</code></td>
-                        <td>Navy Jeans - W32</td>
-                        <td><strong class="orange">12</strong></td>
-                        <td>20</td>
-                        <td><span class="status-badge warning"><span class="status-dot"></span>Laag</span></td>
-                        <td><button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Bestellen</button></td>
-                    </tr>
-                    <tr>
-                        <td><code>GRY-SWEAT-XL</code></td>
-                        <td>Grijze Sweater - XL</td>
-                        <td><strong class="orange">15</strong></td>
-                        <td>25</td>
-                        <td><span class="status-badge warning"><span class="status-dot"></span>Laag</span></td>
-                        <td><button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Bestellen</button></td>
-                    </tr>
+                <tbody id="alertsBody">
+                    <tr><td colspan="4" style="text-align:center;padding:40px;color:#999;">Bezig met laden...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -225,7 +153,7 @@
             <div class="card-header">
                 <div>
                     <div class="card-title">Alle Producten</div>
-                    <div class="card-subtitle">1,247 producten in voorraad</div>
+                    <div class="card-subtitle" id="productsSubtitle">Laden...</div>
                 </div>
                 <button class="btn btn-secondary" onclick="exportInventory()">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -239,145 +167,15 @@
                     <tr>
                         <th>SKU</th>
                         <th>Product</th>
-                        <th>Categorie</th>
                         <th>Voorraad</th>
-                        <th>Min. niveau</th>
-                        <th>Locatie</th>
                         <th>Status</th>
-                        <th>Acties</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr data-category="hoodies" data-stock="critical">
-                        <td><code>BLK-HOOD-M</code></td>
-                        <td>Zwarte Hoodie - Maat M</td>
-                        <td>Hoodies</td>
-                        <td><strong class="red">3</strong></td>
-                        <td>25</td>
-                        <td>A-12-3</td>
-                        <td><span class="status-badge critical"><span class="status-dot"></span>Kritiek</span></td>
-                        <td>
-                            <button class="btn-icon" onclick="editProduct('BLK-HOOD-M')" title="Bewerken">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-category="tshirts" data-stock="critical">
-                        <td><code>WHT-TEE-L</code></td>
-                        <td>Wit T-Shirt - Maat L</td>
-                        <td>T-Shirts</td>
-                        <td><strong class="red">5</strong></td>
-                        <td>30</td>
-                        <td>B-04-1</td>
-                        <td><span class="status-badge critical"><span class="status-dot"></span>Kritiek</span></td>
-                        <td>
-                            <button class="btn-icon" onclick="editProduct('WHT-TEE-L')" title="Bewerken">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-category="jeans" data-stock="low">
-                        <td><code>NVY-JEANS-32</code></td>
-                        <td>Navy Jeans - W32</td>
-                        <td>Jeans</td>
-                        <td><strong class="orange">12</strong></td>
-                        <td>20</td>
-                        <td>C-08-2</td>
-                        <td><span class="status-badge warning"><span class="status-dot"></span>Laag</span></td>
-                        <td>
-                            <button class="btn-icon" onclick="editProduct('NVY-JEANS-32')" title="Bewerken">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-category="hoodies" data-stock="ok">
-                        <td><code>BLK-HOOD-L</code></td>
-                        <td>Zwarte Hoodie - Maat L</td>
-                        <td>Hoodies</td>
-                        <td><strong>45</strong></td>
-                        <td>25</td>
-                        <td>A-12-4</td>
-                        <td><span class="status-badge ok"><span class="status-dot"></span>Op peil</span></td>
-                        <td>
-                            <button class="btn-icon" onclick="editProduct('BLK-HOOD-L')" title="Bewerken">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-category="tshirts" data-stock="ok">
-                        <td><code>BLK-TEE-M</code></td>
-                        <td>Zwart T-Shirt - Maat M</td>
-                        <td>T-Shirts</td>
-                        <td><strong>67</strong></td>
-                        <td>30</td>
-                        <td>B-03-2</td>
-                        <td><span class="status-badge ok"><span class="status-dot"></span>Op peil</span></td>
-                        <td>
-                            <button class="btn-icon" onclick="editProduct('BLK-TEE-M')" title="Bewerken">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-category="sweaters" data-stock="high">
-                        <td><code>GRY-SWEAT-M</code></td>
-                        <td>Grijze Sweater - Maat M</td>
-                        <td>Sweaters</td>
-                        <td><strong class="green">124</strong></td>
-                        <td>25</td>
-                        <td>D-01-1</td>
-                        <td><span class="status-badge ok"><span class="status-dot"></span>Op peil</span></td>
-                        <td>
-                            <button class="btn-icon" onclick="editProduct('GRY-SWEAT-M')" title="Bewerken">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-category="jeans" data-stock="ok">
-                        <td><code>BLU-JEANS-34</code></td>
-                        <td>Blauwe Jeans - W34</td>
-                        <td>Jeans</td>
-                        <td><strong>38</strong></td>
-                        <td>20</td>
-                        <td>C-09-1</td>
-                        <td><span class="status-badge ok"><span class="status-dot"></span>Op peil</span></td>
-                        <td>
-                            <button class="btn-icon" onclick="editProduct('BLU-JEANS-34')" title="Bewerken">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-category="accessoires" data-stock="ok">
-                        <td><code>BLK-CAP-OS</code></td>
-                        <td>Zwarte Pet - One Size</td>
-                        <td>Accessoires</td>
-                        <td><strong>89</strong></td>
-                        <td>15</td>
-                        <td>E-02-3</td>
-                        <td><span class="status-badge ok"><span class="status-dot"></span>Op peil</span></td>
-                        <td>
-                            <button class="btn-icon" onclick="editProduct('BLK-CAP-OS')" title="Bewerken">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
+                <tbody id="productsBody">
+                    <tr><td colspan="4" style="text-align:center;padding:40px;color:#999;">Bezig met laden...</td></tr>
                 </tbody>
             </table>
+            <div id="inventoryPagination" style="display:flex;align-items:center;justify-content:center;gap:12px;padding:20px 0;"></div>
         </div>
     </main>
 
@@ -541,6 +339,146 @@
     </div>
 
     <script>
+        // ============================================
+        // LIVE API INTEGRATION — Alles uit Goedgepickt
+        // ============================================
+        const API_BASE = 'https://dura-backend-production.up.railway.app';
+        let currentInvPage = 1;
+        let totalInvPages = 1;
+        let totalInvProducts = 0;
+
+        function getStockNumber(product) {
+            // Stock kan een object zijn (Goedgepickt API) of een nummer
+            const stock = product.stock;
+            if (stock && typeof stock === 'object') {
+                return stock.freeStock || stock.totalStock || 0;
+            }
+            return stock || product.stockLevel || 0;
+        }
+
+        async function loadInventory(page) {
+            currentInvPage = page || 1;
+            const tbody = document.getElementById('productsBody');
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#999;"><div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div class="loading-spinner"></div>Bezig met laden...</div></td></tr>';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/inventory?page=${currentInvPage}`);
+                if (!res.ok) throw new Error('Inventory API error: ' + res.status);
+                const json = await res.json();
+                const allProducts = json.data || [];
+                totalInvPages = json.lastPage || 1;
+                const totalFromApi = json.total || json.count || allProducts.length;
+
+                // Filter: toon ALLEEN producten met voorraad > 0
+                const products = allProducts.filter(p => getStockNumber(p) > 0);
+
+                // Update stats - tel alle producten met voorraad
+                const inStockCount = products.length;
+                document.getElementById('statTotalProducts').textContent = totalFromApi.toLocaleString('nl-NL');
+                document.getElementById('productsSubtitle').textContent = `${inStockCount} van ${allProducts.length} producten op deze pagina hebben voorraad`;
+
+                tbody.innerHTML = '';
+                if (!products.length) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#999;">Geen producten met voorraad op deze pagina</td></tr>';
+                    updateInvPagination();
+                    return;
+                }
+
+                // Sorteer op voorraad (laagste eerst)
+                products.sort((a, b) => getStockNumber(a) - getStockNumber(b));
+
+                products.forEach(product => {
+                    const sku = product.sku || product.productSku || '—';
+                    const name = product.name || product.productName || '—';
+                    const stock = getStockNumber(product);
+
+                    let statusClass = 'ok', statusLabel = 'Op peil', stockClass = 'green';
+                    if (stock <= 5) { statusClass = 'critical'; statusLabel = 'Kritiek'; stockClass = 'red'; }
+                    else if (stock <= 25) { statusClass = 'warning'; statusLabel = 'Laag'; stockClass = 'orange'; }
+                    else if (stock <= 100) { stockClass = ''; }
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><code>${sku}</code></td>
+                        <td>${name}</td>
+                        <td><strong class="${stockClass}">${stock.toLocaleString('nl-NL')}</strong></td>
+                        <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusLabel}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                updateInvPagination();
+            } catch (e) {
+                console.log('Inventory API niet beschikbaar:', e.message);
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#c00;">Fout bij laden: ' + e.message + '</td></tr>';
+            }
+        }
+
+        function updateInvPagination() {
+            const pagDiv = document.getElementById('inventoryPagination');
+            if (totalInvPages <= 1) {
+                pagDiv.innerHTML = `<span style="color:#8e93a6;font-size:14px;">Pagina 1 van 1 (${totalInvProducts} producten)</span>`;
+                return;
+            }
+            pagDiv.innerHTML = `
+                <button onclick="loadInventory(${currentInvPage - 1})" ${currentInvPage <= 1 ? 'disabled' : ''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${currentInvPage <= 1 ? '#f3f4f6' : '#fff'};cursor:${currentInvPage <= 1 ? 'default' : 'pointer'}">‹ Vorige</button>
+                <span style="font-size:14px;color:#6b7084;">Pagina <strong>${currentInvPage}</strong> van <strong>${totalInvPages}</strong> (${totalInvProducts.toLocaleString('nl-NL')} producten)</span>
+                <button onclick="loadInventory(${currentInvPage + 1})" ${currentInvPage >= totalInvPages ? 'disabled' : ''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${currentInvPage >= totalInvPages ? '#f3f4f6' : '#fff'};cursor:${currentInvPage >= totalInvPages ? 'default' : 'pointer'}">Volgende ›</button>
+            `;
+        }
+
+        async function loadAlerts() {
+            const tbody = document.getElementById('alertsBody');
+            try {
+                const res = await fetch(`${API_BASE}/api/inventory/alerts`);
+                if (!res.ok) throw new Error('Alerts API error');
+                const json = await res.json();
+                const alerts = json.data || [];
+
+                // Update stats
+                let criticalCount = 0, lowCount = 0;
+                alerts.forEach(a => {
+                    const stock = getStockNumber(a);
+                    if (stock <= 5) criticalCount++;
+                    else lowCount++;
+                });
+                document.getElementById('statCritical').textContent = criticalCount;
+                document.getElementById('statWarning').textContent = lowCount;
+
+                if (!alerts.length) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#16a34a;font-weight:500;">✓ Geen voorraad alerts</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                alerts.slice(0, 20).forEach(alert => {
+                    const sku = alert.sku || alert.productSku || '—';
+                    const name = alert.name || alert.productName || '—';
+                    const stock = getStockNumber(alert);
+                    const isCritical = stock <= 5;
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><code>${sku}</code></td>
+                        <td>${name}</td>
+                        <td><strong class="${isCritical ? 'red' : 'orange'}">${stock.toLocaleString('nl-NL')}</strong></td>
+                        <td><span class="status-badge ${isCritical ? 'critical' : 'warning'}"><span class="status-dot"></span>${isCritical ? 'Kritiek' : 'Laag'}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.log('Alerts API niet beschikbaar:', e.message);
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#999;">Alerts niet beschikbaar</td></tr>';
+            }
+        }
+
+        // Load live data
+        loadInventory(1);
+        loadAlerts();
+
+        // ============================================
+        // EXISTING FUNCTIONS
+        // ============================================
         function filterProducts() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const category = document.getElementById('categoryFilter').value;
@@ -602,6 +540,17 @@
                 closeEditProduct();
             }
         });
+    </script>
+    <script>
+    // User session
+    (function() {
+        var user = JSON.parse(sessionStorage.getItem('dura_user') || 'null');
+        if (!user) { window.location.href = '../demo-dura-login.html'; return; }
+        var avatar = document.getElementById('userAvatar');
+        var uname = document.getElementById('userName');
+        if (avatar) avatar.textContent = user.name.charAt(0).toUpperCase();
+        if (uname) uname.textContent = user.name;
+    })();
     </script>
 </body>
 </html>

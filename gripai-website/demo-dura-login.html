@@ -285,12 +285,12 @@
             <form id="loginForm">
                 <div class="form-group">
                     <label class="form-label">E-mailadres</label>
-                    <input type="email" class="form-input" placeholder="naam@bedrijf.nl" value="demo@durafulfilment.nl">
+                    <input type="email" id="emailInput" class="form-input" placeholder="naam@durafulfilment.nl" value="" autocomplete="off">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Wachtwoord</label>
-                    <input type="password" class="form-input" placeholder="Uw wachtwoord" value="demo123">
+                    <input type="password" id="passwordInput" class="form-input" placeholder="Uw wachtwoord" value="" autocomplete="off">
                 </div>
 
                 <div class="form-options">
@@ -303,17 +303,6 @@
 
                 <button type="submit" class="login-btn">Inloggen</button>
             </form>
-
-            <div class="divider">
-                <div class="divider-line"></div>
-                <span class="divider-text">Demo</span>
-                <div class="divider-line"></div>
-            </div>
-
-            <div class="demo-notice">
-                <p>Demo-account</p>
-                <p>demo@durafulfilment.nl / demo123</p>
-            </div>
 
             <div class="features">
                 <div class="features-title">Inzicht in</div>
@@ -348,9 +337,30 @@
     </div>
 
     <script>
+        const accounts = {
+            'michel@durafulfilment.nl': { password: 'Dura@Michel2026!', name: 'Michel' },
+            'jarne@durafulfilment.nl':  { password: 'Dura@Jarne2026!',  name: 'Jarne' },
+            'demo@durafulfilment.nl':   { password: 'demo123',          name: 'Demo' }
+        };
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            window.location.href = 'demo-dura-dashboard.html';
+            const email = document.getElementById('emailInput').value.trim().toLowerCase();
+            const password = document.getElementById('passwordInput').value;
+            const account = accounts[email];
+
+            if (account && account.password === password) {
+                sessionStorage.setItem('dura_user', JSON.stringify({ email, name: account.name }));
+                window.location.href = 'dura/index.html';
+            } else {
+                const btn = document.querySelector('.login-btn');
+                btn.textContent = 'Ongeldige inloggegevens';
+                btn.style.background = '#ef4444';
+                setTimeout(() => {
+                    btn.textContent = 'Inloggen';
+                    btn.style.background = '';
+                }, 2000);
+            }
         });
     </script>
 </body>

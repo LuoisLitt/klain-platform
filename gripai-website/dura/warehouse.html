@@ -23,6 +23,105 @@
             --red-light: #ffebea;
         }
 
+        /* Dark Mode */
+        body.dark-mode {
+            --black: #f5f5f7;
+            --gray-dark: #a1a1a6;
+            --gray-medium: #8e8e93;
+            --gray-light: #1c1c1e;
+            --white: #2c2c2e;
+            --blue-light: #1a2332;
+            --green-light: #1a2e1a;
+            --orange-light: #2e2410;
+            --red-light: #2e1a1a;
+        }
+
+        body.dark-mode {
+            background: #000000;
+            color: #f5f5f7;
+        }
+
+        body.dark-mode .header,
+        body.dark-mode .kpi-card,
+        body.dark-mode .team-card,
+        body.dark-mode .sidebar-card,
+        body.dark-mode .footer {
+            background: #1c1c1e;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .employee-card {
+            background: #2c2c2e;
+        }
+
+        body.dark-mode .employee-card.top-performer {
+            background: linear-gradient(135deg, #2e2a10 0%, #332e15 100%);
+            border-color: #ffd60a;
+        }
+
+        body.dark-mode .stat-item {
+            background: #3a3a3c;
+        }
+
+        body.dark-mode .employee-card.top-performer .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .progress-bar {
+            background: #3a3a3c;
+        }
+
+        body.dark-mode .clock {
+            color: #f5f5f7;
+        }
+
+        body.dark-mode .back-link {
+            background: #2c2c2e;
+            color: #a1a1a6;
+        }
+
+        body.dark-mode .wms-badge {
+            background: #2c2c2e;
+            color: #a1a1a6;
+        }
+
+        body.dark-mode .alert-item.urgent {
+            background: rgba(255, 59, 48, 0.15);
+        }
+
+        body.dark-mode .alert-item.warning {
+            background: rgba(255, 149, 0, 0.15);
+        }
+
+        body.dark-mode .alert-item.info {
+            background: rgba(0, 113, 227, 0.15);
+        }
+
+        .dark-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--gray-light);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: inherit;
+            font-weight: 500;
+            color: var(--gray-dark);
+            transition: all 0.2s;
+        }
+
+        body.dark-mode .dark-toggle {
+            background: #3a3a3c;
+            color: #f5f5f7;
+        }
+
+        .dark-toggle:hover {
+            opacity: 0.8;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -650,6 +749,10 @@
                 <div class="header-date" id="currentDate">Woensdag 5 februari 2026</div>
             </div>
             <div class="header-right">
+                <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()">
+                    <span id="darkIcon">🌙</span>
+                    <span id="darkLabel">Dark mode</span>
+                </button>
                 <div class="live-badge">
                     <div class="live-dot"></div>
                     <span class="live-text">Live uit Goedgepickt</span>
@@ -660,220 +763,47 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- KPI Strip -->
+            <!-- KPI Strip (live) -->
             <div class="kpi-strip">
                 <div class="kpi-card">
-                    <div class="kpi-value blue">847</div>
+                    <div class="kpi-value blue" id="whOrdersToday">—</div>
                     <div class="kpi-label">Orders vandaag</div>
-                    <div class="kpi-sublabel">Target: 900</div>
+                    <div class="kpi-sublabel" id="whOrdersWeekLabel">Laden...</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-value green">798</div>
-                    <div class="kpi-label">Afgerond</div>
-                    <div class="kpi-sublabel">94% voltooid</div>
+                    <div class="kpi-value green" id="whShipped">—</div>
+                    <div class="kpi-label">Verzonden vandaag</div>
+                    <div class="kpi-sublabel" id="whShippedLabel">Live uit Goedgepickt</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-value orange">49</div>
-                    <div class="kpi-label">Nog te picken</div>
-                    <div class="kpi-sublabel">~35 minuten werk</div>
+                    <div class="kpi-value orange" id="whOpen">—</div>
+                    <div class="kpi-label">Open orders</div>
+                    <div class="kpi-sublabel">Wacht op verwerking</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-value" id="pickRate">127</div>
-                    <div class="kpi-label">Orders/uur</div>
-                    <div class="kpi-sublabel">Team totaal</div>
+                    <div class="kpi-value" id="whShipmentsWeek">—</div>
+                    <div class="kpi-label">Verzendingen week</div>
+                    <div class="kpi-sublabel">Totaal deze week</div>
                 </div>
             </div>
 
-            <!-- Team Performance -->
+            <!-- Top Webshops Performance (live) -->
             <div class="team-card">
                 <div class="card-header">
                     <div>
-                        <div class="card-title">Team Performance</div>
-                        <div class="card-subtitle">Verwerkte orders per medewerker vandaag</div>
+                        <div class="card-title">Top Webshops Vandaag</div>
+                        <div class="card-subtitle">Orders per webshop — live uit Goedgepickt</div>
                     </div>
                     <div class="wms-badge">
                         <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        Goedgepickt sync
+                        Live data
                     </div>
                 </div>
 
-                <div class="employee-grid">
-                    <!-- Top Performer -->
-                    <div class="employee-card top-performer">
-                        <div class="employee-header">
-                            <div class="employee-avatar avatar-1">JV</div>
-                            <div class="employee-info">
-                                <div class="employee-name">Jasper Vermeer</div>
-                                <div class="employee-role">Senior Picker</div>
-                            </div>
-                        </div>
-                        <div class="employee-stats">
-                            <div class="stat-item">
-                                <div class="stat-value">156</div>
-                                <div class="stat-label">Orders</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">24</div>
-                                <div class="stat-label">Per uur</div>
-                            </div>
-                        </div>
-                        <div class="employee-progress">
-                            <div class="progress-header">
-                                <span class="progress-label">Dagdoel (130)</span>
-                                <span class="progress-value">120%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill excellent" style="width: 100%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="employee-card">
-                        <div class="employee-header">
-                            <div class="employee-avatar avatar-2">SK</div>
-                            <div class="employee-info">
-                                <div class="employee-name">Sophie Kuiper</div>
-                                <div class="employee-role">Picker</div>
-                            </div>
-                        </div>
-                        <div class="employee-stats">
-                            <div class="stat-item">
-                                <div class="stat-value">142</div>
-                                <div class="stat-label">Orders</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">22</div>
-                                <div class="stat-label">Per uur</div>
-                            </div>
-                        </div>
-                        <div class="employee-progress">
-                            <div class="progress-header">
-                                <span class="progress-label">Dagdoel (130)</span>
-                                <span class="progress-value">109%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill excellent" style="width: 100%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="employee-card">
-                        <div class="employee-header">
-                            <div class="employee-avatar avatar-3">MB</div>
-                            <div class="employee-info">
-                                <div class="employee-name">Milan Bakker</div>
-                                <div class="employee-role">Picker</div>
-                            </div>
-                        </div>
-                        <div class="employee-stats">
-                            <div class="stat-item">
-                                <div class="stat-value">138</div>
-                                <div class="stat-label">Orders</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">21</div>
-                                <div class="stat-label">Per uur</div>
-                            </div>
-                        </div>
-                        <div class="employee-progress">
-                            <div class="progress-header">
-                                <span class="progress-label">Dagdoel (130)</span>
-                                <span class="progress-value">106%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill excellent" style="width: 100%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="employee-card">
-                        <div class="employee-header">
-                            <div class="employee-avatar avatar-4">LJ</div>
-                            <div class="employee-info">
-                                <div class="employee-name">Lisa Jansen</div>
-                                <div class="employee-role">Picker</div>
-                            </div>
-                        </div>
-                        <div class="employee-stats">
-                            <div class="stat-item">
-                                <div class="stat-value">128</div>
-                                <div class="stat-label">Orders</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">20</div>
-                                <div class="stat-label">Per uur</div>
-                            </div>
-                        </div>
-                        <div class="employee-progress">
-                            <div class="progress-header">
-                                <span class="progress-label">Dagdoel (130)</span>
-                                <span class="progress-value">98%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill good" style="width: 98%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="employee-card">
-                        <div class="employee-header">
-                            <div class="employee-avatar avatar-5">TH</div>
-                            <div class="employee-info">
-                                <div class="employee-name">Thomas Hendriks</div>
-                                <div class="employee-role">Picker</div>
-                            </div>
-                        </div>
-                        <div class="employee-stats">
-                            <div class="stat-item">
-                                <div class="stat-value">119</div>
-                                <div class="stat-label">Orders</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">18</div>
-                                <div class="stat-label">Per uur</div>
-                            </div>
-                        </div>
-                        <div class="employee-progress">
-                            <div class="progress-header">
-                                <span class="progress-label">Dagdoel (130)</span>
-                                <span class="progress-value">92%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill good" style="width: 92%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="employee-card">
-                        <div class="employee-header">
-                            <div class="employee-avatar avatar-6">EV</div>
-                            <div class="employee-info">
-                                <div class="employee-name">Emma de Vries</div>
-                                <div class="employee-role">Starter</div>
-                            </div>
-                        </div>
-                        <div class="employee-stats">
-                            <div class="stat-item">
-                                <div class="stat-value">115</div>
-                                <div class="stat-label">Orders</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">18</div>
-                                <div class="stat-label">Per uur</div>
-                            </div>
-                        </div>
-                        <div class="employee-progress">
-                            <div class="progress-header">
-                                <span class="progress-label">Dagdoel (110)</span>
-                                <span class="progress-value">105%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill excellent" style="width: 100%"></div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="employee-grid" id="webshopGrid">
+                    <div style="grid-column:1/-1;text-align:center;padding:60px 0;color:#86868b;">Laden...</div>
                 </div>
             </div>
         </div>
@@ -951,28 +881,7 @@
             <!-- Alerts -->
             <div class="sidebar-card alerts-card">
                 <div class="sidebar-title">Alerts</div>
-                <div class="alert-item warning">
-                    <div class="alert-icon">
-                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                        </svg>
-                    </div>
-                    <div class="alert-content">
-                        <div class="alert-title">Voorraad laag</div>
-                        <div class="alert-subtitle">SKU BLK-HOOD-M: 3 stuks</div>
-                    </div>
-                </div>
-                <div class="alert-item info">
-                    <div class="alert-icon">
-                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                        </svg>
-                    </div>
-                    <div class="alert-content">
-                        <div class="alert-title">PostNL ophalen</div>
-                        <div class="alert-subtitle">Over 2 uur 15 min</div>
-                    </div>
-                </div>
+                <div style="padding:16px;text-align:center;color:#86868b;font-size:13px;">Laden...</div>
             </div>
         </aside>
 
@@ -985,19 +894,19 @@
                     </svg>
                 </div>
                 <div class="footer-stat-info">
-                    <span class="footer-stat-value">99.2%</span>
-                    <span class="footer-stat-label">Pick accuracy</span>
+                    <span class="footer-stat-value" id="footOrders">—</span>
+                    <span class="footer-stat-label">Orders vandaag</span>
                 </div>
             </div>
             <div class="footer-stat">
                 <div class="footer-stat-icon">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
                     </svg>
                 </div>
                 <div class="footer-stat-info">
-                    <span class="footer-stat-value">3.8 min</span>
-                    <span class="footer-stat-label">Gem. pick tijd</span>
+                    <span class="footer-stat-value" id="footShipments">—</span>
+                    <span class="footer-stat-label">Verzendingen vandaag</span>
                 </div>
             </div>
             <div class="footer-stat">
@@ -1007,26 +916,28 @@
                     </svg>
                 </div>
                 <div class="footer-stat-info">
-                    <span class="footer-stat-value">2,847</span>
-                    <span class="footer-stat-label">Items gepickt</span>
+                    <span class="footer-stat-value" id="footCompleted">—</span>
+                    <span class="footer-stat-label">Afgerond vandaag</span>
                 </div>
             </div>
             <div class="footer-stat">
                 <div class="footer-stat-icon">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
                 <div class="footer-stat-info">
-                    <span class="footer-stat-value">0</span>
-                    <span class="footer-stat-label">Mispicks vandaag</span>
+                    <span class="footer-stat-value" id="footOpen">—</span>
+                    <span class="footer-stat-label">Open orders</span>
                 </div>
             </div>
         </footer>
     </div>
 
     <script>
-        // Live clock
+        const API_BASE = 'https://dura-backend-production.up.railway.app';
+
+        // ============ CLOCK & DATE ============
         function updateClock() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -1034,7 +945,6 @@
             const seconds = String(now.getSeconds()).padStart(2, '0');
             document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
             
-            // Update cutoff timer (time until 23:59)
             const cutoff = new Date(now);
             cutoff.setHours(23, 59, 0, 0);
             const diff = cutoff - now;
@@ -1048,35 +958,312 @@
             }
         }
         
-        // Update date
         function updateDate() {
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const date = new Date().toLocaleDateString('nl-NL', options);
             document.getElementById('currentDate').textContent = date.charAt(0).toUpperCase() + date.slice(1);
         }
-        
-        // Simulate live pick rate changes
-        function simulatePickRate() {
-            const baseRate = 127;
-            const variation = Math.floor(Math.random() * 10) - 5;
-            const rate = baseRate + variation;
-            document.getElementById('pickRate').textContent = rate;
-            
-            // Color based on rate
-            const el = document.getElementById('pickRate');
-            if (rate >= 125) {
-                el.className = 'kpi-value green';
-            } else if (rate >= 100) {
-                el.className = 'kpi-value blue';
-            } else {
-                el.className = 'kpi-value orange';
+
+        // ============ LIVE KPIs ============
+        async function loadWarehouseData() {
+            try {
+                const res = await fetch(`${API_BASE}/api/dashboard`);
+                if (!res.ok) throw new Error('Dashboard API error');
+                const json = await res.json();
+                const d = json.data;
+
+                // KPI: Orders vandaag
+                const ordersToday = d.orders ? d.orders.today : 0;
+                document.getElementById('whOrdersToday').textContent = ordersToday.toLocaleString('nl-NL');
+                document.getElementById('whOrdersWeekLabel').textContent = `${(d.orders ? d.orders.week : 0).toLocaleString('nl-NL')} deze week`;
+
+                // KPI: Verzonden vandaag (completed + shipped)
+                const byStatus = (d.orders && d.orders.by_status) || {};
+                const shipped = (byStatus.completed || 0) + (byStatus.shipped || 0);
+                document.getElementById('whShipped').textContent = shipped.toLocaleString('nl-NL');
+                document.getElementById('whShippedLabel').textContent = `${((shipped / Math.max(ordersToday, 1)) * 100).toFixed(0)}% van orders`;
+
+                // KPI: Open orders
+                const open = (byStatus.open || 0) + (byStatus.ready_for_picking || 0) + (byStatus.picking || 0) + (byStatus.backorder || 0) + (byStatus.on_hold || 0);
+                document.getElementById('whOpen').textContent = open.toLocaleString('nl-NL');
+
+                // KPI: Verzendingen deze week
+                const shipmentsWeek = d.shipments ? (d.shipments.week || d.shipments.today || 0) : 0;
+                document.getElementById('whShipmentsWeek').textContent = shipmentsWeek.toLocaleString('nl-NL');
+
+                // Footer stats
+                const footOrders = document.getElementById('footOrders');
+                const footShipments = document.getElementById('footShipments');
+                const footCompleted = document.getElementById('footCompleted');
+                const footOpen = document.getElementById('footOpen');
+                if (footOrders) footOrders.textContent = ordersToday.toLocaleString('nl-NL');
+                if (footShipments) footShipments.textContent = shipmentsWeek.toLocaleString('nl-NL');
+                if (footCompleted) footCompleted.textContent = (byStatus.completed || 0).toLocaleString('nl-NL');
+                if (footOpen) footOpen.textContent = open.toLocaleString('nl-NL');
+            } catch (e) {
+                console.log('Warehouse API niet beschikbaar:', e.message);
             }
         }
-        
+
+        // ============ ORDERS PER UUR (LIVE) ============
+        async function loadHourlyChart() {
+            try {
+                const today = new Date().toISOString().slice(0, 10);
+                // Haal alle orders van vandaag op (meerdere pagina's)
+                let allOrders = [];
+                let page = 1;
+                let lastPage = 1;
+
+                // Haal eerst pagina info op
+                const probe = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=1&limit=50`);
+                if (!probe.ok) throw new Error('Orders API error');
+                const probeJson = await probe.json();
+                lastPage = probeJson.lastPage || 1;
+
+                // Haal max 10 pagina's verspreid op voor een goede sample
+                const pagesToFetch = Math.min(lastPage, 10);
+                const pageStep = Math.max(1, Math.floor(lastPage / pagesToFetch));
+                
+                for (let i = 0; i < pagesToFetch; i++) {
+                    const p = Math.min(1 + i * pageStep, lastPage);
+                    const r = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=${p}&limit=50`);
+                    if (r.ok) {
+                        const j = await r.json();
+                        if (j.data) allOrders = allOrders.concat(j.data);
+                    }
+                }
+
+                // Tel orders per uur
+                const hourCounts = {};
+                allOrders.forEach(o => {
+                    if (o.createDate) {
+                        const h = new Date(o.createDate).getHours();
+                        hourCounts[h] = (hourCounts[h] || 0) + 1;
+                    }
+                });
+
+                // Schaal op als we maar een sample hebben
+                const totalFromApi = probeJson.total || allOrders.length;
+                const scaleFactor = allOrders.length > 0 ? totalFromApi / allOrders.length : 1;
+
+                // Bepaal welke uren te tonen (6:00 - huidige uur)
+                const currentHour = new Date().getHours();
+                const startHour = 6;
+                const hours = [];
+                for (let h = startHour; h <= currentHour; h++) {
+                    hours.push(h);
+                }
+
+                if (hours.length === 0) return;
+
+                // Bereken geschaalde waarden
+                const values = hours.map(h => Math.round((hourCounts[h] || 0) * scaleFactor));
+                const maxVal = Math.max(...values, 1);
+
+                const chartContainer = document.querySelector('.chart-bars');
+                chartContainer.innerHTML = '';
+
+                hours.forEach((h, i) => {
+                    const val = values[i];
+                    const pct = (val / maxVal) * 100;
+                    const isCurrent = h === currentHour;
+                    
+                    chartContainer.innerHTML += `
+                        <div class="chart-bar-container">
+                            <div class="chart-bar ${isCurrent ? 'current' : ''}" style="height: ${Math.max(pct, 3)}%">
+                                <span class="chart-bar-value">${val}</span>
+                            </div>
+                            <span class="chart-bar-label">${String(h).padStart(2, '0')}u</span>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                console.log('Hourly chart niet beschikbaar:', e.message);
+            }
+        }
+
+        // ============ LIVE ALERTS ============
+        async function loadWarehouseAlerts() {
+            try {
+                const res = await fetch(`${API_BASE}/api/inventory?low_stock_only=true`);
+                if (!res.ok) return;
+                const json = await res.json();
+                const products = json.data || [];
+                
+                if (products.length === 0) return;
+
+                const alertsCard = document.querySelector('.alerts-card');
+                const titleEl = alertsCard.querySelector('.sidebar-title');
+                alertsCard.innerHTML = '';
+                alertsCard.appendChild(titleEl);
+
+                products.slice(0, 4).forEach(p => {
+                    const stock = p.stockLevel || p.stock || 0;
+                    const isCritical = stock <= 5;
+                    const level = isCritical ? 'urgent' : 'warning';
+                    const sku = p.sku || p.productName || '—';
+                    const name = p.productName || p.name || sku;
+
+                    const div = document.createElement('div');
+                    div.className = `alert-item ${level}`;
+                    div.innerHTML = `
+                        <div class="alert-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="${isCritical 
+                                    ? 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'
+                                    : 'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'}" />
+                            </svg>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">${isCritical ? 'Kritiek laag' : 'Voorraad laag'}</div>
+                            <div class="alert-subtitle">${name}: ${stock} stuks</div>
+                        </div>
+                    `;
+                    alertsCard.appendChild(div);
+                });
+            } catch (e) {
+                console.log('Warehouse alerts niet beschikbaar:', e.message);
+            }
+        }
+
+        // ============ TOP WEBSHOPS ============
+        const AVATAR_COLORS = ['avatar-1','avatar-2','avatar-3','avatar-4','avatar-5','avatar-6'];
+
+        async function loadTopWebshops() {
+            try {
+                // Haal meerdere pagina's op voor een goede sample
+                const today = new Date().toISOString().slice(0, 10);
+                let allOrders = [];
+
+                // Probe voor totaal
+                const probe = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=1&limit=50`);
+                if (!probe.ok) throw new Error('API error');
+                const probeJson = await probe.json();
+                const lastPage = probeJson.lastPage || 1;
+                const totalOrders = probeJson.total || 0;
+                allOrders = allOrders.concat(probeJson.data || []);
+
+                // Haal verspreid extra pagina's op voor betere sample
+                const extraPages = Math.min(4, lastPage - 1);
+                for (let i = 0; i < extraPages; i++) {
+                    const p = Math.max(1, Math.round(lastPage * (i + 1) / (extraPages + 1)));
+                    if (p === 1) continue;
+                    const r = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=${p}&limit=50`);
+                    if (r.ok) {
+                        const j = await r.json();
+                        if (j.data) allOrders = allOrders.concat(j.data);
+                    }
+                }
+
+                // Tel per webshop
+                const shops = {};
+                allOrders.forEach(o => {
+                    const name = o.webshopName || 'Onbekend';
+                    if (!shops[name]) shops[name] = { orders: 0, items: 0, revenue: 0 };
+                    shops[name].orders++;
+                    shops[name].items += (o.products ? o.products.length : 0);
+                    shops[name].revenue += parseFloat(o.totalPaid || 0);
+                });
+
+                // Schaal op
+                const scaleFactor = allOrders.length > 0 ? totalOrders / allOrders.length : 1;
+
+                // Sorteer en pak top 6
+                const sorted = Object.entries(shops)
+                    .sort((a, b) => b[1].orders - a[1].orders)
+                    .slice(0, 6);
+
+                const maxOrders = sorted.length > 0 ? sorted[0][1].orders : 1;
+                const grid = document.getElementById('webshopGrid');
+                grid.innerHTML = '';
+
+                sorted.forEach(([name, data], i) => {
+                    const initials = name.split(/[\s.-]+/).map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                    const scaledOrders = Math.round(data.orders * scaleFactor);
+                    const scaledItems = Math.round(data.items * scaleFactor);
+                    const scaledRevenue = (data.revenue * scaleFactor).toFixed(0);
+                    const pct = Math.round((data.orders / maxOrders) * 100);
+                    const isTop = i === 0;
+                    const progressClass = pct >= 80 ? 'excellent' : pct >= 50 ? 'good' : 'warning';
+
+                    grid.innerHTML += `
+                        <div class="employee-card ${isTop ? 'top-performer' : ''}">
+                            <div class="employee-header">
+                                <div class="employee-avatar ${AVATAR_COLORS[i % 6]}">${initials}</div>
+                                <div class="employee-info">
+                                    <div class="employee-name">${name}</div>
+                                    <div class="employee-role">Webshop</div>
+                                </div>
+                            </div>
+                            <div class="employee-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">${scaledOrders}</div>
+                                    <div class="stat-label">Orders</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${scaledItems}</div>
+                                    <div class="stat-label">Items</div>
+                                </div>
+                            </div>
+                            <div class="employee-progress">
+                                <div class="progress-header">
+                                    <span class="progress-label">€${Number(scaledRevenue).toLocaleString('nl-NL')} omzet</span>
+                                    <span class="progress-value">${pct}%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill ${progressClass}" style="width: ${pct}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                console.log('Webshops laden mislukt:', e.message);
+                document.getElementById('webshopGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:#86868b;">Niet beschikbaar</div>';
+            }
+        }
+
+        // ============ DARK MODE (Feature 10) ============
+        function toggleDarkMode() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('warehouse_dark_mode', isDark ? '1' : '0');
+            updateDarkToggleUI(isDark);
+        }
+
+        function updateDarkToggleUI(isDark) {
+            const icon = document.getElementById('darkIcon');
+            const label = document.getElementById('darkLabel');
+            if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+            if (label) label.textContent = isDark ? 'Light mode' : 'Dark mode';
+        }
+
+        // Restore preference
+        (function() {
+            const pref = localStorage.getItem('warehouse_dark_mode');
+            if (pref === '1') {
+                document.body.classList.add('dark-mode');
+                updateDarkToggleUI(true);
+            }
+        })();
+
+        // ============ INIT ============
         updateClock();
         updateDate();
         setInterval(updateClock, 1000);
-        setInterval(simulatePickRate, 5000);
+
+        // Load live data
+        loadWarehouseData();
+        loadHourlyChart();
+        loadWarehouseAlerts();
+        loadTopWebshops();
+
+        // Auto-refresh elke 60 seconden
+        setInterval(() => {
+            loadWarehouseData();
+            loadHourlyChart();
+            loadWarehouseAlerts();
+            loadTopWebshops();
+        }, 60000);
     </script>
 </body>
 </html>

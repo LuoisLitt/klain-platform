@@ -23,6 +23,16 @@
                 </ul>
             </div>
             <div class="nav-right">
+                <div class="global-search" style="position:relative;">
+                    <input type="text" id="globalSearch" placeholder="Zoek order, klant, SKU..."
+                        style="width:220px;padding:8px 12px 8px 34px;border:1px solid #d2d2d7;border-radius:8px;font-size:13px;font-family:inherit;background:var(--gray-light);outline:none;transition:all 0.2s;"
+                        onfocus="this.style.width='300px';this.style.borderColor='var(--blue)';this.style.background='#fff'"
+                        onblur="this.style.width='220px';this.style.borderColor='#d2d2d7';this.style.background='var(--gray-light)'"
+                        onkeydown="if(event.key==='Enter'){var q=this.value.trim();if(q){document.getElementById('searchInput').value=q;filterOrders();}}">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#8e93a6;pointer-events:none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </div>
                 <a href="warehouse.html" class="btn-warehouse" title="Warehouse Display">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
@@ -30,8 +40,8 @@
                     Warehouse Display
                 </a>
                 <div class="nav-user">
-                    <div class="user-avatar">DF</div>
-                    <span class="user-name">Demo Account</span>
+                    <div class="user-avatar" id="userAvatar">DF</div>
+                    <span class="user-name" id="userName">Demo Account</span>
                 </div>
             </div>
         </div>
@@ -72,11 +82,15 @@
             <div class="filter-group">
                 <select id="statusFilter" onchange="filterOrders()">
                     <option value="">Alle statussen</option>
-                    <option value="pending">Wacht op verwerking</option>
-                    <option value="picking">In picking</option>
+                    <option value="ready_for_picking">Klaar voor picking</option>
+                    <option value="processing">In verwerking</option>
+                    <option value="picked">Gepickt</option>
                     <option value="packed">Ingepakt</option>
                     <option value="shipped">Verzonden</option>
+                    <option value="completed">Afgerond</option>
                     <option value="delivered">Afgeleverd</option>
+                    <option value="backorder">Backorder</option>
+                    <option value="on_hold">On hold</option>
                 </select>
                 <select id="carrierFilter" onchange="filterOrders()">
                     <option value="">Alle carriers</option>
@@ -89,22 +103,27 @@
         </div>
 
         <!-- Stats Row -->
-        <div class="stats-row">
+        <div class="stats-row" id="statsRow">
+            <!-- Stats worden dynamisch gevuld -->
             <div class="stat-box">
-                <span class="stat-value" id="totalOrders">156</span>
+                <span class="stat-value" id="totalOrders">—</span>
                 <span class="stat-label">Orders vandaag</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value orange" id="pendingOrders">23</span>
-                <span class="stat-label">Wacht op verwerking</span>
+                <span class="stat-value green" id="completedOrders">—</span>
+                <span class="stat-label">Afgerond</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value blue" id="pickingOrders">12</span>
-                <span class="stat-label">In picking</span>
+                <span class="stat-value orange" id="readyForPickingOrders">—</span>
+                <span class="stat-label">Klaar voor picking</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value green" id="shippedOrders">121</span>
-                <span class="stat-label">Verzonden</span>
+                <span class="stat-value red" id="backorderOrders">—</span>
+                <span class="stat-label">Backorder</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value blue" id="onHoldOrders">—</span>
+                <span class="stat-label">On hold</span>
             </div>
         </div>
 
@@ -116,223 +135,20 @@
                         <th>Order ID</th>
                         <th>Klant</th>
                         <th>Items</th>
+                        <th>Totaal</th>
                         <th>Status</th>
                         <th>Carrier</th>
                         <th>Aangemaakt</th>
                         <th>Acties</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr data-status="pending" data-carrier="dhl" class="urgent-row" style="background: rgba(255,59,48,0.05);">
-                        <td><span class="order-id">#DF-24893</span><span class="priority-badge spoed">SPOED</span></td>
-                        <td>
-                            <div class="customer-info">
-                                <strong>Medical Supply BV</strong>
-                                <span>Groningen</span>
-                            </div>
-                        </td>
-                        <td>2 items</td>
-                        <td><span class="status-badge urgent"><span class="status-dot"></span>SPOED</span></td>
-                        <td><span class="carrier-badge dhl">DHL Express</span></td>
-                        <td>Vandaag, 15:01</td>
-                        <td>
-                            <button class="btn-icon" onclick="viewOrder('DF-24893')" title="Bekijk details">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-status="pending" data-carrier="postnl" style="background: rgba(255,149,0,0.05);">
-                        <td><span class="order-id">#DF-24892</span><span class="priority-badge express">EXPRESS</span></td>
-                        <td>
-                            <div class="customer-info">
-                                <strong>Tech Direct</strong>
-                                <span>Eindhoven</span>
-                            </div>
-                        </td>
-                        <td>1 item</td>
-                        <td><span class="status-badge pending"><span class="status-dot"></span>Wacht</span></td>
-                        <td><span class="carrier-badge postnl">PostNL</span></td>
-                        <td>Vandaag, 14:55</td>
-                        <td>
-                            <button class="btn-icon" onclick="viewOrder('DF-24892')" title="Bekijk details">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-status="shipped" data-carrier="postnl">
-                        <td><span class="order-id">#DF-24891</span></td>
-                        <td>
-                            <div class="customer-info">
-                                <strong>Webshop Trendy</strong>
-                                <span>Amsterdam</span>
-                            </div>
-                        </td>
-                        <td>3 items</td>
-                        <td><span class="status-badge shipped"><span class="status-dot"></span>Verzonden</span></td>
-                        <td><span class="carrier-badge postnl">PostNL</span></td>
-                        <td>Vandaag, 14:32</td>
-                        <td>
-                            <button class="btn-icon" onclick="viewOrder('DF-24891')" title="Bekijk details">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-status="delivered" data-carrier="dhl">
-                        <td><span class="order-id">#DF-24890</span></td>
-                        <td>
-                            <div class="customer-info">
-                                <strong>Fashion Forward</strong>
-                                <span>Rotterdam</span>
-                            </div>
-                        </td>
-                        <td>1 item</td>
-                        <td><span class="status-badge delivered"><span class="status-dot"></span>Afgeleverd</span></td>
-                        <td><span class="carrier-badge dhl">DHL</span></td>
-                        <td>Vandaag, 13:15</td>
-                        <td>
-                            <button class="btn-icon" onclick="viewOrder('DF-24890')" title="Bekijk details">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-status="picking" data-carrier="postnl">
-                        <td><span class="order-id">#DF-24889</span></td>
-                        <td>
-                            <div class="customer-info">
-                                <strong>Style Store NL</strong>
-                                <span>Utrecht</span>
-                            </div>
-                        </td>
-                        <td>5 items</td>
-                        <td><span class="status-badge picking"><span class="status-dot"></span>In picking</span></td>
-                        <td><span class="carrier-badge postnl">PostNL</span></td>
-                        <td>Vandaag, 12:48</td>
-                        <td>
-                            <button class="btn-icon" onclick="viewOrder('DF-24889')" title="Bekijk details">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-status="shipped" data-carrier="dpd">
-                        <td><span class="order-id">#DF-24888</span></td>
-                        <td>
-                            <div class="customer-info">
-                                <strong>Gadget Galaxy</strong>
-                                <span>Den Haag</span>
-                            </div>
-                        </td>
-                        <td>2 items</td>
-                        <td><span class="status-badge shipped"><span class="status-dot"></span>Verzonden</span></td>
-                        <td><span class="carrier-badge dpd">DPD</span></td>
-                        <td>Vandaag, 11:22</td>
-                        <td>
-                            <button class="btn-icon" onclick="viewOrder('DF-24888')" title="Bekijk details">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-status="pending" data-carrier="">
-                        <td><span class="order-id">#DF-24887</span></td>
-                        <td>
-                            <div class="customer-info">
-                                <strong>Home Essentials</strong>
-                                <span>Eindhoven</span>
-                            </div>
-                        </td>
-                        <td>4 items</td>
-                        <td><span class="status-badge pending"><span class="status-dot"></span>Wacht op voorraad</span></td>
-                        <td>—</td>
-                        <td>Vandaag, 10:55</td>
-                        <td>
-                            <button class="btn-icon" onclick="viewOrder('DF-24887')" title="Bekijk details">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-status="packed" data-carrier="postnl">
-                        <td><span class="order-id">#DF-24886</span></td>
-                        <td>
-                            <div class="customer-info">
-                                <strong>Tech Solutions BV</strong>
-                                <span>Groningen</span>
-                            </div>
-                        </td>
-                        <td>8 items</td>
-                        <td><span class="status-badge packed"><span class="status-dot"></span>Ingepakt</span></td>
-                        <td><span class="carrier-badge postnl">PostNL</span></td>
-                        <td>Vandaag, 10:12</td>
-                        <td>
-                            <button class="btn-icon" onclick="viewOrder('DF-24886')" title="Bekijk details">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-status="shipped" data-carrier="dhl">
-                        <td><span class="order-id">#DF-24885</span></td>
-                        <td>
-                            <div class="customer-info">
-                                <strong>Urban Lifestyle</strong>
-                                <span>Tilburg</span>
-                            </div>
-                        </td>
-                        <td>2 items</td>
-                        <td><span class="status-badge shipped"><span class="status-dot"></span>Verzonden</span></td>
-                        <td><span class="carrier-badge dhl">DHL</span></td>
-                        <td>Vandaag, 09:45</td>
-                        <td>
-                            <button class="btn-icon" onclick="viewOrder('DF-24885')" title="Bekijk details">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-status="pending" data-carrier="">
-                        <td><span class="order-id">#DF-24884</span></td>
-                        <td>
-                            <div class="customer-info">
-                                <strong>Outdoor Adventures</strong>
-                                <span>Maastricht</span>
-                            </div>
-                        </td>
-                        <td>6 items</td>
-                        <td><span class="status-badge pending"><span class="status-dot"></span>Wacht op verwerking</span></td>
-                        <td>—</td>
-                        <td>Vandaag, 09:18</td>
-                        <td>
-                            <button class="btn-icon" onclick="viewOrder('DF-24884')" title="Bekijk details">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
+                <tbody id="ordersBody">
+                    <tr><td colspan="8" style="text-align:center;padding:40px;color:#999;">
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                            <div class="loading-spinner"></div>
+                            Bezig met laden...
+                        </div>
+                    </td></tr>
                 </tbody>
             </table>
         </div>
@@ -340,118 +156,585 @@
 
     <!-- Order Detail Modal -->
     <div class="modal-overlay" id="orderModal" onclick="closeModal(event)">
-        <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal" onclick="event.stopPropagation()" style="max-width: 800px;">
             <div class="modal-header">
-                <h2>Order <span id="modalOrderId">#DF-24891</span></h2>
+                <h2>Order <span id="modalOrderId"></span></h2>
                 <button class="btn-close" onclick="closeModal()">&times;</button>
             </div>
-            <div class="modal-body">
-                <div class="order-detail-grid">
-                    <div class="detail-section">
-                        <h3>Klantgegevens</h3>
-                        <div class="detail-row">
-                            <span class="detail-label">Bedrijf</span>
-                            <span class="detail-value" id="modalCustomer">Webshop Trendy</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Adres</span>
-                            <span class="detail-value">Kalverstraat 123<br>1012 PA Amsterdam</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Contact</span>
-                            <span class="detail-value">info@webshoptrendy.nl</span>
-                        </div>
-                    </div>
-                    <div class="detail-section">
-                        <h3>Verzending</h3>
-                        <div class="detail-row">
-                            <span class="detail-label">Carrier</span>
-                            <span class="detail-value"><span class="carrier-badge postnl">PostNL</span></span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Track & Trace</span>
-                            <span class="detail-value"><a href="#" class="link">3SYZTR123456789</a></span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Verwachte levering</span>
-                            <span class="detail-value">Morgen, 12:00 - 14:00</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="detail-section" style="margin-top: 24px;">
-                    <h3>Orderregels</h3>
-                    <table class="detail-table">
-                        <thead>
-                            <tr>
-                                <th>SKU</th>
-                                <th>Product</th>
-                                <th>Aantal</th>
-                                <th>Locatie</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>BLK-HOOD-M</code></td>
-                                <td>Zwarte Hoodie - Maat M</td>
-                                <td>1</td>
-                                <td>A-12-3</td>
-                            </tr>
-                            <tr>
-                                <td><code>WHT-TEE-L</code></td>
-                                <td>Wit T-Shirt - Maat L</td>
-                                <td>2</td>
-                                <td>B-04-1</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="detail-section" style="margin-top: 24px;">
-                    <h3>Timeline</h3>
-                    <div class="timeline">
-                        <div class="timeline-item completed">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-content">
-                                <strong>Order ontvangen</strong>
-                                <span>Vandaag, 14:32</span>
-                            </div>
-                        </div>
-                        <div class="timeline-item completed">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-content">
-                                <strong>Picking gestart</strong>
-                                <span>Vandaag, 14:45 — Jasper V.</span>
-                            </div>
-                        </div>
-                        <div class="timeline-item completed">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-content">
-                                <strong>Ingepakt</strong>
-                                <span>Vandaag, 14:52</span>
-                            </div>
-                        </div>
-                        <div class="timeline-item completed">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-content">
-                                <strong>Verzonden</strong>
-                                <span>Vandaag, 17:30 — PostNL</span>
-                            </div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-content">
-                                <strong>Afgeleverd</strong>
-                                <span>Verwacht morgen</span>
-                            </div>
-                        </div>
-                    </div>
+            <div class="modal-body" id="modalBody">
+                <div style="text-align:center;padding:40px;color:#999;">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top:12px;">Order details laden...</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <style>
+        .loading-spinner {
+            width: 24px; height: 24px;
+            border: 3px solid #e5e7eb;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .order-id-link {
+            color: #2563eb;
+            cursor: pointer;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .order-id-link:hover {
+            text-decoration: underline;
+        }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .detail-section { }
+        .detail-section h3 { font-size: 14px; font-weight: 600; color: #8e93a6; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f2; font-size: 14px; }
+        .detail-label { color: #6b7084; }
+        .detail-value { font-weight: 500; text-align: right; }
+        .detail-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .detail-table th { text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #8e93a6; border-bottom: 2px solid #e8e8ed; }
+        .detail-table td { padding: 12px; font-size: 14px; border-bottom: 1px solid #f0f0f2; }
+        .timeline { position: relative; padding-left: 24px; }
+        .timeline::before { content: ''; position: absolute; left: 7px; top: 4px; bottom: 4px; width: 2px; background: #e5e7eb; }
+        .timeline-item { position: relative; padding-bottom: 20px; }
+        .timeline-item:last-child { padding-bottom: 0; }
+        .timeline-dot { position: absolute; left: -20px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: #e5e7eb; border: 2px solid #fff; }
+        .timeline-item.completed .timeline-dot { background: #16a34a; }
+        .timeline-item.active .timeline-dot { background: #2563eb; box-shadow: 0 0 0 4px rgba(37,99,235,0.2); }
+        .timeline-content { padding-left: 4px; }
+        .timeline-content strong { display: block; font-size: 14px; margin-bottom: 2px; }
+        .timeline-content span { font-size: 13px; color: #6b7084; }
+        @media (max-width: 768px) {
+            .detail-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+
     <script>
+        // ============================================
+        // LIVE API INTEGRATION
+        // ============================================
+        const API_BASE = 'https://dura-backend-production.up.railway.app';
+
+        const STATUS_MAP = {
+            'open': 'Nieuw',
+            'processing': 'In verwerking',
+            'picked': 'Gepickt',
+            'packed': 'Ingepakt',
+            'shipped': 'Verzonden',
+            'completed': 'Afgerond',
+            'delivered': 'Afgeleverd',
+            'ready_for_picking': 'Klaar voor picking',
+            'backorder': 'Backorder',
+            'on_hold': 'On hold'
+        };
+
+        const STATUS_CLASS_MAP = {
+            'open': 'pending',
+            'processing': 'picking',
+            'picked': 'picking',
+            'packed': 'packed',
+            'shipped': 'shipped',
+            'completed': 'delivered',
+            'delivered': 'delivered',
+            'ready_for_picking': 'pending',
+            'backorder': 'critical',
+            'on_hold': 'processing'
+        };
+
+        function extractCarrier(shippingMethod) {
+            if (!shippingMethod) return '';
+            const upper = shippingMethod.toUpperCase();
+            if (upper.includes('DHL')) return 'dhl';
+            if (upper.includes('POSTNL') || upper.includes('POST NL') || upper.includes('MYPARCEL')) return 'postnl';
+            if (upper.includes('TNT')) return 'tnt';
+            if (upper.includes('DPD')) return 'dpd';
+            if (upper.includes('UPS')) return 'ups';
+            return '';
+        }
+
+        function extractCarrierLabel(shippingMethod) {
+            if (!shippingMethod) return '—';
+            const upper = shippingMethod.toUpperCase();
+            if (upper.includes('DHL')) return 'DHL';
+            if (upper.includes('POSTNL') || upper.includes('POST NL') || upper.includes('MYPARCEL')) return 'PostNL';
+            if (upper.includes('TNT')) return 'TNT';
+            if (upper.includes('DPD')) return 'DPD';
+            if (upper.includes('UPS')) return 'UPS';
+            return '—';
+        }
+
+        function formatDutchDate(dateStr) {
+            if (!dateStr) return '—';
+            const d = new Date(dateStr);
+            const now = new Date();
+            const isToday = d.toDateString() === now.toDateString();
+            const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+            const isYesterday = d.toDateString() === yesterday.toDateString();
+            const hh = String(d.getHours()).padStart(2, '0');
+            const mm = String(d.getMinutes()).padStart(2, '0');
+            if (isToday) return `Vandaag, ${hh}:${mm}`;
+            if (isYesterday) return `Gisteren, ${hh}:${mm}`;
+            const dag = d.getDate();
+            const maanden = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+            return `${dag} ${maanden[d.getMonth()]} ${d.getFullYear()}, ${hh}:${mm}`;
+        }
+
+        function formatCurrency(amount) {
+            if (!amount || amount === '0.00') return '—';
+            return '€ ' + parseFloat(amount).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // ============ STORE orders with uuid for lookup ============
+        let _ordersMap = {}; // uuid -> order object
+
+        // Pagination state
+        let currentPage = 1;
+        let totalPages = 1;
+        let totalOrderCount = 0;
+        let _apiLastPage = null;
+
+        async function loadOrders(page) {
+            currentPage = page || 1;
+            try {
+                const today = new Date().toISOString().slice(0, 10);
+
+                if (_apiLastPage === null) {
+                    const probe = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=1&limit=50`);
+                    if (!probe.ok) throw new Error('Orders API error');
+                    const probeJson = await probe.json();
+                    _apiLastPage = probeJson.lastPage || 1;
+                    totalPages = _apiLastPage;
+                    totalOrderCount = probeJson.total || 0;
+                }
+
+                const apiPage = Math.max(1, _apiLastPage - (currentPage - 1));
+                const res = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=${apiPage}&limit=50`);
+                if (!res.ok) throw new Error('Orders API error');
+                const json = await res.json();
+                const orders = json.data || json;
+                totalPages = json.lastPage || _apiLastPage || 1;
+                totalOrderCount = json.total || 0;
+                _apiLastPage = totalPages;
+
+                if (Array.isArray(orders)) {
+                    orders.sort((a, b) => (b.createDate || '').localeCompare(a.createDate || ''));
+                }
+
+                renderOrders(orders);
+                updatePagination();
+            } catch (e) {
+                console.log('Orders API not available:', e.message);
+                document.querySelector('#ordersTable tbody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#c00;">Fout bij laden: ' + e.message + '</td></tr>';
+            }
+        }
+
+        function renderOrders(orders) {
+            const tbody = document.querySelector('#ordersTable tbody');
+            tbody.innerHTML = '';
+
+            if (!Array.isArray(orders) || orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#999;">Geen orders gevonden</td></tr>';
+                return;
+            }
+
+            orders.forEach(order => {
+                // Store for later lookup
+                if (order.uuid) _ordersMap[order.uuid] = order;
+
+                const displayId = order.externalDisplayId || order.uuid.slice(0, 8);
+                const customerName = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || '—';
+                const customerCity = order.billingCity || '';
+                const webshop = order.webshopName || '';
+                const itemCount = (order.products && order.products.length) || 0;
+                const totalPaid = formatCurrency(order.totalPaid);
+                const statusLabel = STATUS_MAP[order.status] || order.status || '—';
+                const statusClass = STATUS_CLASS_MAP[order.status] || 'pending';
+                const carrierKey = extractCarrier(order.shippingMethod);
+                const carrierLabel = extractCarrierLabel(order.shippingMethod);
+                const dateFormatted = formatDutchDate(order.createDate);
+                const uuid = order.uuid || '';
+
+                const tr = document.createElement('tr');
+                tr.dataset.status = order.status || '';
+                tr.dataset.carrier = carrierKey;
+                tr.innerHTML = `
+                    <td><a class="order-id-link" onclick="viewOrderByUuid('${uuid}')" title="Bekijk order details">#${displayId}</a></td>
+                    <td>
+                        <div class="customer-info">
+                            <strong>${customerName}</strong>
+                            <span>${webshop || customerCity}</span>
+                        </div>
+                    </td>
+                    <td>${itemCount} item${itemCount !== 1 ? 's' : ''}</td>
+                    <td>${totalPaid}</td>
+                    <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusLabel}</span></td>
+                    <td>${carrierKey ? `<span class="carrier-badge ${carrierKey}">${carrierLabel}</span>` : '—'}</td>
+                    <td>${dateFormatted}</td>
+                    <td>
+                        <button class="btn-icon" onclick="viewOrderByUuid('${uuid}')" title="Bekijk details">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updatePagination() {
+            let pagDiv = document.getElementById('pagination');
+            if (!pagDiv) {
+                pagDiv = document.createElement('div');
+                pagDiv.id = 'pagination';
+                pagDiv.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:12px;padding:20px 0;';
+                document.querySelector('.card').appendChild(pagDiv);
+            }
+            
+            if (totalPages <= 1) {
+                pagDiv.innerHTML = `<span style="color:#8e93a6;font-size:14px;">Pagina 1 van 1 (${totalOrderCount.toLocaleString('nl-NL')} orders totaal)</span>`;
+                return;
+            }
+
+            pagDiv.innerHTML = `
+                <button onclick="loadOrders(1)" ${currentPage <= 1 ? 'disabled' : ''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${currentPage <= 1 ? '#f3f4f6' : '#fff'};cursor:${currentPage <= 1 ? 'default' : 'pointer'};color:${currentPage <= 1 ? '#ccc' : '#333'}">« Eerste</button>
+                <button onclick="loadOrders(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${currentPage <= 1 ? '#f3f4f6' : '#fff'};cursor:${currentPage <= 1 ? 'default' : 'pointer'};color:${currentPage <= 1 ? '#ccc' : '#333'}">‹ Vorige</button>
+                <span style="font-size:14px;color:#6b7084;">Pagina <strong>${currentPage}</strong> van <strong>${totalPages}</strong> (${totalOrderCount.toLocaleString('nl-NL')} orders)</span>
+                <button onclick="loadOrders(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${currentPage >= totalPages ? '#f3f4f6' : '#fff'};cursor:${currentPage >= totalPages ? 'default' : 'pointer'};color:${currentPage >= totalPages ? '#ccc' : '#333'}">Volgende ›</button>
+                <button onclick="loadOrders(${totalPages})" ${currentPage >= totalPages ? 'disabled' : ''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${currentPage >= totalPages ? '#f3f4f6' : '#fff'};cursor:${currentPage >= totalPages ? 'default' : 'pointer'};color:${currentPage >= totalPages ? '#ccc' : '#333'}">Laatste »</button>
+            `;
+        }
+
+        // ============ FAST COMBINED LOAD ============
+        async function loadAllOrders() {
+            try {
+                const res = await fetch(`${API_BASE}/api/page-data/orders`);
+                if (!res.ok) throw new Error('Page data error');
+                const json = await res.json();
+                const d = json.data;
+
+                // Stats uit dashboard
+                if (d.dashboard && d.dashboard.orders) {
+                    const totalEl = document.getElementById('totalOrders');
+                    if (totalEl) totalEl.textContent = Number(d.dashboard.orders.today).toLocaleString('nl-NL');
+
+                    const byStatus = d.dashboard.orders.by_status || {};
+                    
+                    // Dynamische stats met echte statussen
+                    const completedEl = document.getElementById('completedOrders');
+                    if (completedEl) completedEl.textContent = (byStatus.completed || 0).toLocaleString('nl-NL');
+
+                    const rfpEl = document.getElementById('readyForPickingOrders');
+                    if (rfpEl) rfpEl.textContent = (byStatus.ready_for_picking || 0).toLocaleString('nl-NL');
+
+                    const boEl = document.getElementById('backorderOrders');
+                    if (boEl) boEl.textContent = (byStatus.backorder || 0).toLocaleString('nl-NL');
+
+                    const ohEl = document.getElementById('onHoldOrders');
+                    if (ohEl) ohEl.textContent = (byStatus.on_hold || 0).toLocaleString('nl-NL');
+                }
+
+                // Orders + paginering
+                if (d.orders) {
+                    _apiLastPage = d.lastPage || 1;
+                    totalPages = _apiLastPage;
+                    totalOrderCount = d.total || 0;
+                    currentPage = 1;
+                    renderOrders(d.orders);
+                    updatePagination();
+                }
+            } catch (e) {
+                console.log('Combined load failed, falling back:', e.message);
+                loadOrders(1);
+            }
+        }
+
+        // ============ ORDER DETAIL MODAL ============
+        async function viewOrderByUuid(uuid) {
+            if (!uuid) return;
+            
+            // Open modal with loading state
+            document.getElementById('modalOrderId').textContent = '';
+            document.getElementById('modalBody').innerHTML = `
+                <div style="text-align:center;padding:40px;color:#999;">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top:12px;">Order details laden...</p>
+                </div>
+            `;
+            document.getElementById('orderModal').classList.add('active');
+
+            try {
+                const res = await fetch(`${API_BASE}/api/orders/${uuid}`);
+                if (!res.ok) throw new Error('Kan order niet ophalen');
+                const json = await res.json();
+                const order = json.data;
+
+                const displayId = order.externalDisplayId || order.uuid.slice(0, 8);
+                document.getElementById('modalOrderId').textContent = '#' + displayId;
+
+                // Build modal content with real data
+                const customerName = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || '—';
+                const shippingName = [order.shippingFirstName, order.shippingLastName].filter(Boolean).join(' ') || customerName;
+                const billingAddress = [order.billingAddress, order.billingHouseNumber, order.billingHouseNumberAddition].filter(Boolean).join(' ');
+                const billingCityLine = [order.billingZipcode, order.billingCity].filter(Boolean).join(' ');
+                const shippingAddress = [order.shippingAddress, order.shippingHouseNumber, order.shippingHousenumberAddition || order.shippingHouseNumberAddition].filter(Boolean).join(' ');
+                const shippingCityLine = [order.shippingZipcode, order.shippingCity].filter(Boolean).join(' ');
+                const email = order.billingEmail || order.shippingEmail || '—';
+                const phone = order.billingPhone || order.shippingPhone || '—';
+                const webshop = order.webshopName || '—';
+                const statusLabel = STATUS_MAP[order.status] || order.status || '—';
+                const statusClass = STATUS_CLASS_MAP[order.status] || 'pending';
+
+                // Carrier from shipping method
+                const carrierLabel = extractCarrierLabel(order.shippingMethod);
+                const shippingMethodText = order.shippingMethod || '—';
+
+                // Shipments / tracking
+                const shipments = order.shipments || [];
+                let trackingHtml = '';
+                if (shipments.length > 0) {
+                    shipments.forEach(s => {
+                        const code = s.trackTraceCode || '—';
+                        const url = s.trackTraceUrl || '#';
+                        trackingHtml += `<div style="margin-bottom:4px;">${url !== '#' ? `<a href="${url}" target="_blank" class="link" style="color:#2563eb;">${code}</a>` : code}</div>`;
+                    });
+                } else {
+                    trackingHtml = '<span style="color:#999;">Nog geen verzending</span>';
+                }
+
+                // Products table
+                const products = order.products || [];
+                let productsHtml = '';
+                products.forEach(p => {
+                    const picked = p.pickedQuantity || 0;
+                    const qty = p.productQuantity || 0;
+                    const pickedClass = picked >= qty ? 'green' : (picked > 0 ? 'orange' : '');
+                    productsHtml += `
+                        <tr>
+                            <td><code>${p.sku || '—'}</code></td>
+                            <td>${p.productName || '—'}</td>
+                            <td style="text-align:center;">${qty}</td>
+                            <td style="text-align:center;"><span class="${pickedClass}">${picked}</span></td>
+                            <td style="text-align:right;">${formatCurrency(p.productPrice)}</td>
+                        </tr>
+                    `;
+                });
+
+                // Timeline
+                let timelineHtml = '';
+                
+                // Order aangemaakt
+                timelineHtml += `
+                    <div class="timeline-item completed">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>Order ontvangen</strong>
+                            <span>${formatDutchDate(order.createDate)}</span>
+                        </div>
+                    </div>
+                `;
+
+                // Status-based timeline events
+                const statusOrder = ['ready_for_picking', 'processing', 'picked', 'packed', 'shipped', 'completed', 'delivered'];
+                const statusTimeline = {
+                    'ready_for_picking': 'Klaar voor picking',
+                    'processing': 'In verwerking',
+                    'picked': 'Gepickt',
+                    'packed': 'Ingepakt',
+                    'shipped': 'Verzonden',
+                    'completed': 'Afgerond',
+                    'delivered': 'Afgeleverd'
+                };
+                
+                const currentIdx = statusOrder.indexOf(order.status);
+
+                // Finish date (picking klaar)
+                if (order.finishDate) {
+                    timelineHtml += `
+                        <div class="timeline-item completed">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <strong>Verwerking afgerond</strong>
+                                <span>${formatDutchDate(order.finishDate)}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Shipped date
+                if (order.shippedDate) {
+                    timelineHtml += `
+                        <div class="timeline-item completed">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <strong>Verzonden</strong>
+                                <span>${formatDutchDate(order.shippedDate)}${carrierLabel !== '—' ? ' — ' + carrierLabel : ''}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Shipment tracking
+                if (shipments.length > 0) {
+                    shipments.forEach(s => {
+                        if (s.createDate && !order.shippedDate) {
+                            timelineHtml += `
+                                <div class="timeline-item completed">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content">
+                                        <strong>Verzending aangemaakt</strong>
+                                        <span>${formatDutchDate(s.createDate)}</span>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
+                // Current status if not yet covered
+                if (order.status === 'completed' && !order.shippedDate) {
+                    timelineHtml += `
+                        <div class="timeline-item completed">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <strong>Afgerond</strong>
+                                <span>${order.finishDate ? formatDutchDate(order.finishDate) : '—'}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Next expected steps
+                if (currentIdx >= 0 && currentIdx < statusOrder.length - 1) {
+                    const nextStatus = statusOrder[currentIdx + 1];
+                    if (statusTimeline[nextStatus]) {
+                        timelineHtml += `
+                            <div class="timeline-item active">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <strong>${statusTimeline[nextStatus]}</strong>
+                                    <span>Verwacht</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Payment info
+                const paymentMethod = order.paymentMethod || '—';
+
+                document.getElementById('modalBody').innerHTML = `
+                    <div style="margin-bottom:16px;">
+                        <span class="status-badge ${statusClass}" style="font-size:14px;"><span class="status-dot"></span>${statusLabel}</span>
+                        <span style="margin-left:12px;font-size:13px;color:#6b7084;">${webshop}</span>
+                        ${order.totalPaid && order.totalPaid !== '0.00' ? `<span style="margin-left:12px;font-weight:600;">${formatCurrency(order.totalPaid)}</span>` : ''}
+                    </div>
+
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h3>Klantgegevens</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Naam</span>
+                                <span class="detail-value">${customerName}</span>
+                            </div>
+                            ${order.billingCompany ? `<div class="detail-row"><span class="detail-label">Bedrijf</span><span class="detail-value">${order.billingCompany}</span></div>` : ''}
+                            <div class="detail-row">
+                                <span class="detail-label">Adres</span>
+                                <span class="detail-value" style="text-align:right;">${billingAddress}<br>${billingCityLine}${order.billingCountry ? ', ' + order.billingCountry : ''}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">E-mail</span>
+                                <span class="detail-value"><a href="mailto:${email}" style="color:#2563eb;">${email}</a></span>
+                            </div>
+                            ${phone !== '—' ? `<div class="detail-row"><span class="detail-label">Telefoon</span><span class="detail-value">${phone}</span></div>` : ''}
+                            <div class="detail-row">
+                                <span class="detail-label">Betaling</span>
+                                <span class="detail-value">${paymentMethod}</span>
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <h3>Verzending</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Methode</span>
+                                <span class="detail-value">${shippingMethodText}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Carrier</span>
+                                <span class="detail-value">${carrierLabel !== '—' ? `<span class="carrier-badge ${extractCarrier(order.shippingMethod)}">${carrierLabel}</span>` : '—'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Track & Trace</span>
+                                <span class="detail-value">${trackingHtml}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Verzendadres</span>
+                                <span class="detail-value" style="text-align:right;">${shippingName}<br>${shippingAddress}<br>${shippingCityLine}${order.shippingCountry ? ', ' + order.shippingCountry : ''}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section" style="margin-top: 24px;">
+                        <h3>Orderregels (${products.length} product${products.length !== 1 ? 'en' : ''})</h3>
+                        <table class="detail-table">
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Product</th>
+                                    <th style="text-align:center;">Aantal</th>
+                                    <th style="text-align:center;">Gepickt</th>
+                                    <th style="text-align:right;">Prijs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${productsHtml || '<tr><td colspan="5" style="text-align:center;color:#999;padding:20px;">Geen producten</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="detail-section" style="margin-top: 24px;">
+                        <h3>Timeline</h3>
+                        <div class="timeline">
+                            ${timelineHtml}
+                        </div>
+                    </div>
+
+                    ${order.customerNote ? `<div style="margin-top:20px;padding:16px;background:#fffbeb;border-radius:10px;border:1px solid #fde68a;"><strong style="font-size:13px;color:#92400e;">Klantopmerking:</strong><p style="margin-top:4px;font-size:14px;color:#78350f;">${order.customerNote}</p></div>` : ''}
+                    ${order.internComment ? `<div style="margin-top:12px;padding:16px;background:#f0f4ff;border-radius:10px;border:1px solid #bfdbfe;"><strong style="font-size:13px;color:#1e40af;">Interne opmerking:</strong><p style="margin-top:4px;font-size:14px;color:#1e3a5f;">${order.internComment}</p></div>` : ''}
+                `;
+            } catch (e) {
+                document.getElementById('modalBody').innerHTML = `
+                    <div style="text-align:center;padding:40px;color:#c00;">
+                        <p>Fout bij laden van order: ${e.message}</p>
+                        <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:16px;">Sluiten</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Check for search param from global search (Feature 8)
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchParam = urlParams.get('search');
+        if (searchParam) {
+            document.getElementById('searchInput').value = searchParam;
+        }
+
+        // Initial load
+        loadAllOrders();
+
+        // Apply search filter after load if present
+        if (searchParam) {
+            setTimeout(() => filterOrders(), 1500);
+        }
+
+        // ============================================
+        // EXISTING FUNCTIONS
+        // ============================================
         function filterOrders() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const status = document.getElementById('statusFilter').value;
@@ -471,11 +754,6 @@
             });
         }
 
-        function viewOrder(orderId) {
-            document.getElementById('modalOrderId').textContent = '#' + orderId;
-            document.getElementById('orderModal').classList.add('active');
-        }
-
         function closeModal(event) {
             if (!event || event.target.classList.contains('modal-overlay')) {
                 document.getElementById('orderModal').classList.remove('active');
@@ -483,13 +761,49 @@
         }
 
         function exportOrders() {
-            alert('Export functie: In productie zou dit een CSV/Excel export genereren vanuit Goedgepickt.');
+            const rows = document.querySelectorAll('#ordersTable tbody tr');
+            if (!rows.length) { alert('Geen data om te exporteren.'); return; }
+            const headers = ['Order ID', 'Klant', 'Items', 'Totaal', 'Status', 'Carrier', 'Datum'];
+            const csvRows = [headers.join(';')];
+            rows.forEach(row => {
+                if (row.style.display === 'none') return;
+                const cells = row.querySelectorAll('td');
+                if (cells.length < 7) return;
+                const vals = [
+                    (cells[0].textContent || '').trim().replace('#',''),
+                    (cells[1].textContent || '').trim().replace(/\n/g, ' '),
+                    (cells[2].textContent || '').trim(),
+                    (cells[3].textContent || '').trim(),
+                    (cells[4].textContent || '').trim(),
+                    (cells[5].textContent || '').trim(),
+                    (cells[6].textContent || '').trim()
+                ].map(v => '"' + v.replace(/"/g, '""') + '"');
+                csvRows.push(vals.join(';'));
+            });
+            const blob = new Blob(['\uFEFF' + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'orders_' + new Date().toISOString().slice(0,10) + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         // Close modal on escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeModal();
         });
+    </script>
+    <script>
+    // User session
+    (function() {
+        var user = JSON.parse(sessionStorage.getItem('dura_user') || 'null');
+        if (!user) { window.location.href = '../demo-dura-login.html'; return; }
+        var avatar = document.getElementById('userAvatar');
+        var uname = document.getElementById('userName');
+        if (avatar) avatar.textContent = user.name.charAt(0).toUpperCase();
+        if (uname) uname.textContent = user.name;
+    })();
     </script>
 </body>
 </html>

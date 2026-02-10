@@ -52,7 +52,7 @@
             text-decoration: none;
         }
         .nav-cta {
-            background: var(--black); color: var(--white); padding: 10px 22px;
+            background: var(--blue); color: var(--white); padding: 10px 22px;
             border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 500;
         }
 
@@ -422,11 +422,12 @@
         }
 
         .quote-total {
-            background: var(--black);
-            color: white;
+            background: var(--white);
+            color: var(--black);
             margin: 24px -32px -32px;
             padding: 24px 32px;
             border-radius: 0 0 16px 16px;
+            border-top: 1px solid var(--gray-100);
         }
 
         .quote-total-row {
@@ -434,16 +435,20 @@
             justify-content: space-between;
             margin-bottom: 8px;
             font-size: 14px;
-            opacity: 0.8;
+            color: var(--gray-dark);
         }
 
         .quote-total-row.final {
             font-size: 24px;
             font-weight: 700;
-            opacity: 1;
+            color: var(--blue);
             margin-top: 16px;
             padding-top: 16px;
-            border-top: 1px solid rgba(255,255,255,0.2);
+            border-top: 2px solid var(--blue);
+        }
+
+        .quote-total-row.final span:first-child {
+            color: var(--black);
         }
 
         .ai-badge {
@@ -460,18 +465,26 @@
         }
 
         .ai-suggestion {
-            background: var(--gray-light);
-            border: 1px solid var(--gray-medium);
+            background: linear-gradient(135deg, var(--blue-light) 0%, #f0f4ff 100%);
+            border: 1px solid rgba(37, 99, 235, 0.12);
             border-radius: 12px;
-            padding: 16px;
+            padding: 20px;
             margin-top: 16px;
         }
 
         .ai-suggestion-header {
-            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
             font-weight: 600;
-            color: var(--blue);
-            margin-bottom: 8px;
+            color: var(--white);
+            background: var(--blue);
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .ai-suggestion p {
@@ -484,15 +497,14 @@
             text-align: center;
             margin-top: 24px;
             padding-top: 16px;
-            border-top: 1px solid var(--gray-light);
             font-size: 12px;
-            color: var(--gray-dark);
+            color: var(--gray-medium);
         }
 
         .watermark a {
             color: var(--blue);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         /* Tablet */

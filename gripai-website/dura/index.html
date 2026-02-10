@@ -205,6 +205,108 @@
             height: 16px;
         }
 
+        /* AI Briefing Hero */
+        .ai-briefing {
+            display: flex;
+            gap: 20px;
+            background: linear-gradient(135deg, var(--blue-light) 0%, #f0f4ff 100%);
+            border: 1px solid rgba(37, 99, 235, 0.1);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 32px;
+        }
+
+        .ai-briefing-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--blue);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ai-briefing-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: white;
+        }
+
+        .ai-briefing-content {
+            flex: 1;
+        }
+
+        .ai-briefing-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .ai-briefing-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            background: var(--blue);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-briefing-time {
+            font-size: 13px;
+            color: var(--gray-dark);
+        }
+
+        .ai-briefing-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 8px;
+        }
+
+        .ai-briefing-text {
+            font-size: 15px;
+            color: var(--gray-dark);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .ai-briefing-text strong {
+            color: var(--black);
+            font-weight: 600;
+        }
+
+        .ai-briefing-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .ai-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .ai-action.warning {
+            background: var(--orange-light);
+            color: var(--orange);
+        }
+
+        .ai-action.info {
+            background: var(--blue-muted);
+            color: var(--blue);
+        }
+
         /* KPI Grid */
         .kpi-grid {
             display: grid;
@@ -690,6 +792,16 @@
                 </ul>
             </div>
             <div class="nav-right">
+                <div class="global-search" style="position:relative;">
+                    <input type="text" id="globalSearch" placeholder="Zoek order, klant, SKU..." 
+                        style="width:220px;padding:8px 12px 8px 34px;border:1px solid #d2d2d7;border-radius:8px;font-size:13px;font-family:inherit;background:var(--gray-light);outline:none;transition:all 0.2s;"
+                        onfocus="this.style.width='300px';this.style.borderColor='var(--blue)';this.style.background='#fff'"
+                        onblur="this.style.width='220px';this.style.borderColor='#d2d2d7';this.style.background='var(--gray-light)'"
+                        onkeydown="if(event.key==='Enter')doGlobalSearch()">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#8e93a6;pointer-events:none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </div>
                 <a href="warehouse.html" class="btn-warehouse" title="Warehouse Display" style="display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--blue-light); color: var(--blue); border-radius: 8px; font-size: 13px; font-weight: 500; text-decoration: none;">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
@@ -697,8 +809,8 @@
                     Warehouse Display
                 </a>
                 <div class="nav-user">
-                    <div class="user-avatar">DF</div>
-                    <span class="user-name">Demo Account</span>
+                    <div class="user-avatar" id="userAvatar">DF</div>
+                    <span class="user-name" id="userName">Demo Account</span>
                 </div>
                 <div class="hamburger">
                     <span></span>
@@ -715,7 +827,7 @@
         <header class="header">
             <div class="header-title">
                 <h1>Dashboard</h1>
-                <p>Week 6, 2026 — Overzicht van uw fulfilment</p>
+                <p>Live data uit Goedgepickt — Laden...</p>
             </div>
             <div class="header-actions">
                 <button class="btn btn-secondary">
@@ -745,29 +857,30 @@
                     <span class="ai-briefing-badge">AI Briefing</span>
                     <span class="ai-briefing-time">Vandaag 07:00</span>
                 </div>
-                <h3 class="ai-briefing-title">Goedemorgen! Hier is uw dagelijkse samenvatting.</h3>
+                <h3 class="ai-briefing-title">Laden...</h3>
                 <p class="ai-briefing-text">
-                    Vandaag verwachten we <strong>~90 orders</strong> op basis van het weekpatroon. Let op: <strong>3 producten</strong> naderen kritieke voorraad, en er is een vertraging bij DHL (on-time rate gedaald naar <strong>82%</strong>).
+                    Samenvatting wordt geladen vanuit Goedgepickt...
                 </p>
                 <div class="ai-briefing-actions">
-                    <span class="ai-action warning">
-                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 14px; height: 14px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                        </svg>
-                        Bestel vandaag bij leverancier X
-                    </span>
                     <span class="ai-action info">
                         <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 14px; height: 14px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                         </svg>
-                        Overweeg PostNL voor spoedorders
+                        Data wordt elke minuut ververst
                     </span>
                 </div>
             </div>
         </div>
 
+        <!-- Auto-refresh indicator -->
+        <div id="refreshIndicator" style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:13px;color:var(--gray-dark);transition:opacity 0.3s;">
+            <span style="display:inline-block;width:8px;height:8px;background:var(--green);border-radius:50%;"></span>
+            Laatste update: <span id="lastUpdateTime">—</span>
+            <span id="refreshFlash" style="color:var(--blue);font-weight:500;opacity:0;transition:opacity 0.5s;">✓ Ververst</span>
+        </div>
+
         <!-- KPI Grid -->
-        <div class="kpi-grid">
+        <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr);">
             <div class="kpi-card">
                 <div class="kpi-header">
                     <div class="kpi-icon blue">
@@ -775,15 +888,10 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                         </svg>
                     </div>
-                    <span class="kpi-trend up">
-                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                        </svg>
-                        12.3%
-                    </span>
+                    <span class="kpi-trend" id="kpiOrdersWeekTrend" style="display:none;"></span>
                 </div>
-                <div class="kpi-value">1,247</div>
-                <div class="kpi-label">Orders deze week</div>
+                <div class="kpi-value" id="kpiOrdersWeek">—</div>
+                <div class="kpi-label" title="Totaal aantal orders binnengekomen in Goedgepickt deze week">Orders deze week</div>
             </div>
 
             <div class="kpi-card">
@@ -793,51 +901,63 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <span class="kpi-trend up">
-                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                        </svg>
-                        0.4%
-                    </span>
                 </div>
-                <div class="kpi-value">98.7%</div>
-                <div class="kpi-label">On-time delivery</div>
+                <div class="kpi-value" id="kpiOrdersToday">—</div>
+                <div class="kpi-label" title="Aantal ontvangen orders in Goedgepickt vandaag">Orders vandaag</div>
             </div>
 
+            <!-- Omzet vandaag -->
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-icon green" style="background:#f0fdf4;">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" style="stroke:var(--green);">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="kpi-value" id="kpiRevenueToday" style="font-size:28px;">—</div>
+                <div class="kpi-label">Omzet vandaag</div>
+            </div>
+
+            <!-- Omzet week -->
             <div class="kpi-card">
                 <div class="kpi-header">
                     <div class="kpi-icon blue">
                         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
                         </svg>
                     </div>
-                    <span class="kpi-trend up">
-                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25" />
-                        </svg>
-                        18 sec
-                    </span>
                 </div>
-                <div class="kpi-value">4.2 min</div>
-                <div class="kpi-label">Gem. verwerkingstijd</div>
+                <div class="kpi-value" id="kpiRevenueWeek" style="font-size:28px;">—</div>
+                <div class="kpi-label">Omzet deze week</div>
+            </div>
+        </div>
+
+        <!-- Second KPI row -->
+        <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr); margin-top:-12px;">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-icon blue">
+                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                        </svg>
+                    </div>
+                    <span class="kpi-trend" id="kpiShipWeekTrend" style="display:none;"></span>
+                </div>
+                <div class="kpi-value" id="kpiShipmentsWeek">—</div>
+                <div class="kpi-label" title="Verzendingen deze week">Verzendingen week</div>
             </div>
 
             <div class="kpi-card">
                 <div class="kpi-header">
                     <div class="kpi-icon orange">
                         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <span class="kpi-trend down">
-                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                        </svg>
-                        0.3%
-                    </span>
                 </div>
-                <div class="kpi-value">2.1%</div>
-                <div class="kpi-label">Retourpercentage</div>
+                <div class="kpi-value" id="kpiProcessingTime">—</div>
+                <div class="kpi-label">Gem. verwerkingstijd</div>
             </div>
 
             <div class="kpi-card">
@@ -847,33 +967,50 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                         </svg>
                     </div>
-                    <span class="kpi-trend up">
-                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                        </svg>
-                        1.2%
-                    </span>
                 </div>
-                <div class="kpi-value">97.3%</div>
-                <div class="kpi-label">SLA performance</div>
+                <div class="kpi-value" id="kpiOpenOrders">—</div>
+                <div class="kpi-label">Open orders</div>
             </div>
 
             <div class="kpi-card">
                 <div class="kpi-header">
-                    <div class="kpi-icon blue">
+                    <div class="kpi-icon red">
                         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                         </svg>
                     </div>
-                    <span class="kpi-trend up">
-                        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25" />
-                        </svg>
-                        €0.12
-                    </span>
                 </div>
-                <div class="kpi-value">€2.34</div>
-                <div class="kpi-label">Kosten per order</div>
+                <div class="kpi-value" id="kpiLowStock">—</div>
+                <div class="kpi-label">Lage voorraad alerts</div>
+            </div>
+        </div>
+
+        <!-- Probleem Orders Alert -->
+        <div id="problemAlert" style="display:none;background:var(--red-light);border:1px solid rgba(220,38,38,0.2);border-radius:16px;padding:20px 24px;margin-bottom:24px;display:none;">
+            <div style="display:flex;align-items:center;gap:16px;">
+                <div style="width:44px;height:44px;background:rgba(220,38,38,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--red)" style="width:24px;height:24px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                </div>
+                <div style="flex:1;">
+                    <div style="font-size:16px;font-weight:600;color:var(--red);margin-bottom:2px;">⚠️ <span id="problemCount">0</span> probleem-orders</div>
+                    <div style="font-size:14px;color:#991b1b;">Orders die aandacht nodig hebben of langer dan 4 uur open staan</div>
+                </div>
+                <a href="orders.html" style="padding:10px 20px;background:var(--red);color:white;border-radius:10px;text-decoration:none;font-size:14px;font-weight:500;">Bekijk orders →</a>
+            </div>
+        </div>
+
+        <!-- Order Pipeline -->
+        <div class="card" style="margin-bottom:24px;" id="pipelineCard">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Order Pipeline</div>
+                    <div class="card-subtitle">Verdeling per verwerkingsfase vandaag</div>
+                </div>
+            </div>
+            <div id="pipelineContainer" style="display:flex;gap:4px;align-items:stretch;min-height:80px;">
+                <div style="text-align:center;padding:20px;color:#999;width:100%;">Laden...</div>
             </div>
         </div>
 
@@ -885,7 +1022,7 @@
                         <div class="card-title">Orders per dag</div>
                         <div class="card-subtitle">Afgelopen 7 dagen</div>
                     </div>
-                    <a href="#" class="card-link">Bekijk alles</a>
+                    <a href="voorraad.html" class="card-link">Bekijk alles</a>
                 </div>
                 <div class="chart-container">
                     <canvas id="ordersChart"></canvas>
@@ -895,59 +1032,40 @@
             <div class="card">
                 <div class="card-header">
                     <div>
-                        <div class="card-title">Carrier Performance</div>
-                        <div class="card-subtitle">On-time delivery</div>
+                        <div class="card-title">Carrier Verdeling</div>
+                        <div class="card-subtitle">Aandeel per vervoerder</div>
                     </div>
                 </div>
-                <div class="carrier-list">
-                    <div class="carrier-item">
-                        <div class="carrier-logo">PostNL</div>
-                        <div class="carrier-info">
-                            <div class="carrier-name">PostNL</div>
-                            <div class="carrier-stats">847 zendingen</div>
-                        </div>
-                        <div class="carrier-bar">
-                            <div class="carrier-bar-fill" style="width: 99%"></div>
-                        </div>
-                        <div class="carrier-percent">99.1%</div>
-                    </div>
-
-                    <div class="carrier-item">
-                        <div class="carrier-logo">DHL</div>
-                        <div class="carrier-info">
-                            <div class="carrier-name">DHL Express</div>
-                            <div class="carrier-stats">312 zendingen</div>
-                        </div>
-                        <div class="carrier-bar">
-                            <div class="carrier-bar-fill" style="width: 98%"></div>
-                        </div>
-                        <div class="carrier-percent">98.4%</div>
-                    </div>
-
-                    <div class="carrier-item">
-                        <div class="carrier-logo">DPD</div>
-                        <div class="carrier-info">
-                            <div class="carrier-name">DPD</div>
-                            <div class="carrier-stats">88 zendingen</div>
-                        </div>
-                        <div class="carrier-bar">
-                            <div class="carrier-bar-fill" style="width: 96%"></div>
-                        </div>
-                        <div class="carrier-percent">96.2%</div>
-                    </div>
+                <div class="carrier-list" id="carrierList">
+                    <div style="text-align:center;padding:20px;color:#999;">Laden...</div>
+                </div>
+                <div id="carrierDisclaimer" style="display:none;margin-top:12px;padding:10px 14px;background:#fffbeb;border-radius:8px;border:1px solid #fde68a;font-size:12px;color:#92400e;">
+                    ⚠️ Gebaseerd op de laatste 50 verzendingen. Grotere sample geeft nauwkeuriger beeld.
                 </div>
             </div>
         </div>
 
         <!-- Second Row -->
-        <div class="content-grid">
-            <div class="card">
+        <div class="content-grid" style="grid-template-columns: 2fr 1fr 1fr;">
+            <!-- Top 5 Webshops -->
+            <div class="card" id="topWebshopsCard" style="grid-column:3;grid-row:1/3;">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">🏆 Top Webshops</div>
+                        <div class="card-subtitle">Vandaag op ordervolume</div>
+                    </div>
+                </div>
+                <div id="topWebshopsList" style="display:flex;flex-direction:column;gap:8px;">
+                    <div style="text-align:center;padding:20px;color:#999;">Laden...</div>
+                </div>
+            </div>
+            <div class="card" style="grid-column:1/3;">
                 <div class="card-header">
                     <div>
                         <div class="card-title">Recente Orders</div>
                         <div class="card-subtitle">Laatste 5 orders</div>
                     </div>
-                    <a href="#" class="card-link">Alle orders</a>
+                    <a href="orders.html" class="card-link">Alle orders</a>
                 </div>
                 <table class="orders-table">
                     <thead>
@@ -959,47 +1077,11 @@
                             <th>Carrier</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="order-id">#DF-24891</span></td>
-                            <td>Webshop Trendy</td>
-                            <td>3 items</td>
-                            <td><span class="status-badge shipped"><span class="status-dot"></span>Verzonden</span></td>
-                            <td>PostNL</td>
-                        </tr>
-                        <tr>
-                            <td><span class="order-id">#DF-24890</span></td>
-                            <td>Fashion Forward</td>
-                            <td>1 item</td>
-                            <td><span class="status-badge delivered"><span class="status-dot"></span>Afgeleverd</span></td>
-                            <td>DHL</td>
-                        </tr>
-                        <tr>
-                            <td><span class="order-id">#DF-24889</span></td>
-                            <td>Style Store NL</td>
-                            <td>5 items</td>
-                            <td><span class="status-badge processing"><span class="status-dot"></span>In verwerking</span></td>
-                            <td>PostNL</td>
-                        </tr>
-                        <tr>
-                            <td><span class="order-id">#DF-24888</span></td>
-                            <td>Gadget Galaxy</td>
-                            <td>2 items</td>
-                            <td><span class="status-badge shipped"><span class="status-dot"></span>Verzonden</span></td>
-                            <td>DPD</td>
-                        </tr>
-                        <tr>
-                            <td><span class="order-id">#DF-24887</span></td>
-                            <td>Home Essentials</td>
-                            <td>4 items</td>
-                            <td><span class="status-badge pending"><span class="status-dot"></span>Wacht op voorraad</span></td>
-                            <td>—</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="recentOrdersBody"><tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Laden...</td></tr></tbody>
                 </table>
             </div>
 
-            <div class="card">
+            <div class="card" style="grid-column:1/3;">
                 <div class="card-header">
                     <div>
                         <div class="card-title">Voorraad Alerts</div>
@@ -1007,45 +1089,8 @@
                     </div>
                 </div>
 
-                <div class="alerts-list">
-                    <div class="alert-item critical">
-                        <div class="alert-icon">
-                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                            </svg>
-                        </div>
-                        <div class="alert-content">
-                            <div class="alert-title">Kritiek laag</div>
-                            <div class="alert-subtitle">SKU: BLK-HOOD-M</div>
-                        </div>
-                        <div class="alert-count">3</div>
-                    </div>
-
-                    <div class="alert-item critical">
-                        <div class="alert-icon">
-                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                            </svg>
-                        </div>
-                        <div class="alert-content">
-                            <div class="alert-title">Kritiek laag</div>
-                            <div class="alert-subtitle">SKU: WHT-TEE-L</div>
-                        </div>
-                        <div class="alert-count">5</div>
-                    </div>
-
-                    <div class="alert-item warning">
-                        <div class="alert-icon">
-                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                            </svg>
-                        </div>
-                        <div class="alert-content">
-                            <div class="alert-title">Onder bestelpunt</div>
-                            <div class="alert-subtitle">SKU: NVY-JEANS-32</div>
-                        </div>
-                        <div class="alert-count">12</div>
-                    </div>
+                <div class="alerts-list" id="alertsList">
+                    <div style="text-align:center;padding:20px;color:#999;">Laden...</div>
                 </div>
 
                 <!-- AI Insight -->
@@ -1059,7 +1104,7 @@
                         <span class="ai-insight-label">AI-inzicht</span>
                     </div>
                     <p class="ai-insight-text">
-                        Op basis van historische data verwacht ik dat BLK-HOOD-M volgende week 40% meer verkocht wordt (Valentijnsdag). Adviseer bijbestelling van minimaal 50 stuks.
+                        AI-inzichten worden geladen op basis van actuele data...
                     </p>
                     <div class="ai-insight-action">
                         Bestelling voorbereiden
@@ -1073,81 +1118,676 @@
     </main>
 
     <script>
-        // Orders Chart
-        const ctx = document.getElementById('ordersChart').getContext('2d');
+        // ============================================
+        // LIVE API INTEGRATION — Alle data uit Goedgepickt
+        // ============================================
+        const API_BASE = 'https://dura-backend-production.up.railway.app';
 
-        const gradient = ctx.createLinearGradient(0, 0, 0, 280);
-        gradient.addColorStop(0, 'rgba(0, 113, 227, 0.15)');
-        gradient.addColorStop(1, 'rgba(0, 113, 227, 0)');
+        const STATUS_MAP = {
+            'open': 'Nieuw',
+            'processing': 'In verwerking',
+            'picked': 'Gepickt',
+            'packed': 'Ingepakt',
+            'shipped': 'Verzonden',
+            'completed': 'Afgerond',
+            'delivered': 'Afgeleverd'
+        };
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'],
-                datasets: [{
-                    label: 'Orders',
-                    data: [156, 189, 203, 178, 245, 198, 78],
-                    borderColor: '#0071e3',
-                    backgroundColor: gradient,
-                    borderWidth: 2.5,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#0071e3',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 5,
-                    pointHoverRadius: 7
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: '#1d1d1f',
-                        titleColor: '#fff',
-                        bodyColor: 'rgba(255, 255, 255, 0.8)',
-                        padding: 12,
-                        cornerRadius: 8,
-                        displayColors: false,
-                        callbacks: {
-                            label: function(context) {
-                                return context.parsed.y + ' orders';
-                            }
-                        }
-                    }
+        const STATUS_CLASS_MAP = {
+            'open': 'pending',
+            'processing': 'processing',
+            'picked': 'processing',
+            'packed': 'processing',
+            'shipped': 'shipped',
+            'completed': 'delivered',
+            'delivered': 'delivered'
+        };
+
+        function extractCarrier(obj) {
+            const method = (obj.shippingMethod || obj.shippingCarrier || obj.shippingProvider || '').toUpperCase();
+            if (method.includes('DHL')) return 'DHL';
+            if (method.includes('POSTNL') || method.includes('POST NL') || method.includes('MYPARCEL')) return 'PostNL';
+            if (method.includes('TNT')) return 'TNT';
+            if (method.includes('DPD')) return 'DPD';
+            if (method.includes('UPS')) return 'UPS';
+            return method.split(' ').slice(0, 2).join(' ') || '—';
+        }
+
+        function formatDutchDate(dateStr) {
+            if (!dateStr) return '—';
+            const d = new Date(dateStr);
+            const now = new Date();
+            const isToday = d.toDateString() === now.toDateString();
+            const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+            const isYesterday = d.toDateString() === yesterday.toDateString();
+            const hh = String(d.getHours()).padStart(2, '0');
+            const mm = String(d.getMinutes()).padStart(2, '0');
+            if (isToday) return `Vandaag, ${hh}:${mm}`;
+            if (isYesterday) return `Gisteren, ${hh}:${mm}`;
+            const dag = d.getDate();
+            const maanden = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+            return `${dag} ${maanden[d.getMonth()]}, ${hh}:${mm}`;
+        }
+
+        // ============ GLOBAL SEARCH ============
+        function doGlobalSearch() {
+            const q = document.getElementById('globalSearch').value.trim();
+            if (q) window.location.href = 'orders.html?search=' + encodeURIComponent(q);
+        }
+
+        // ============ FORMAT HELPERS ============
+        function formatEuro(amount) {
+            return '€' + Number(amount).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function formatProcessingTime(minutes) {
+            if (!minutes || minutes <= 0) return '—';
+            if (minutes < 60) return Math.round(minutes) + ' min';
+            const h = Math.floor(minutes / 60);
+            const m = Math.round(minutes % 60);
+            return h + 'u ' + m + 'm';
+        }
+
+        function renderWeekTrend(el, current, previous) {
+            if (!el || !previous || previous === 0) { if(el) el.style.display='none'; return; }
+            const pct = ((current - previous) / previous * 100).toFixed(0);
+            const isUp = current >= previous;
+            el.className = 'kpi-trend ' + (isUp ? 'up' : 'down');
+            el.innerHTML = (isUp ? '↑' : '↓') + ' ' + Math.abs(pct) + '% vs vorige week';
+            el.style.display = 'inline-flex';
+        }
+
+        // ============ PIPELINE RENDER ============
+        function renderPipeline(byStatus) {
+            const stages = [
+                { key: 'open', label: 'Nieuw', color: '#6b7084' },
+                { key: 'ready_for_picking', label: 'Klaar voor picking', color: '#2563eb' },
+                { key: 'processing', label: 'Picking', color: '#7c3aed' },
+                { key: 'packed', label: 'Ingepakt', color: '#ea580c' },
+                { key: 'shipped', label: 'Verzonden', color: '#0891b2' },
+                { key: 'completed', label: 'Afgerond', color: '#16a34a' }
+            ];
+            const total = stages.reduce((s, st) => s + (byStatus[st.key] || 0), 0) || 1;
+            const container = document.getElementById('pipelineContainer');
+            container.innerHTML = '';
+            stages.forEach((st, i) => {
+                const count = byStatus[st.key] || 0;
+                const pct = Math.max(((count / total) * 100), count > 0 ? 8 : 4);
+                const div = document.createElement('div');
+                div.style.cssText = `flex:${pct};background:${st.color};border-radius:${i===0?'12px 0 0 12px':i===stages.length-1?'0 12px 12px 0':'0'};padding:16px 12px;text-align:center;color:white;min-width:60px;display:flex;flex-direction:column;justify-content:center;transition:flex 0.5s;`;
+                div.innerHTML = `<div style="font-size:24px;font-weight:700;">${count}</div><div style="font-size:11px;opacity:0.9;margin-top:2px;">${st.label}</div>`;
+                container.appendChild(div);
+                if (i < stages.length - 1) {
+                    const arrow = document.createElement('div');
+                    arrow.style.cssText = 'display:flex;align-items:center;color:#d2d2d7;font-size:16px;flex-shrink:0;';
+                    arrow.textContent = '›';
+                    container.appendChild(arrow);
+                }
+            });
+        }
+
+        // ============ TOP WEBSHOPS ============
+        function renderTopWebshops(shops) {
+            const list = document.getElementById('topWebshopsList');
+            if (!shops || shops.length === 0) {
+                list.innerHTML = '<div style="text-align:center;padding:20px;color:#999;">Geen data</div>';
+                return;
+            }
+            list.innerHTML = '';
+            const maxCount = shops[0].count || 1;
+            shops.forEach((shop, i) => {
+                const pct = (shop.count / maxCount * 100).toFixed(0);
+                const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1)+'.';
+                const div = document.createElement('div');
+                div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--gray-light);border-radius:10px;';
+                div.innerHTML = `
+                    <span style="font-size:18px;width:28px;text-align:center;">${medal}</span>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${shop.name}</div>
+                        <div style="height:4px;background:#e8e8ed;border-radius:2px;margin-top:4px;">
+                            <div style="height:100%;width:${pct}%;background:var(--blue);border-radius:2px;transition:width 0.5s;"></div>
+                        </div>
+                    </div>
+                    <span style="font-size:18px;font-weight:700;color:var(--blue);">${shop.count}</span>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // ============ DASHBOARD KPIs ============
+        async function loadDashboard() {
+            try {
+                const res = await fetch(`${API_BASE}/api/dashboard`);
+                if (!res.ok) throw new Error('Dashboard API error');
+                const json = await res.json();
+                const d = json.data;
+
+                // Orders deze week
+                const kpiWeek = document.getElementById('kpiOrdersWeek');
+                if (kpiWeek && d.orders) kpiWeek.textContent = Number(d.orders.week).toLocaleString('nl-NL');
+
+                // Orders vandaag
+                const kpiToday = document.getElementById('kpiOrdersToday');
+                if (kpiToday && d.orders) kpiToday.textContent = Number(d.orders.today).toLocaleString('nl-NL');
+
+                // Verzendingen deze week
+                const kpiShipWeek = document.getElementById('kpiShipmentsWeek');
+                if (kpiShipWeek && d.shipments) kpiShipWeek.textContent = Number(d.shipments.week).toLocaleString('nl-NL');
+
+                // Open orders (status open/processing)
+                const kpiOpen = document.getElementById('kpiOpenOrders');
+                if (kpiOpen && d.orders && d.orders.by_status) {
+                    const bs = d.orders.by_status;
+                    const openCount = (bs.open || 0) + (bs.processing || 0) + (bs.picked || 0) + (bs.packed || 0) + (bs.ready_for_picking || 0);
+                    kpiOpen.textContent = openCount.toLocaleString('nl-NL');
+                }
+
+                // Feature 1: Revenue
+                if (d.revenue) {
+                    const rt = document.getElementById('kpiRevenueToday');
+                    const rw = document.getElementById('kpiRevenueWeek');
+                    if (rt) rt.textContent = formatEuro(d.revenue.today);
+                    if (rw) rw.textContent = formatEuro(d.revenue.week);
+                }
+
+                // Feature 2: Processing time
+                if (d.avg_processing_time !== undefined) {
+                    const pt = document.getElementById('kpiProcessingTime');
+                    if (pt) pt.textContent = formatProcessingTime(d.avg_processing_time);
+                }
+
+                // Feature 3: Pipeline
+                if (d.orders && d.orders.by_status) {
+                    renderPipeline(d.orders.by_status);
+                }
+
+                // Feature 4: Problem orders
+                if (d.problem_orders !== undefined && d.problem_orders > 0) {
+                    const pa = document.getElementById('problemAlert');
+                    const pc = document.getElementById('problemCount');
+                    if (pa) pa.style.display = 'block';
+                    if (pc) pc.textContent = d.problem_orders;
+                } else {
+                    const pa = document.getElementById('problemAlert');
+                    if (pa) pa.style.display = 'none';
+                }
+
+                // Feature 5: Week-over-week trends
+                if (d.prev_week) {
+                    renderWeekTrend(document.getElementById('kpiOrdersWeekTrend'), d.orders.week, d.prev_week.orders);
+                    renderWeekTrend(document.getElementById('kpiShipWeekTrend'), d.shipments.week, d.prev_week.shipments);
+                }
+
+                // Feature 6: Top webshops
+                if (d.top_webshops) {
+                    renderTopWebshops(d.top_webshops);
+                }
+
+                // Update subtitle met week + datum
+                const headerP = document.querySelector('.header-title p');
+                if (headerP) {
+                    const now = new Date();
+                    const weekNr = getWeekNumber(now);
+                    headerP.textContent = `Week ${weekNr}, ${now.getFullYear()} — Live data uit Goedgepickt`;
+                }
+
+                // Update chart met orders per dag
+                if (d.orders_per_day) {
+                    updateOrdersChart(d.orders_per_day);
+                }
+
+                // Update AI briefing met echte data
+                updateAIBriefing(d);
+
+                // Feature 7: Update refresh indicator
+                updateRefreshIndicator();
+            } catch (e) {
+                console.log('Dashboard API niet beschikbaar:', e.message);
+            }
+        }
+
+        // ============ AUTO-REFRESH (Feature 7) ============
+        function updateRefreshIndicator() {
+            const now = new Date();
+            const timeStr = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
+            const el = document.getElementById('lastUpdateTime');
+            if (el) el.textContent = timeStr;
+            // Flash
+            const flash = document.getElementById('refreshFlash');
+            if (flash) {
+                flash.style.opacity = '1';
+                setTimeout(() => flash.style.opacity = '0', 2000);
+            }
+        }
+
+        function getWeekNumber(d) {
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+            var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+
+        function updateAIBriefing(d) {
+            const title = document.querySelector('.ai-briefing-title');
+            const text = document.querySelector('.ai-briefing-text');
+            if (!title || !text || !d.orders) return;
+
+            const now = new Date();
+            const hour = now.getHours();
+            const greeting = hour < 12 ? 'Goedemorgen' : hour < 18 ? 'Goedemiddag' : 'Goedenavond';
+            title.textContent = `${greeting}! Hier is uw live samenvatting.`;
+
+            const todayCount = d.orders.today || 0;
+            const weekCount = d.orders.week || 0;
+            const shipWeek = d.shipments ? d.shipments.week : 0;
+            text.innerHTML = `Vandaag zijn er <strong>${todayCount} orders</strong> binnengekomen. ` +
+                `Deze week in totaal <strong>${weekCount} orders</strong> en <strong>${shipWeek} verzendingen</strong>. ` +
+                `Data wordt elke minuut ververst vanuit Goedgepickt.`;
+        }
+
+        // ============ ORDERS CHART (live data) ============
+        let ordersChartInstance = null;
+
+        function initChart() {
+            const ctx = document.getElementById('ordersChart').getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+            gradient.addColorStop(0, 'rgba(0, 113, 227, 0.15)');
+            gradient.addColorStop(1, 'rgba(0, 113, 227, 0)');
+
+            ordersChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['—', '—', '—', '—', '—', '—', '—'],
+                    datasets: [{
+                        label: 'Orders',
+                        data: [0, 0, 0, 0, 0, 0, 0],
+                        borderColor: '#0071e3',
+                        backgroundColor: gradient,
+                        borderWidth: 2.5,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#0071e3',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
                 },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: '#86868b',
-                            font: {
-                                size: 12
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1d1d1f',
+                            titleColor: '#fff',
+                            bodyColor: 'rgba(255, 255, 255, 0.8)',
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + ' orders';
+                                }
                             }
                         }
                     },
-                    y: {
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.04)',
-                            drawBorder: false
-                        },
-                        ticks: {
-                            color: '#86868b',
-                            font: {
-                                size: 12
-                            }
-                        },
-                        beginAtZero: true
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#86868b', font: { size: 12 } } },
+                        y: { grid: { color: 'rgba(0, 0, 0, 0.04)', drawBorder: false }, ticks: { color: '#86868b', font: { size: 12 } }, beginAtZero: true }
                     }
                 }
+            });
+        }
+
+        function updateOrdersChart(ordersPerDay) {
+            if (!ordersChartInstance || !ordersPerDay) return;
+            const dagNamen = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
+            const sortedDates = Object.keys(ordersPerDay).sort();
+            
+            // We need cumulative counts per day. The API gives createdAfter which is cumulative.
+            // Calculate per-day by diffing consecutive totals.
+            const labels = [];
+            const values = [];
+            
+            for (let i = 0; i < sortedDates.length; i++) {
+                const date = new Date(sortedDates[i] + 'T00:00:00');
+                const dagNaam = dagNamen[date.getDay()];
+                const dagNum = date.getDate();
+                labels.push(`${dagNaam.charAt(0).toUpperCase() + dagNaam.slice(1)} ${dagNum}`);
+                
+                // ordersPerDay values are cumulative from that date onwards
+                // Per-day = current - next (if available), otherwise it's the last day's count
+                if (i < sortedDates.length - 1) {
+                    const thisTotal = ordersPerDay[sortedDates[i]] || 0;
+                    const nextTotal = ordersPerDay[sortedDates[i + 1]] || 0;
+                    values.push(Math.max(0, thisTotal - nextTotal));
+                } else {
+                    values.push(ordersPerDay[sortedDates[i]] || 0);
+                }
             }
-        });
+
+            ordersChartInstance.data.labels = labels;
+            ordersChartInstance.data.datasets[0].data = values;
+            ordersChartInstance.update();
+        }
+
+        // ============ RECENT ORDERS ============
+        async function loadRecentOrders() {
+            try {
+                const res = await fetch(`${API_BASE}/api/orders/latest?limit=5`);
+                if (!res.ok) throw new Error('Orders API error');
+                const json = await res.json();
+                const orders = json.data || [];
+                if (!Array.isArray(orders) || orders.length === 0) {
+                    document.getElementById('recentOrdersBody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Geen recente orders</td></tr>';
+                    return;
+                }
+
+                const tbody = document.getElementById('recentOrdersBody');
+                tbody.innerHTML = '';
+
+                orders.forEach(order => {
+                    const displayId = order.orderId || order.externalDisplayId || order.uuid.slice(0, 8);
+                    const customer = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || order.webshopName || '—';
+                    const itemCount = (order.products && order.products.length) || 0;
+                    const statusLabel = STATUS_MAP[order.status] || order.status || '—';
+                    const statusClass = STATUS_CLASS_MAP[order.status] || 'pending';
+                    const carrier = extractCarrier(order);
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><span class="order-id">#${displayId}</span></td>
+                        <td>${customer}</td>
+                        <td>${itemCount} item${itemCount !== 1 ? 's' : ''}</td>
+                        <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusLabel}</span></td>
+                        <td>${carrier}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                const subtitle = document.querySelector('.content-grid:last-of-type .card:first-child .card-subtitle');
+                if (subtitle) subtitle.textContent = `Laatste ${orders.length} orders (live)`;
+            } catch (e) {
+                console.log('Orders API niet beschikbaar:', e.message);
+            }
+        }
+
+        // ============ CARRIER PERFORMANCE (live) ============
+        async function loadCarrierPerformance() {
+            try {
+                const res = await fetch(`${API_BASE}/api/shipments/latest?limit=50`);
+                if (!res.ok) throw new Error('Shipments API error');
+                const json = await res.json();
+                const shipments = json.data || [];
+                if (!Array.isArray(shipments) || shipments.length === 0) return;
+
+                // Tel per carrier
+                const carriers = {};
+                shipments.forEach(s => {
+                    const name = extractCarrier(s);
+                    if (!carriers[name]) carriers[name] = 0;
+                    carriers[name]++;
+                });
+
+                const total = shipments.length;
+                const sorted = Object.entries(carriers).sort((a, b) => b[1] - a[1]);
+
+                const carrierList = document.getElementById('carrierList');
+                carrierList.innerHTML = '';
+
+                sorted.forEach(([name, count]) => {
+                    const pct = ((count / total) * 100).toFixed(1);
+                    const div = document.createElement('div');
+                    div.className = 'carrier-item';
+                    div.innerHTML = `
+                        <div class="carrier-logo">${name.substring(0, 5)}</div>
+                        <div class="carrier-info">
+                            <div class="carrier-name">${name}</div>
+                            <div class="carrier-stats">${count} zendingen</div>
+                        </div>
+                        <div class="carrier-bar">
+                            <div class="carrier-bar-fill" style="width: ${pct}%"></div>
+                        </div>
+                        <div class="carrier-percent">${pct}%</div>
+                    `;
+                    carrierList.appendChild(div);
+                });
+
+                // Show disclaimer about sample size
+                const disclaimer = document.getElementById('carrierDisclaimer');
+                if (disclaimer) {
+                    disclaimer.style.display = 'block';
+                    disclaimer.textContent = `⚠️ Gebaseerd op de laatste ${total} verzendingen. Voor een volledig beeld, bekijk de Verzendingen pagina.`;
+                }
+            } catch (e) {
+                console.log('Carrier data niet beschikbaar:', e.message);
+                document.getElementById('carrierList').innerHTML = '<div style="text-align:center;padding:20px;color:#999;">Geen data beschikbaar</div>';
+            }
+        }
+
+        // ============ INVENTORY ALERTS (live) ============
+        async function loadInventoryAlerts() {
+            try {
+                const res = await fetch(`${API_BASE}/api/inventory/alerts`);
+                if (!res.ok) throw new Error('Alerts API error');
+                const json = await res.json();
+                const alerts = json.data || [];
+
+                // Update KPI card
+                const kpiLowStock = document.getElementById('kpiLowStock');
+                if (kpiLowStock) kpiLowStock.textContent = json.count || alerts.length || 0;
+
+                const alertsList = document.getElementById('alertsList');
+                if (!Array.isArray(alerts) || alerts.length === 0) {
+                    alertsList.innerHTML = '<div style="padding:20px;text-align:center;color:#16a34a;font-weight:500;">✓ Geen voorraad alerts</div>';
+                    return;
+                }
+
+                alertsList.innerHTML = '';
+                alerts.slice(0, 5).forEach(alert => {
+                    const stock = alert.stock || alert.stockLevel || 0;
+                    const isCritical = stock <= 10;
+                    const level = isCritical ? 'critical' : 'warning';
+                    const title = isCritical ? 'Kritiek laag' : 'Onder bestelpunt';
+                    const sku = alert.sku || alert.productSku || alert.name || '—';
+
+                    const div = document.createElement('div');
+                    div.className = `alert-item ${level}`;
+                    div.innerHTML = `
+                        <div class="alert-icon">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="${isCritical 
+                                    ? 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'
+                                    : 'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'}" />
+                            </svg>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">${title}</div>
+                            <div class="alert-subtitle">${sku}</div>
+                        </div>
+                        <div class="alert-count">${stock}</div>
+                    `;
+                    alertsList.appendChild(div);
+                });
+            } catch (e) {
+                console.log('Inventory alerts niet beschikbaar:', e.message);
+                document.getElementById('alertsList').innerHTML = '<div style="text-align:center;padding:20px;color:#999;">Geen data beschikbaar</div>';
+            }
+        }
+
+        // ============ FAST COMBINED LOAD ============
+        async function loadAll() {
+            try {
+                const res = await fetch(`${API_BASE}/api/page-data/dashboard`);
+                if (!res.ok) throw new Error('Page data error');
+                const json = await res.json();
+                const d = json.data;
+
+                // Dashboard stats (same as loadDashboard)
+                if (d.dashboard) {
+                    const stats = d.dashboard;
+                    const kpiWeek = document.getElementById('kpiOrdersWeek');
+                    if (kpiWeek && stats.orders) {
+                        kpiWeek.textContent = Number(stats.orders.week).toLocaleString('nl-NL');
+                    }
+                    const kpiToday = document.getElementById('kpiOrdersToday');
+                    if (kpiToday && stats.orders) kpiToday.textContent = Number(stats.orders.today).toLocaleString('nl-NL');
+
+                    const kpiShipWeek = document.getElementById('kpiShipmentsWeek');
+                    if (kpiShipWeek && stats.shipments) kpiShipWeek.textContent = Number(stats.shipments.week).toLocaleString('nl-NL');
+
+                    // Open orders
+                    const kpiOpen = document.getElementById('kpiOpenOrders');
+                    if (kpiOpen && stats.orders && stats.orders.by_status) {
+                        const bs = stats.orders.by_status;
+                        const openCount = (bs.open || 0) + (bs.processing || 0) + (bs.picked || 0) + (bs.packed || 0) + (bs.ready_for_picking || 0);
+                        kpiOpen.textContent = openCount.toLocaleString('nl-NL');
+                    }
+
+                    // Revenue
+                    if (stats.revenue) {
+                        const rt = document.getElementById('kpiRevenueToday');
+                        const rw = document.getElementById('kpiRevenueWeek');
+                        if (rt) rt.textContent = formatEuro(stats.revenue.today);
+                        if (rw) rw.textContent = formatEuro(stats.revenue.week);
+                    }
+
+                    // Processing time
+                    if (stats.avg_processing_time !== undefined) {
+                        const pt = document.getElementById('kpiProcessingTime');
+                        if (pt) pt.textContent = formatProcessingTime(stats.avg_processing_time);
+                    }
+
+                    // Pipeline
+                    if (stats.orders && stats.orders.by_status) {
+                        renderPipeline(stats.orders.by_status);
+                    }
+
+                    // Problem orders
+                    if (stats.problem_orders !== undefined && stats.problem_orders > 0) {
+                        const pa = document.getElementById('problemAlert');
+                        const pc = document.getElementById('problemCount');
+                        if (pa) pa.style.display = 'block';
+                        if (pc) pc.textContent = stats.problem_orders;
+                    } else {
+                        const pa = document.getElementById('problemAlert');
+                        if (pa) pa.style.display = 'none';
+                    }
+
+                    // Week-over-week
+                    if (stats.prev_week) {
+                        renderWeekTrend(document.getElementById('kpiOrdersWeekTrend'), stats.orders.week, stats.prev_week.orders);
+                        renderWeekTrend(document.getElementById('kpiShipWeekTrend'), stats.shipments.week, stats.prev_week.shipments);
+                    }
+
+                    // Top webshops
+                    if (stats.top_webshops) {
+                        renderTopWebshops(stats.top_webshops);
+                    }
+
+                    if (stats.orders_per_day) updateOrdersChart(stats.orders_per_day);
+                    updateAIBriefing(stats);
+                }
+
+                // Update refresh indicator
+                updateRefreshIndicator();
+
+                // Recent orders
+                if (d.recentOrders && d.recentOrders.length > 0) {
+                    const orders = d.recentOrders;
+                    const tbody = document.getElementById('recentOrdersBody');
+                    if (tbody) {
+                        tbody.innerHTML = '';
+                        orders.forEach(order => {
+                            const displayId = order.orderId || order.externalDisplayId || order.uuid.slice(0, 8);
+                            const customer = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || order.webshopName || '—';
+                            const itemCount = (order.products && order.products.length) || 0;
+                            const statusLabel = STATUS_MAP[order.status] || order.status || '—';
+                            const statusClass = STATUS_CLASS_MAP[order.status] || 'pending';
+                            const carrier = extractCarrier(order);
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td><span class="order-id">#${displayId}</span></td>
+                                <td>${customer}</td>
+                                <td>${itemCount} item${itemCount !== 1 ? 's' : ''}</td>
+                                <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusLabel}</span></td>
+                                <td>${carrier}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                        const subtitle = document.querySelector('.content-grid:last-of-type .card:first-child .card-subtitle');
+                        if (subtitle) subtitle.textContent = `Laatste ${orders.length} orders (live)`;
+                    }
+                }
+
+                // Inventory alerts
+                if (d.inventoryAlerts) {
+                    const alerts = d.inventoryAlerts;
+                    const kpiLowStock = document.getElementById('kpiLowStock');
+                    if (kpiLowStock) kpiLowStock.textContent = alerts.length || 0;
+                    const alertsList = document.getElementById('alertsList');
+                    if (alertsList) {
+                        if (alerts.length === 0) {
+                            alertsList.innerHTML = '<div style="padding:20px;text-align:center;color:#16a34a;font-weight:500;">✓ Geen voorraad alerts</div>';
+                        } else {
+                            alertsList.innerHTML = '';
+                            alerts.slice(0, 5).forEach(alert => {
+                                const stock = alert.stock || alert.stockLevel || 0;
+                                const isCritical = stock <= 10;
+                                const level = isCritical ? 'critical' : 'warning';
+                                const title = isCritical ? 'Kritiek laag' : 'Onder bestelpunt';
+                                const sku = alert.sku || alert.productSku || alert.name || '—';
+                                const div = document.createElement('div');
+                                div.className = `alert-item ${level}`;
+                                div.innerHTML = `
+                                    <div class="alert-icon">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="${isCritical 
+                                                ? 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'
+                                                : 'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'}" />
+                                        </svg>
+                                    </div>
+                                    <div class="alert-content">
+                                        <div class="alert-title">${title}</div>
+                                        <div class="alert-subtitle">${sku}</div>
+                                    </div>
+                                    <div class="alert-count">${stock}</div>
+                                `;
+                                alertsList.appendChild(div);
+                            });
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log('Combined load failed, falling back to individual calls:', e.message);
+                loadDashboard();
+                loadRecentOrders();
+                loadInventoryAlerts();
+            }
+            // Carrier perf altijd apart (niet in combined endpoint)
+            loadCarrierPerformance();
+        }
+
+        // ============ INIT ============
+        initChart();
+        loadAll();
+
+        // Feature 7: Auto-refresh elke 60 seconden (GEEN page reload)
+        setInterval(() => {
+            loadAll();
+        }, 60000);
+    </script>
+    <script>
+    // User session
+    (function() {
+        var user = JSON.parse(sessionStorage.getItem('dura_user') || 'null');
+        if (!user) { window.location.href = '../demo-dura-login.html'; return; }
+        var avatar = document.getElementById('userAvatar');
+        var uname = document.getElementById('userName');
+        if (avatar) avatar.textContent = user.name.charAt(0).toUpperCase();
+        if (uname) uname.textContent = user.name;
+    })();
     </script>
 </body>
 </html>

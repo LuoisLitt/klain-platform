@@ -26,6 +26,20 @@ Ernst's eerste serieuze side project — AI automatisering voor MKB.
 - Liever concrete voorbeelden dan abstracte beschrijvingen
 - Houdt van efficiëntie — niet te veel woorden
 
+## Dura Fulfilment (Klant van Klain)
+- Live dashboard: https://gripai-website.vercel.app/dura/
+- Backend: https://dura-backend-production.up.railway.app (Railway)
+- Backend repo: https://github.com/LuoisLitt/dura-backend
+- Goedgepickt API base: `https://account.goedgepickt.nl/api/v1`
+- 180 webshops, 299k+ orders
+- API limiet: max 10k results via page param, cursor nodig voor meer
+
+## Technisch
+- Model: Claude Opus 4.6 (gepatcht in pi-ai models.generated.js)
+- Vercel deployed via `npx vercel --prod --yes` (niet via GitHub)
+- Railway: aparte repo nodig (monorepo root directory werkte niet)
+- GitHub push via: `gh auth login` + credential helper fix
+
 ## Notities
 - Iris vernoemd door Ernst — Griekse godin van de regenboog, boodschapper
 - Workspace: `/Users/ernstbeekman/.openclaw/workspace/`
