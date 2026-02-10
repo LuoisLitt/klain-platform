@@ -25,6 +25,8 @@ Ernst's eerste serieuze side project — AI automatisering voor MKB.
 - Brand first, dan naam
 - Liever concrete voorbeelden dan abstracte beschrijvingen
 - Houdt van efficiëntie — niet te veel woorden
+- **Spawn sub-agents voor uitwerkingen**: Als Ernst vraagt om iets uit te werken of als het anders is dan gewoon chatten → use sessions_spawn. Niet alles in de main session doen.
+- **Per-minuut updates bij sub-agent werk**: Wil regelmatige statusupdates krijgen (ongeveer elke minuut) als een sub-agent aan het werk is, in plaats van zwijgend wachten
 
 ## Dura Fulfilment (Klant van Klain)
 - Live dashboard: https://gripai-website.vercel.app/dura/

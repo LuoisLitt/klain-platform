@@ -974,14 +974,14 @@
 
             <div class="kpi-card">
                 <div class="kpi-header">
-                    <div class="kpi-icon red">
+                    <div class="kpi-icon green">
                         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                 </div>
-                <div class="kpi-value" id="kpiLowStock">—</div>
-                <div class="kpi-label">Lage voorraad alerts</div>
+                <div class="kpi-value" id="kpiProcessedOrders">—</div>
+                <div class="kpi-label" title="Orders met status shipped, completed, of delivered vandaag">Verwerkte orders</div>
             </div>
         </div>
 
@@ -1280,6 +1280,12 @@
                     const bs = d.orders.by_status;
                     const openCount = (bs.open || 0) + (bs.processing || 0) + (bs.picked || 0) + (bs.packed || 0) + (bs.ready_for_picking || 0);
                     kpiOpen.textContent = openCount.toLocaleString('nl-NL');
+                }
+
+                // Processed orders (shipped + completed + delivered)
+                const kpiProcessed = document.getElementById('kpiProcessedOrders');
+                if (kpiProcessed && d.orders && d.orders.processed !== undefined) {
+                    kpiProcessed.textContent = Number(d.orders.processed).toLocaleString('nl-NL');
                 }
 
                 // Feature 1: Revenue
@@ -1643,6 +1649,12 @@
                         const bs = stats.orders.by_status;
                         const openCount = (bs.open || 0) + (bs.processing || 0) + (bs.picked || 0) + (bs.packed || 0) + (bs.ready_for_picking || 0);
                         kpiOpen.textContent = openCount.toLocaleString('nl-NL');
+                    }
+
+                    // Processed orders (shipped + completed + delivered)
+                    const kpiProcessed = document.getElementById('kpiProcessedOrders');
+                    if (kpiProcessed && stats.orders && stats.orders.processed !== undefined) {
+                        kpiProcessed.textContent = Number(stats.orders.processed).toLocaleString('nl-NL');
                     }
 
                     // Revenue
