@@ -26,6 +26,7 @@ Ernst's eerste serieuze side project — AI automatisering voor MKB.
 - Liever concrete voorbeelden dan abstracte beschrijvingen
 - Houdt van efficiëntie — niet te veel woorden
 - **Spawn sub-agents voor uitwerkingen**: Als Ernst vraagt om iets uit te werken of als het anders is dan gewoon chatten → use sessions_spawn. Niet alles in de main session doen.
+- **Sub-agent model**: ALTIJD `model="opus"` meegeven bij sessions_spawn. Main session draait op Haiku (goedkoop chatten), sub-agents op Opus 4.6 (complexe taken + codering).
 - **Per-minuut updates bij sub-agent werk**: Wil regelmatige statusupdates krijgen (ongeveer elke minuut) als een sub-agent aan het werk is, in plaats van zwijgend wachten
 
 ## Dura Fulfilment (Klant van Klain)

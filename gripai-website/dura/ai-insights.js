@@ -112,6 +112,21 @@
             const json = await res.json();
             const data = json.data;
             
+            if (data.status === 'pending') {
+                // Show friendly pending message
+                const nextGen = data.next_generation_at;
+                let timeStr = '';
+                if (nextGen) {
+                    const d = new Date(nextGen);
+                    timeStr = ` om ${d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`;
+                }
+                const pendingMsg = `AI briefing wordt${timeStr} gegenereerd...`;
+                const textEl = document.getElementById('ai-insight-text');
+                const briefText = document.querySelector('.ai-briefing-text');
+                if (textEl) textEl.textContent = pendingMsg;
+                if (briefText) briefText.textContent = pendingMsg;
+                return;
+            }
             if (data.status !== 'ok') return;
             
             if (isDashboard) {
@@ -132,6 +147,6 @@
     // Fetch on load
     fetchAndRender();
     
-    // Refresh every 60 seconds
-    setInterval(fetchAndRender, 60000);
+    // Refresh every 15 seconds
+    setInterval(fetchAndRender, 15000);
 })();
