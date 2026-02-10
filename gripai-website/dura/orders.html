@@ -363,7 +363,7 @@
                 tr.dataset.status = order.status || '';
                 tr.dataset.carrier = carrierKey;
                 tr.innerHTML = `
-                    <td><a class="order-id-link" onclick="viewOrderByUuid('${uuid}')" title="Bekijk order details">#${displayId}</a></td>
+                    <td><a class="order-id-link" onclick="viewOrderByUuid('${uuid}')" title="Bekijk order details">${displayId}</a></td>
                     <td>
                         <div class="customer-info">
                             <strong>${customerName}</strong>
@@ -476,7 +476,7 @@
                 const order = json.data;
 
                 const displayId = order.externalDisplayId || order.uuid.slice(0, 8);
-                document.getElementById('modalOrderId').textContent = '#' + displayId;
+                document.getElementById('modalOrderId').textContent = displayId;
 
                 // Build modal content with real data
                 const customerName = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || '—';
