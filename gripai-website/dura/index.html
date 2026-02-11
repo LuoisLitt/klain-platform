@@ -1721,6 +1721,55 @@
         }
 
         // ============ CARRIER PERFORMANCE (live) ============
+        var _carrierRendered = false;
+
+        function renderCarrierFromDashboard(topCarriers) {
+            var total = topCarriers.reduce(function(sum, c) { return sum + c.count; }, 0);
+            if (total === 0) return;
+            var carrierList = document.getElementById('carrierList');
+            if (!carrierList) return;
+            carrierList.textContent = '';
+
+            topCarriers.forEach(function(c) {
+                var pct = ((c.count / total) * 100).toFixed(1);
+                var div = document.createElement('div');
+                div.className = 'carrier-item';
+
+                var logo = document.createElement('div');
+                logo.className = 'carrier-logo';
+                logo.textContent = (c.name || '?').substring(0, 5);
+
+                var info = document.createElement('div');
+                info.className = 'carrier-info';
+                var cName = document.createElement('div');
+                cName.className = 'carrier-name';
+                cName.textContent = c.name;
+                var cStats = document.createElement('div');
+                cStats.className = 'carrier-stats';
+                cStats.textContent = c.count + ' zendingen';
+                info.appendChild(cName);
+                info.appendChild(cStats);
+
+                var bar = document.createElement('div');
+                bar.className = 'carrier-bar';
+                var barFill = document.createElement('div');
+                barFill.className = 'carrier-bar-fill';
+                barFill.style.width = pct + '%';
+                bar.appendChild(barFill);
+
+                var percent = document.createElement('div');
+                percent.className = 'carrier-percent';
+                percent.textContent = pct + '%';
+
+                div.appendChild(logo);
+                div.appendChild(info);
+                div.appendChild(bar);
+                div.appendChild(percent);
+                carrierList.appendChild(div);
+            });
+            _carrierRendered = true;
+        }
+
         async function loadCarrierPerformance() {
             try {
                 const res = await fetch(`${API_BASE}/api/shipments/latest?limit=50`, { headers: API_HEADERS });
@@ -1964,6 +2013,11 @@
 
                     if (stats.orders_per_day) updateOrdersChart(stats.orders_per_day);
                     updateAIBriefing(stats);
+
+                    // Carrier verdeling vanuit dashboard stats (alle shipments)
+                    if (stats.shipments && stats.shipments.top_carriers && stats.shipments.top_carriers.length > 0) {
+                        renderCarrierFromDashboard(stats.shipments.top_carriers);
+                    }
                 }
 
                 // Update refresh indicator
@@ -2006,8 +2060,8 @@
                 loadRecentOrders();
                 loadInventoryAlerts();
             }
-            // Carrier perf altijd apart (niet in combined endpoint)
-            loadCarrierPerformance();
+            // Carrier perf alleen als fallback (dashboard stats heeft nu carrier data)
+            if (!_carrierRendered) loadCarrierPerformance();
         }
 
         // ============ SLA METRICS ============
