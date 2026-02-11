@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verzendingen — Dura Fulfilment</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
         .loading-spinner {
@@ -72,6 +70,11 @@
                     <div class="user-avatar" id="userAvatar">DF</div>
                     <span class="user-name" id="userName">Demo Account</span>
                 </div>
+                <button class="hamburger" aria-label="Menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </nav>
@@ -233,6 +236,88 @@
             'on_hold': 'processing'
         };
 
+        const SLA_HOURS = 24;
+
+        function createSLABar(order) {
+            if (!order.createDate) return null;
+
+            var createTime = new Date(order.createDate).getTime();
+            var slaMs = SLA_HOURS * 60 * 60 * 1000;
+            var slaDeadline = createTime + slaMs;
+
+            var endTime;
+            var isResolved = false;
+            if (order.shippedDate) {
+                endTime = new Date(order.shippedDate).getTime();
+                isResolved = true;
+            } else if (order.finishDate) {
+                endTime = new Date(order.finishDate).getTime();
+                isResolved = true;
+            } else {
+                endTime = Date.now();
+            }
+
+            var elapsed = endTime - createTime;
+            var isOnTime = elapsed <= slaMs;
+            var progress = Math.min(elapsed / slaMs, 1.5);
+
+            var bar = document.createElement('div');
+            bar.style.cssText = 'display:flex;align-items:center;gap:16px;padding:14px 18px;border-radius:12px;margin-bottom:16px;';
+
+            var badgeColor, badgeText, detailText, barColor;
+
+            if (isResolved && isOnTime) {
+                bar.style.background = '#f0fdf4';
+                bar.style.border = '1px solid rgba(22,163,74,0.15)';
+                badgeColor = '#16a34a';
+                badgeText = 'Op tijd';
+                var hrs = Math.floor(elapsed / 3600000);
+                var mins = Math.floor((elapsed % 3600000) / 60000);
+                detailText = 'Verwerkt in ' + hrs + 'u ' + mins + 'min';
+                barColor = '#16a34a';
+            } else if (!isResolved && isOnTime) {
+                bar.style.background = '#fff7ed';
+                bar.style.border = '1px solid rgba(234,88,12,0.15)';
+                badgeColor = '#ea580c';
+                badgeText = 'In behandeling';
+                var remaining = slaDeadline - endTime;
+                var remHrs = Math.floor(remaining / 3600000);
+                var remMins = Math.floor((remaining % 3600000) / 60000);
+                detailText = 'Nog ' + remHrs + 'u ' + remMins + 'min binnen SLA';
+                barColor = '#ea580c';
+            } else {
+                bar.style.background = '#fef2f2';
+                bar.style.border = '1px solid rgba(220,38,38,0.15)';
+                badgeColor = '#dc2626';
+                badgeText = 'Vertraagd';
+                var overMs = elapsed - slaMs;
+                var overHrs = Math.floor(overMs / 3600000);
+                var overMins = Math.floor((overMs % 3600000) / 60000);
+                detailText = overHrs + 'u ' + overMins + 'min over SLA';
+                if (isResolved) detailText = 'Verwerkt ' + detailText;
+                barColor = '#dc2626';
+            }
+
+            var badge = document.createElement('span');
+            badge.style.cssText = 'padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;color:white;background:' + badgeColor + ';flex-shrink:0;';
+            badge.textContent = badgeText;
+            bar.appendChild(badge);
+
+            var progressOuter = document.createElement('div');
+            progressOuter.style.cssText = 'flex:1;height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;';
+            var progressInner = document.createElement('div');
+            progressInner.style.cssText = 'height:100%;border-radius:3px;transition:width 0.3s;background:' + barColor + ';width:' + Math.min(progress * 100, 100) + '%;';
+            progressOuter.appendChild(progressInner);
+            bar.appendChild(progressOuter);
+
+            var detail = document.createElement('span');
+            detail.style.cssText = 'font-size:13px;color:#6b7084;white-space:nowrap;flex-shrink:0;';
+            detail.textContent = detailText;
+            bar.appendChild(detail);
+
+            return bar;
+        }
+
         function filterShipments() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const status = document.getElementById('statusFilter').value;
@@ -376,42 +461,109 @@
 
         function renderShipments(shipments) {
             const tbody = document.querySelector('#shipmentsTable tbody');
-            tbody.innerHTML = '';
+            tbody.textContent = '';
 
             if (!shipments || !shipments.length) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#999;">Geen verzendingen gevonden</td></tr>';
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                td.colSpan = 7;
+                td.style.cssText = 'text-align:center;padding:40px;color:#999;';
+                td.textContent = 'Geen verzendingen gevonden';
+                tr.appendChild(td);
+                tbody.appendChild(tr);
                 return;
             }
 
             shipments.forEach(s => {
                 const status = shipmentStatusMap[s.status] || { label: s.status || 'Onbekend', class: 'processing' };
                 const carrier = extractCarrier(s);
-                const trackCode = s.trackTraceCode || s.trackTrace || s.externalId || '—';
+                const trackCode = s.trackTraceCode || s.trackTrace || s.externalId || '\u2014';
                 const trackUrl = s.trackTraceUrl || '#';
-                const orderId = s.referenceText || s.externalId || '—';
-                const klant = [s.shippingFirstName, s.shippingLastName].filter(Boolean).join(' ') || '—';
-                const city = s.shippingCity ? `, ${s.shippingCity}` : '';
-
-                // Order UUID from linkedOrder
+                const orderId = s.referenceText || s.externalId || '\u2014';
+                const klant = [s.shippingFirstName, s.shippingLastName].filter(Boolean).join(' ') || '\u2014';
+                const city = s.shippingCity ? ', ' + s.shippingCity : '';
                 const orderUuid = (s.linkedOrder && s.linkedOrder.uuid) ? s.linkedOrder.uuid : '';
-                const orderClickHtml = orderUuid
-                    ? `<a class="order-link" onclick="viewOrderFromShipment('${orderUuid}')" title="Bekijk order details">${orderId}</a>`
-                    : `<span class="order-id">${orderId}</span>`;
 
                 const tr = document.createElement('tr');
                 tr.dataset.status = s.status;
                 tr.dataset.carrier = carrier.class;
-                tr.innerHTML = `
-                    <td>${trackUrl !== '#' ? `<a href="${trackUrl}" target="_blank" class="link">${trackCode}</a>` : trackCode}</td>
-                    <td>${orderClickHtml}</td>
-                    <td>${klant}${city}</td>
-                    <td><span class="carrier-badge ${carrier.class}">${carrier.name}</span></td>
-                    <td><span class="status-badge ${status.class}"><span class="status-dot"></span>${status.label}</span></td>
-                    <td>${formatDateNL(s.createDate)}</td>
-                    <td>${s.deliveredDate ? formatDateNL(s.deliveredDate) + ' ✓' : '—'}</td>
-                `;
+
+                // Track & Trace cell
+                const tdTrack = document.createElement('td');
+                if (trackUrl !== '#') {
+                    const a = document.createElement('a');
+                    a.href = trackUrl;
+                    a.target = '_blank';
+                    a.className = 'link';
+                    a.textContent = trackCode;
+                    tdTrack.appendChild(a);
+                } else {
+                    tdTrack.textContent = trackCode;
+                }
+
+                // Order cell
+                const tdOrder = document.createElement('td');
+                if (orderUuid) {
+                    const a = document.createElement('a');
+                    a.className = 'order-link';
+                    a.title = 'Bekijk order details';
+                    a.textContent = orderId;
+                    a.addEventListener('click', function() { viewOrderFromShipment(orderUuid); });
+                    tdOrder.appendChild(a);
+                } else {
+                    const span = document.createElement('span');
+                    span.className = 'order-id';
+                    span.textContent = orderId;
+                    tdOrder.appendChild(span);
+                }
+
+                // Klant cell
+                const tdKlant = document.createElement('td');
+                tdKlant.textContent = klant + city;
+
+                // Carrier cell
+                const tdCarrier = document.createElement('td');
+                const carrierBadge = document.createElement('span');
+                carrierBadge.className = 'carrier-badge ' + carrier.class;
+                carrierBadge.textContent = carrier.name;
+                tdCarrier.appendChild(carrierBadge);
+
+                // Status cell
+                const tdStatus = document.createElement('td');
+                const statusBadge = document.createElement('span');
+                statusBadge.className = 'status-badge ' + status.class;
+                const dot = document.createElement('span');
+                dot.className = 'status-dot';
+                statusBadge.appendChild(dot);
+                statusBadge.appendChild(document.createTextNode(status.label));
+                tdStatus.appendChild(statusBadge);
+
+                // Verzonden cell
+                const tdVerzonden = document.createElement('td');
+                tdVerzonden.textContent = formatDateNL(s.createDate);
+
+                // Afgeleverd cell
+                const tdAfgeleverd = document.createElement('td');
+                tdAfgeleverd.textContent = s.deliveredDate ? formatDateNL(s.deliveredDate) + ' \u2713' : '\u2014';
+
+                tr.appendChild(tdTrack);
+                tr.appendChild(tdOrder);
+                tr.appendChild(tdKlant);
+                tr.appendChild(tdCarrier);
+                tr.appendChild(tdStatus);
+                tr.appendChild(tdVerzonden);
+                tr.appendChild(tdAfgeleverd);
                 tbody.appendChild(tr);
             });
+        }
+
+        function createPagButton(text, page, disabled) {
+            const btn = document.createElement('button');
+            btn.textContent = text;
+            btn.disabled = disabled;
+            btn.style.cssText = 'padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:' + (disabled ? '#f3f4f6' : '#fff') + ';cursor:' + (disabled ? 'default' : 'pointer') + ';color:' + (disabled ? '#ccc' : '#333');
+            if (!disabled) btn.addEventListener('click', function() { loadShipments(page); });
+            return btn;
         }
 
         function updateShipPagination() {
@@ -423,20 +575,37 @@
                 document.querySelector('#shipmentsTable').closest('.card').appendChild(pagDiv);
             }
 
+            pagDiv.textContent = '';
+
             if (shipTotalPages <= 1) {
-                pagDiv.innerHTML = `<span style="color:#8e93a6;font-size:14px;">Pagina 1 van 1 (${shipTotalCount.toLocaleString('nl-NL')} verzendingen)</span>`;
+                const span = document.createElement('span');
+                span.style.cssText = 'color:#8e93a6;font-size:14px;';
+                span.textContent = 'Pagina 1 van 1 (' + shipTotalCount.toLocaleString('nl-NL') + ' verzendingen)';
+                pagDiv.appendChild(span);
                 return;
             }
 
             const p = shipCurrentPage;
             const tp = shipTotalPages;
-            pagDiv.innerHTML = `
-                <button onclick="loadShipments(1)" ${p<=1?'disabled':''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${p<=1?'#f3f4f6':'#fff'};cursor:${p<=1?'default':'pointer'};color:${p<=1?'#ccc':'#333'}">« Eerste</button>
-                <button onclick="loadShipments(${p-1})" ${p<=1?'disabled':''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${p<=1?'#f3f4f6':'#fff'};cursor:${p<=1?'default':'pointer'};color:${p<=1?'#ccc':'#333'}">‹ Vorige</button>
-                <span style="font-size:14px;color:#6b7084;">Pagina <strong>${p}</strong> van <strong>${tp}</strong> (${shipTotalCount.toLocaleString('nl-NL')} verzendingen)</span>
-                <button onclick="loadShipments(${p+1})" ${p>=tp?'disabled':''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${p>=tp?'#f3f4f6':'#fff'};cursor:${p>=tp?'default':'pointer'};color:${p>=tp?'#ccc':'#333'}">Volgende ›</button>
-                <button onclick="loadShipments(${tp})" ${p>=tp?'disabled':''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${p>=tp?'#f3f4f6':'#fff'};cursor:${p>=tp?'default':'pointer'};color:${p>=tp?'#ccc':'#333'}">Laatste »</button>
-            `;
+
+            pagDiv.appendChild(createPagButton('\u00AB Eerste', 1, p <= 1));
+            pagDiv.appendChild(createPagButton('\u2039 Vorige', p - 1, p <= 1));
+
+            const info = document.createElement('span');
+            info.style.cssText = 'font-size:14px;color:#6b7084;';
+            info.appendChild(document.createTextNode('Pagina '));
+            const bold1 = document.createElement('strong');
+            bold1.textContent = p;
+            info.appendChild(bold1);
+            info.appendChild(document.createTextNode(' van '));
+            const bold2 = document.createElement('strong');
+            bold2.textContent = tp;
+            info.appendChild(bold2);
+            info.appendChild(document.createTextNode(' (' + shipTotalCount.toLocaleString('nl-NL') + ' verzendingen)'));
+            pagDiv.appendChild(info);
+
+            pagDiv.appendChild(createPagButton('Volgende \u203A', p + 1, p >= tp));
+            pagDiv.appendChild(createPagButton('Laatste \u00BB', tp, p >= tp));
         }
 
         // ============ FAST COMBINED LOAD ============
@@ -478,22 +647,38 @@
                     const carrierCards = document.getElementById('carrierCards');
                     const sorted = Object.entries(carriers).sort((a, b) => b[1].count - a[1].count);
                     const cols = Math.min(sorted.length, 4);
-                    carrierCards.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-                    carrierCards.innerHTML = '';
+                    carrierCards.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+                    carrierCards.textContent = '';
                     sorted.forEach(([name, info]) => {
                         const pct = ((info.count / d.shipments.length) * 100).toFixed(1);
-                        carrierCards.innerHTML += `
-                            <div style="padding: 24px; background: var(--gray-light); border-radius: 12px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                    <span class="carrier-badge ${info.class}" style="font-size: 14px; padding: 6px 12px;">${name}</span>
-                                    <span style="font-size: 24px; font-weight: 700; color: var(--blue);">${pct}%</span>
-                                </div>
-                                <div>
-                                    <div style="font-size: 20px; font-weight: 700;">${info.count}</div>
-                                    <div style="font-size: 12px; color: var(--gray-medium);">Zendingen</div>
-                                </div>
-                            </div>
-                        `;
+                        const card = document.createElement('div');
+                        card.style.cssText = 'padding: 24px; background: var(--gray-light); border-radius: 12px;';
+
+                        const topRow = document.createElement('div');
+                        topRow.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;';
+                        const badge = document.createElement('span');
+                        badge.className = 'carrier-badge ' + info.class;
+                        badge.style.cssText = 'font-size: 14px; padding: 6px 12px;';
+                        badge.textContent = name;
+                        const pctSpan = document.createElement('span');
+                        pctSpan.style.cssText = 'font-size: 24px; font-weight: 700; color: var(--blue);';
+                        pctSpan.textContent = pct + '%';
+                        topRow.appendChild(badge);
+                        topRow.appendChild(pctSpan);
+
+                        const bottomRow = document.createElement('div');
+                        const countDiv = document.createElement('div');
+                        countDiv.style.cssText = 'font-size: 20px; font-weight: 700;';
+                        countDiv.textContent = info.count;
+                        const labelDiv = document.createElement('div');
+                        labelDiv.style.cssText = 'font-size: 12px; color: var(--gray-medium);';
+                        labelDiv.textContent = 'Zendingen';
+                        bottomRow.appendChild(countDiv);
+                        bottomRow.appendChild(labelDiv);
+
+                        card.appendChild(topRow);
+                        card.appendChild(bottomRow);
+                        carrierCards.appendChild(card);
                     });
 
                     // Tabel
@@ -507,20 +692,61 @@
         }
 
         // ============ ORDER DETAIL MODAL ============
+        function showModalLoading() {
+            const body = document.getElementById('modalBody');
+            body.textContent = '';
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'text-align:center;padding:40px;color:#999;';
+            const spinner = document.createElement('div');
+            spinner.className = 'loading-spinner';
+            const p = document.createElement('p');
+            p.style.marginTop = '12px';
+            p.textContent = 'Order details laden...';
+            wrap.appendChild(spinner);
+            wrap.appendChild(p);
+            body.appendChild(wrap);
+        }
+
+        function showModalError(msg) {
+            const body = document.getElementById('modalBody');
+            body.textContent = '';
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'text-align:center;padding:40px;color:#c00;';
+            const p = document.createElement('p');
+            p.textContent = 'Fout bij laden van order: ' + msg;
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-secondary';
+            btn.style.marginTop = '16px';
+            btn.textContent = 'Sluiten';
+            btn.addEventListener('click', function() { closeOrderModal(); });
+            wrap.appendChild(p);
+            wrap.appendChild(btn);
+            body.appendChild(wrap);
+        }
+
+        function createDetailRow(label, valueText) {
+            const row = document.createElement('div');
+            row.className = 'detail-row';
+            const lbl = document.createElement('span');
+            lbl.className = 'detail-label';
+            lbl.textContent = label;
+            const val = document.createElement('span');
+            val.className = 'detail-value';
+            val.textContent = valueText;
+            row.appendChild(lbl);
+            row.appendChild(val);
+            return row;
+        }
+
         async function viewOrderFromShipment(orderUuid) {
             if (!orderUuid) return;
 
             document.getElementById('modalOrderId').textContent = '';
-            document.getElementById('modalBody').innerHTML = `
-                <div style="text-align:center;padding:40px;color:#999;">
-                    <div class="loading-spinner"></div>
-                    <p style="margin-top:12px;">Order details laden...</p>
-                </div>
-            `;
+            showModalLoading();
             document.getElementById('orderModal').classList.add('active');
 
             try {
-                const res = await fetch(`${API_BASE}/api/orders/${orderUuid}`, { headers: API_HEADERS });
+                const res = await fetch(API_BASE + '/api/orders/' + orderUuid, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Kan order niet ophalen');
                 const json = await res.json();
                 const order = json.data;
@@ -528,118 +754,211 @@
                 const displayId = order.externalDisplayId || order.uuid.slice(0, 8);
                 document.getElementById('modalOrderId').textContent = '#' + displayId;
 
-                const customerName = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || '—';
+                const customerName = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || '\u2014';
                 const shippingAddress = [order.shippingAddress, order.shippingHouseNumber, order.shippingHousenumberAddition || order.shippingHouseNumberAddition].filter(Boolean).join(' ');
                 const shippingCityLine = [order.shippingZipcode, order.shippingCity].filter(Boolean).join(' ');
-                const email = order.billingEmail || order.shippingEmail || '—';
-                const webshop = order.webshopName || '—';
-                const statusLabel = STATUS_MAP[order.status] || order.status || '—';
+                const email = order.billingEmail || order.shippingEmail || '\u2014';
+                const webshop = order.webshopName || '\u2014';
+                const statusLabel = STATUS_MAP[order.status] || order.status || '\u2014';
                 const statusClass = STATUS_CLASS_MAP[order.status] || 'pending';
                 const carrierLabel = extractCarrierLabel(order.shippingMethod);
 
-                // Products table
-                const products = order.products || [];
-                let productsHtml = '';
-                products.forEach(p => {
-                    productsHtml += `
-                        <tr>
-                            <td><code>${p.sku || '—'}</code></td>
-                            <td>${p.productName || '—'}</td>
-                            <td style="text-align:center;">${p.productQuantity || 0}</td>
-                            <td style="text-align:center;">${p.pickedQuantity || 0}</td>
-                            <td style="text-align:right;">${formatCurrency(p.productPrice)}</td>
-                        </tr>
-                    `;
-                });
+                const modalBody = document.getElementById('modalBody');
+                modalBody.textContent = '';
 
-                // Shipments info
-                const shipments = order.shipments || [];
-                let shipmentsHtml = '';
-                if (shipments.length > 0) {
-                    shipments.forEach(s => {
-                        const code = s.trackTraceCode || '—';
-                        const url = s.trackTraceUrl || '#';
-                        shipmentsHtml += `<div style="margin-bottom:4px;">${url !== '#' ? `<a href="${url}" target="_blank" style="color:#2563eb;">${code}</a>` : code}</div>`;
+                // Status row
+                const statusRow = document.createElement('div');
+                statusRow.style.marginBottom = '16px';
+                const badge = document.createElement('span');
+                badge.className = 'status-badge ' + statusClass;
+                badge.style.fontSize = '14px';
+                const dot = document.createElement('span');
+                dot.className = 'status-dot';
+                badge.appendChild(dot);
+                badge.appendChild(document.createTextNode(statusLabel));
+                statusRow.appendChild(badge);
+                const wsSpan = document.createElement('span');
+                wsSpan.style.cssText = 'margin-left:12px;font-size:13px;color:#6b7084;';
+                wsSpan.textContent = webshop;
+                statusRow.appendChild(wsSpan);
+                if (order.totalPaid && order.totalPaid !== '0.00') {
+                    const paid = document.createElement('span');
+                    paid.style.cssText = 'margin-left:12px;font-weight:600;';
+                    paid.textContent = formatCurrency(order.totalPaid);
+                    statusRow.appendChild(paid);
+                }
+                modalBody.appendChild(statusRow);
+
+                // SLA status bar
+                var slaBar = createSLABar(order);
+                if (slaBar) modalBody.appendChild(slaBar);
+
+                // Detail grid
+                const grid = document.createElement('div');
+                grid.className = 'detail-grid';
+
+                // Left: Klantgegevens
+                const leftSection = document.createElement('div');
+                leftSection.className = 'detail-section';
+                const h3Left = document.createElement('h3');
+                h3Left.textContent = 'Klantgegevens';
+                leftSection.appendChild(h3Left);
+                leftSection.appendChild(createDetailRow('Naam', customerName));
+
+                // Email row with link
+                const emailRow = document.createElement('div');
+                emailRow.className = 'detail-row';
+                const emailLabel = document.createElement('span');
+                emailLabel.className = 'detail-label';
+                emailLabel.textContent = 'E-mail';
+                const emailVal = document.createElement('span');
+                emailVal.className = 'detail-value';
+                const emailLink = document.createElement('a');
+                emailLink.href = 'mailto:' + email;
+                emailLink.style.color = '#2563eb';
+                emailLink.textContent = email;
+                emailVal.appendChild(emailLink);
+                emailRow.appendChild(emailLabel);
+                emailRow.appendChild(emailVal);
+                leftSection.appendChild(emailRow);
+
+                // Address row
+                const addrRow = document.createElement('div');
+                addrRow.className = 'detail-row';
+                const addrLabel = document.createElement('span');
+                addrLabel.className = 'detail-label';
+                addrLabel.textContent = 'Verzendadres';
+                const addrVal = document.createElement('span');
+                addrVal.className = 'detail-value';
+                addrVal.style.textAlign = 'right';
+                addrVal.appendChild(document.createTextNode(shippingAddress));
+                addrVal.appendChild(document.createElement('br'));
+                addrVal.appendChild(document.createTextNode(shippingCityLine + (order.shippingCountry ? ', ' + order.shippingCountry : '')));
+                addrRow.appendChild(addrLabel);
+                addrRow.appendChild(addrVal);
+                leftSection.appendChild(addrRow);
+
+                // Right: Verzending
+                const rightSection = document.createElement('div');
+                rightSection.className = 'detail-section';
+                const h3Right = document.createElement('h3');
+                h3Right.textContent = 'Verzending';
+                rightSection.appendChild(h3Right);
+                rightSection.appendChild(createDetailRow('Methode', order.shippingMethod || '\u2014'));
+                rightSection.appendChild(createDetailRow('Carrier', carrierLabel));
+
+                // Track & Trace row
+                const ttRow = document.createElement('div');
+                ttRow.className = 'detail-row';
+                const ttLabel = document.createElement('span');
+                ttLabel.className = 'detail-label';
+                ttLabel.textContent = 'Track & Trace';
+                const ttVal = document.createElement('span');
+                ttVal.className = 'detail-value';
+                const orderShipments = order.shipments || [];
+                if (orderShipments.length > 0) {
+                    orderShipments.forEach(function(sh) {
+                        const code = sh.trackTraceCode || '\u2014';
+                        const url = sh.trackTraceUrl || '#';
+                        const div = document.createElement('div');
+                        div.style.marginBottom = '4px';
+                        if (url !== '#') {
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.target = '_blank';
+                            a.style.color = '#2563eb';
+                            a.textContent = code;
+                            div.appendChild(a);
+                        } else {
+                            div.textContent = code;
+                        }
+                        ttVal.appendChild(div);
                     });
                 } else {
-                    shipmentsHtml = '<span style="color:#999;">Geen tracking info</span>';
+                    const noTrack = document.createElement('span');
+                    noTrack.style.color = '#999';
+                    noTrack.textContent = 'Geen tracking info';
+                    ttVal.appendChild(noTrack);
                 }
+                ttRow.appendChild(ttLabel);
+                ttRow.appendChild(ttVal);
+                rightSection.appendChild(ttRow);
+                rightSection.appendChild(createDetailRow('Aangemaakt', formatDateNL(order.createDate)));
 
-                document.getElementById('modalBody').innerHTML = `
-                    <div style="margin-bottom:16px;">
-                        <span class="status-badge ${statusClass}" style="font-size:14px;"><span class="status-dot"></span>${statusLabel}</span>
-                        <span style="margin-left:12px;font-size:13px;color:#6b7084;">${webshop}</span>
-                        ${order.totalPaid && order.totalPaid !== '0.00' ? `<span style="margin-left:12px;font-weight:600;">${formatCurrency(order.totalPaid)}</span>` : ''}
-                    </div>
+                grid.appendChild(leftSection);
+                grid.appendChild(rightSection);
+                modalBody.appendChild(grid);
 
-                    <div class="detail-grid">
-                        <div class="detail-section">
-                            <h3>Klantgegevens</h3>
-                            <div class="detail-row">
-                                <span class="detail-label">Naam</span>
-                                <span class="detail-value">${customerName}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">E-mail</span>
-                                <span class="detail-value"><a href="mailto:${email}" style="color:#2563eb;">${email}</a></span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Verzendadres</span>
-                                <span class="detail-value" style="text-align:right;">${shippingAddress}<br>${shippingCityLine}${order.shippingCountry ? ', ' + order.shippingCountry : ''}</span>
-                            </div>
-                        </div>
-                        <div class="detail-section">
-                            <h3>Verzending</h3>
-                            <div class="detail-row">
-                                <span class="detail-label">Methode</span>
-                                <span class="detail-value">${order.shippingMethod || '—'}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Carrier</span>
-                                <span class="detail-value">${carrierLabel}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Track & Trace</span>
-                                <span class="detail-value">${shipmentsHtml}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Aangemaakt</span>
-                                <span class="detail-value">${formatDateNL(order.createDate)}</span>
-                            </div>
-                        </div>
-                    </div>
+                // Products table
+                const products = order.products || [];
+                const prodSection = document.createElement('div');
+                prodSection.className = 'detail-section';
+                prodSection.style.marginTop = '24px';
+                const h3Prod = document.createElement('h3');
+                h3Prod.textContent = 'Bestelde producten (' + products.length + ')';
+                prodSection.appendChild(h3Prod);
 
-                    <div class="detail-section" style="margin-top: 24px;">
-                        <h3>Bestelde producten (${products.length})</h3>
-                        <table class="detail-table">
-                            <thead>
-                                <tr>
-                                    <th>SKU</th>
-                                    <th>Product</th>
-                                    <th style="text-align:center;">Aantal</th>
-                                    <th style="text-align:center;">Gepickt</th>
-                                    <th style="text-align:right;">Prijs</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${productsHtml || '<tr><td colspan="5" style="text-align:center;color:#999;padding:20px;">Geen producten</td></tr>'}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
+                const table = document.createElement('table');
+                table.className = 'detail-table';
+                const thead = document.createElement('thead');
+                const headRow = document.createElement('tr');
+                ['SKU', 'Product', 'Aantal', 'Gepickt', 'Prijs'].forEach(function(h, i) {
+                    const th = document.createElement('th');
+                    th.textContent = h;
+                    if (i === 2 || i === 3) th.style.textAlign = 'center';
+                    if (i === 4) th.style.textAlign = 'right';
+                    headRow.appendChild(th);
+                });
+                thead.appendChild(headRow);
+                table.appendChild(thead);
+
+                const tBody = document.createElement('tbody');
+                if (products.length === 0) {
+                    const emptyTr = document.createElement('tr');
+                    const emptyTd = document.createElement('td');
+                    emptyTd.colSpan = 5;
+                    emptyTd.style.cssText = 'text-align:center;color:#999;padding:20px;';
+                    emptyTd.textContent = 'Geen producten';
+                    emptyTr.appendChild(emptyTd);
+                    tBody.appendChild(emptyTr);
+                } else {
+                    products.forEach(function(pr) {
+                        const tr = document.createElement('tr');
+                        const tdSku = document.createElement('td');
+                        const code = document.createElement('code');
+                        code.textContent = pr.sku || '\u2014';
+                        tdSku.appendChild(code);
+                        const tdName = document.createElement('td');
+                        tdName.textContent = pr.productName || '\u2014';
+                        const tdQty = document.createElement('td');
+                        tdQty.style.textAlign = 'center';
+                        tdQty.textContent = pr.productQuantity || 0;
+                        const tdPicked = document.createElement('td');
+                        tdPicked.style.textAlign = 'center';
+                        tdPicked.textContent = pr.pickedQuantity || 0;
+                        const tdPrice = document.createElement('td');
+                        tdPrice.style.textAlign = 'right';
+                        tdPrice.textContent = formatCurrency(pr.productPrice);
+                        tr.appendChild(tdSku);
+                        tr.appendChild(tdName);
+                        tr.appendChild(tdQty);
+                        tr.appendChild(tdPicked);
+                        tr.appendChild(tdPrice);
+                        tBody.appendChild(tr);
+                    });
+                }
+                table.appendChild(tBody);
+                prodSection.appendChild(table);
+                modalBody.appendChild(prodSection);
             } catch (e) {
-                document.getElementById('modalBody').innerHTML = `
-                    <div style="text-align:center;padding:40px;color:#c00;">
-                        <p>Fout bij laden van order: ${e.message}</p>
-                        <button class="btn btn-secondary" onclick="closeOrderModal()" style="margin-top:16px;">Sluiten</button>
-                    </div>
-                `;
+                showModalError(e.message);
             }
         }
 
         // Initial load
         loadAllShipments();
     </script>
+<script src="nav.js"></script>
 <script src="ai-insights.js"></script>
 </body>
 </html>

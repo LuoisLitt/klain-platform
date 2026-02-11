@@ -11,7 +11,6 @@
  */
 (function () {
     var API_BASE = 'https://dura-backend-production.up.railway.app';
-    var API_KEY = 'V-pp2ua1yNmcsskUPFdQLz2ZB2EYZTd4USjjWYmMlUU';
 
     var token = sessionStorage.getItem('dura_token');
     var user = JSON.parse(sessionStorage.getItem('dura_user') || 'null');
@@ -24,7 +23,6 @@
     // Globals voor alle pagina-scripts
     window.DURA_API_BASE = API_BASE;
     window.DURA_API_HEADERS = {
-        'X-API-Key': API_KEY,
         'Authorization': 'Bearer ' + token
     };
 

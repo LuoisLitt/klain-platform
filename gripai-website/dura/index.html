@@ -4,10 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard — Dura Fulfilment</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Self-hosted fonts (GDPR compliant) */
+        @font-face {
+            font-family: 'DM Sans';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('../fonts/dm-sans-latin.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: normal;
+            font-weight: 400 700;
+            font-display: swap;
+            src: url('../fonts/fraunces-latin.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: italic;
+            font-weight: 400;
+            font-display: swap;
+            src: url('../fonts/fraunces-italic-latin.woff2') format('woff2');
+        }
+    </style>
     <style>
         :root {
             --black: #0f1117;
@@ -27,6 +48,7 @@
             --red: #dc2626;
             --red-light: #fef2f2;
             --purple: #7c3aed;
+            --purple-light: #f5f3ff;
         }
 
         * {
@@ -346,6 +368,8 @@
         .kpi-icon.orange svg { stroke: var(--orange); }
         .kpi-icon.red { background: var(--red-light); }
         .kpi-icon.red svg { stroke: var(--red); }
+        .kpi-icon.purple { background: var(--purple-light); }
+        .kpi-icon.purple svg { stroke: var(--purple); }
 
         .kpi-icon svg {
             width: 20px;
@@ -715,6 +739,8 @@
             gap: 5px;
             cursor: pointer;
             padding: 8px;
+            background: none;
+            border: none;
         }
 
         .hamburger span {
@@ -722,6 +748,19 @@
             height: 2px;
             background: var(--black);
             border-radius: 1px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
         }
 
         /* Responsive */
@@ -736,12 +775,40 @@
         }
 
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
             .hamburger {
                 display: flex;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 56px;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: saturate(180%) blur(20px);
+                -webkit-backdrop-filter: saturate(180%) blur(20px);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+                flex-direction: column;
+                padding: 16px 32px;
+                gap: 4px;
+                z-index: 999;
+            }
+
+            .nav-links.mobile-open {
+                display: flex;
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 10px 0;
+                font-size: 15px;
+            }
+
+            .global-search,
+            .btn-warehouse,
+            .nav-user {
+                display: none;
             }
 
             .main {
@@ -813,11 +880,11 @@
                     <div class="user-avatar" id="userAvatar">DF</div>
                     <span class="user-name" id="userName">Demo Account</span>
                 </div>
-                <div class="hamburger">
+                <button class="hamburger" aria-label="Menu" aria-expanded="false">
                     <span></span>
                     <span></span>
                     <span></span>
-                </div>
+                </button>
             </div>
         </div>
     </nav>
@@ -983,6 +1050,74 @@
                 </div>
                 <div class="kpi-value" id="kpiProcessedOrders">—</div>
                 <div class="kpi-label" title="Orders met status shipped, completed, of delivered vandaag">Verwerkte orders</div>
+            </div>
+        </div>
+
+        <!-- SLA Metrics -->
+        <div style="margin-bottom:24px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <h2 style="font-size:18px;font-weight:600;">SLA Metrics</h2>
+                    <span id="slaStatus" style="font-size:12px;color:var(--gray-dark);"></span>
+                </div>
+                <div id="slaPeriodBtns" style="display:flex;gap:4px;">
+                    <button class="sla-period-btn active" data-period="today" style="padding:6px 14px;border-radius:8px;border:1px solid #e5e7eb;background:var(--blue);color:white;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">Vandaag</button>
+                    <button class="sla-period-btn" data-period="week" style="padding:6px 14px;border-radius:8px;border:1px solid #e5e7eb;background:white;color:var(--gray-dark);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">Week</button>
+                    <button class="sla-period-btn" data-period="month" style="padding:6px 14px;border-radius:8px;border:1px solid #e5e7eb;background:white;color:var(--gray-dark);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">Maand</button>
+                </div>
+            </div>
+            <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon green">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <span class="kpi-trend" id="slaOnTimeTrend" style="display:none;"></span>
+                    </div>
+                    <div class="kpi-value" id="slaOnTime" style="font-size:28px;">—</div>
+                    <div class="kpi-label" title="Percentage orders verzonden binnen 24 uur SLA">On-Time Shipping</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon blue">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <span class="kpi-trend" id="slaAccuracyTrend" style="display:none;"></span>
+                    </div>
+                    <div class="kpi-value" id="slaAccuracy" style="font-size:28px;">—</div>
+                    <div class="kpi-label" title="Percentage orders zonder aandachtspunten">Order Accuracy</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon orange">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                            </svg>
+                        </div>
+                        <span class="kpi-trend" id="slaCycleTrend" style="display:none;"></span>
+                    </div>
+                    <div class="kpi-value" id="slaCycleTime" style="font-size:28px;">—</div>
+                    <div class="kpi-label" title="Gemiddelde doorlooptijd van order tot verzending">Doorlooptijd</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon purple">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                            </svg>
+                        </div>
+                        <span class="kpi-trend" id="slaPerfectTrend" style="display:none;"></span>
+                    </div>
+                    <div class="kpi-value" id="slaPerfect" style="font-size:28px;">—</div>
+                    <div class="kpi-label" title="Orders die on-time, accuraat en volledig afgerond zijn">Perfect Order Rate</div>
+                </div>
             </div>
         </div>
 
@@ -1195,7 +1330,7 @@
             const pct = ((current - previous) / previous * 100).toFixed(0);
             const isUp = current >= previous;
             el.className = 'kpi-trend ' + (isUp ? 'up' : 'down');
-            el.innerHTML = (isUp ? '↑' : '↓') + ' ' + Math.abs(pct) + '% vs vorige week';
+            el.textContent = (isUp ? '↑' : '↓') + ' ' + Math.abs(pct) + '% vs vorige week';
             el.style.display = 'inline-flex';
         }
 
@@ -1211,13 +1346,20 @@
             ];
             const total = stages.reduce((s, st) => s + (byStatus[st.key] || 0), 0) || 1;
             const container = document.getElementById('pipelineContainer');
-            container.innerHTML = '';
+            container.textContent = '';
             stages.forEach((st, i) => {
                 const count = byStatus[st.key] || 0;
                 const pct = Math.max(((count / total) * 100), count > 0 ? 8 : 4);
                 const div = document.createElement('div');
                 div.style.cssText = `flex:${pct};background:${st.color};border-radius:${i===0?'12px 0 0 12px':i===stages.length-1?'0 12px 12px 0':'0'};padding:16px 12px;text-align:center;color:white;min-width:60px;display:flex;flex-direction:column;justify-content:center;transition:flex 0.5s;`;
-                div.innerHTML = `<div style="font-size:24px;font-weight:700;">${count}</div><div style="font-size:11px;opacity:0.9;margin-top:2px;">${st.label}</div>`;
+                const countDiv = document.createElement('div');
+                countDiv.style.cssText = 'font-size:24px;font-weight:700;';
+                countDiv.textContent = count;
+                const labelDiv = document.createElement('div');
+                labelDiv.style.cssText = 'font-size:11px;opacity:0.9;margin-top:2px;';
+                labelDiv.textContent = st.label;
+                div.appendChild(countDiv);
+                div.appendChild(labelDiv);
                 container.appendChild(div);
                 if (i < stages.length - 1) {
                     const arrow = document.createElement('div');
@@ -1232,26 +1374,45 @@
         function renderTopWebshops(shops) {
             const list = document.getElementById('topWebshopsList');
             if (!shops || shops.length === 0) {
-                list.innerHTML = '<div style="text-align:center;padding:20px;color:#999;">Geen data</div>';
+                list.textContent = '';
+                const empty = document.createElement('div');
+                empty.style.cssText = 'text-align:center;padding:20px;color:#999;';
+                empty.textContent = 'Geen data';
+                list.appendChild(empty);
                 return;
             }
-            list.innerHTML = '';
+            list.textContent = '';
             const maxCount = shops[0].count || 1;
             shops.forEach((shop, i) => {
                 const pct = (shop.count / maxCount * 100).toFixed(0);
-                const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1)+'.';
+                const medal = i === 0 ? '\u{1F947}' : i === 1 ? '\u{1F948}' : i === 2 ? '\u{1F949}' : (i+1)+'.';
                 const div = document.createElement('div');
                 div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--gray-light);border-radius:10px;';
-                div.innerHTML = `
-                    <span style="font-size:18px;width:28px;text-align:center;">${medal}</span>
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${shop.name}</div>
-                        <div style="height:4px;background:#e8e8ed;border-radius:2px;margin-top:4px;">
-                            <div style="height:100%;width:${pct}%;background:var(--blue);border-radius:2px;transition:width 0.5s;"></div>
-                        </div>
-                    </div>
-                    <span style="font-size:18px;font-weight:700;color:var(--blue);">${shop.count}</span>
-                `;
+
+                const medalSpan = document.createElement('span');
+                medalSpan.style.cssText = 'font-size:18px;width:28px;text-align:center;';
+                medalSpan.textContent = medal;
+
+                const infoDiv = document.createElement('div');
+                infoDiv.style.cssText = 'flex:1;min-width:0;';
+                const nameDiv = document.createElement('div');
+                nameDiv.style.cssText = 'font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+                nameDiv.textContent = shop.name;
+                const barOuter = document.createElement('div');
+                barOuter.style.cssText = 'height:4px;background:#e8e8ed;border-radius:2px;margin-top:4px;';
+                const barInner = document.createElement('div');
+                barInner.style.cssText = 'height:100%;width:' + pct + '%;background:var(--blue);border-radius:2px;transition:width 0.5s;';
+                barOuter.appendChild(barInner);
+                infoDiv.appendChild(nameDiv);
+                infoDiv.appendChild(barOuter);
+
+                const countSpan = document.createElement('span');
+                countSpan.style.cssText = 'font-size:18px;font-weight:700;color:var(--blue);';
+                countSpan.textContent = shop.count;
+
+                div.appendChild(medalSpan);
+                div.appendChild(infoDiv);
+                div.appendChild(countSpan);
                 list.appendChild(div);
             });
         }
@@ -1383,14 +1544,26 @@
             const now = new Date();
             const hour = now.getHours();
             const greeting = hour < 12 ? 'Goedemorgen' : hour < 18 ? 'Goedemiddag' : 'Goedenavond';
-            title.textContent = `${greeting}! Hier is uw live samenvatting.`;
+            title.textContent = greeting + '! Hier is uw live samenvatting.';
 
             const todayCount = d.orders.today || 0;
             const weekCount = d.orders.week || 0;
             const shipWeek = d.shipments ? d.shipments.week : 0;
-            text.innerHTML = `Vandaag zijn er <strong>${todayCount} orders</strong> binnengekomen. ` +
-                `Deze week in totaal <strong>${weekCount} orders</strong> en <strong>${shipWeek} verzendingen</strong>. ` +
-                `Data wordt elke minuut ververst vanuit Goedgepickt.`;
+
+            text.textContent = '';
+            text.appendChild(document.createTextNode('Vandaag zijn er '));
+            const s1 = document.createElement('strong');
+            s1.textContent = todayCount + ' orders';
+            text.appendChild(s1);
+            text.appendChild(document.createTextNode(' binnengekomen. Deze week in totaal '));
+            const s2 = document.createElement('strong');
+            s2.textContent = weekCount + ' orders';
+            text.appendChild(s2);
+            text.appendChild(document.createTextNode(' en '));
+            const s3 = document.createElement('strong');
+            s3.textContent = shipWeek + ' verzendingen';
+            text.appendChild(s3);
+            text.appendChild(document.createTextNode('. Data wordt elke minuut ververst vanuit Goedgepickt.'));
         }
 
         // ============ ORDERS CHART (live data) ============
@@ -1481,41 +1654,78 @@
         }
 
         // ============ RECENT ORDERS ============
+        function renderOrderRow(order) {
+            const displayId = order.orderId || order.externalDisplayId || order.uuid.slice(0, 8);
+            const customer = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || order.webshopName || '\u2014';
+            const itemCount = (order.products && order.products.length) || 0;
+            const statusLabel = STATUS_MAP[order.status] || order.status || '\u2014';
+            const statusClass = STATUS_CLASS_MAP[order.status] || 'pending';
+            const carrier = extractCarrier(order);
+
+            const tr = document.createElement('tr');
+
+            const tdId = document.createElement('td');
+            const idSpan = document.createElement('span');
+            idSpan.className = 'order-id';
+            idSpan.textContent = displayId;
+            tdId.appendChild(idSpan);
+
+            const tdCustomer = document.createElement('td');
+            tdCustomer.textContent = customer;
+
+            const tdItems = document.createElement('td');
+            tdItems.textContent = itemCount + ' item' + (itemCount !== 1 ? 's' : '');
+
+            const tdStatus = document.createElement('td');
+            const badge = document.createElement('span');
+            badge.className = 'status-badge ' + statusClass;
+            const dot = document.createElement('span');
+            dot.className = 'status-dot';
+            badge.appendChild(dot);
+            badge.appendChild(document.createTextNode(statusLabel));
+            tdStatus.appendChild(badge);
+
+            const tdCarrier = document.createElement('td');
+            tdCarrier.textContent = carrier;
+
+            tr.appendChild(tdId);
+            tr.appendChild(tdCustomer);
+            tr.appendChild(tdItems);
+            tr.appendChild(tdStatus);
+            tr.appendChild(tdCarrier);
+            return tr;
+        }
+
+        function showEmptyOrdersRow(tbody) {
+            tbody.textContent = '';
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.colSpan = 5;
+            td.style.cssText = 'text-align:center;padding:30px;color:#999;';
+            td.textContent = 'Geen recente orders';
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        }
+
         async function loadRecentOrders() {
             try {
                 const res = await fetch(`${API_BASE}/api/orders/latest?limit=5`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Orders API error');
                 const json = await res.json();
                 const orders = json.data || [];
+                const tbody = document.getElementById('recentOrdersBody');
                 if (!Array.isArray(orders) || orders.length === 0) {
-                    document.getElementById('recentOrdersBody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Geen recente orders</td></tr>';
+                    showEmptyOrdersRow(tbody);
                     return;
                 }
 
-                const tbody = document.getElementById('recentOrdersBody');
-                tbody.innerHTML = '';
-
+                tbody.textContent = '';
                 orders.forEach(order => {
-                    const displayId = order.orderId || order.externalDisplayId || order.uuid.slice(0, 8);
-                    const customer = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || order.webshopName || '—';
-                    const itemCount = (order.products && order.products.length) || 0;
-                    const statusLabel = STATUS_MAP[order.status] || order.status || '—';
-                    const statusClass = STATUS_CLASS_MAP[order.status] || 'pending';
-                    const carrier = extractCarrier(order);
-
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><span class="order-id">${displayId}</span></td>
-                        <td>${customer}</td>
-                        <td>${itemCount} item${itemCount !== 1 ? 's' : ''}</td>
-                        <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusLabel}</span></td>
-                        <td>${carrier}</td>
-                    `;
-                    tbody.appendChild(tr);
+                    tbody.appendChild(renderOrderRow(order));
                 });
 
                 const subtitle = document.querySelector('.content-grid:last-of-type .card:first-child .card-subtitle');
-                if (subtitle) subtitle.textContent = `Laatste ${orders.length} orders (live)`;
+                if (subtitle) subtitle.textContent = 'Laatste ' + orders.length + ' orders (live)';
             } catch (e) {
                 console.log('Orders API niet beschikbaar:', e.message);
             }
@@ -1542,23 +1752,43 @@
                 const sorted = Object.entries(carriers).sort((a, b) => b[1] - a[1]);
 
                 const carrierList = document.getElementById('carrierList');
-                carrierList.innerHTML = '';
+                carrierList.textContent = '';
 
                 sorted.forEach(([name, count]) => {
                     const pct = ((count / total) * 100).toFixed(1);
                     const div = document.createElement('div');
                     div.className = 'carrier-item';
-                    div.innerHTML = `
-                        <div class="carrier-logo">${name.substring(0, 5)}</div>
-                        <div class="carrier-info">
-                            <div class="carrier-name">${name}</div>
-                            <div class="carrier-stats">${count} zendingen</div>
-                        </div>
-                        <div class="carrier-bar">
-                            <div class="carrier-bar-fill" style="width: ${pct}%"></div>
-                        </div>
-                        <div class="carrier-percent">${pct}%</div>
-                    `;
+
+                    const logo = document.createElement('div');
+                    logo.className = 'carrier-logo';
+                    logo.textContent = name.substring(0, 5);
+
+                    const info = document.createElement('div');
+                    info.className = 'carrier-info';
+                    const cName = document.createElement('div');
+                    cName.className = 'carrier-name';
+                    cName.textContent = name;
+                    const cStats = document.createElement('div');
+                    cStats.className = 'carrier-stats';
+                    cStats.textContent = count + ' zendingen';
+                    info.appendChild(cName);
+                    info.appendChild(cStats);
+
+                    const bar = document.createElement('div');
+                    bar.className = 'carrier-bar';
+                    const barFill = document.createElement('div');
+                    barFill.className = 'carrier-bar-fill';
+                    barFill.style.width = pct + '%';
+                    bar.appendChild(barFill);
+
+                    const percent = document.createElement('div');
+                    percent.className = 'carrier-percent';
+                    percent.textContent = pct + '%';
+
+                    div.appendChild(logo);
+                    div.appendChild(info);
+                    div.appendChild(bar);
+                    div.appendChild(percent);
                     carrierList.appendChild(div);
                 });
 
@@ -1566,15 +1796,75 @@
                 const disclaimer = document.getElementById('carrierDisclaimer');
                 if (disclaimer) {
                     disclaimer.style.display = 'block';
-                    disclaimer.textContent = `⚠️ Gebaseerd op de laatste ${total} verzendingen. Voor een volledig beeld, bekijk de Verzendingen pagina.`;
+                    disclaimer.textContent = '\u26A0\uFE0F Gebaseerd op de laatste ' + total + ' verzendingen. Voor een volledig beeld, bekijk de Verzendingen pagina.';
                 }
             } catch (e) {
                 console.log('Carrier data niet beschikbaar:', e.message);
-                document.getElementById('carrierList').innerHTML = '<div style="text-align:center;padding:20px;color:#999;">Geen data beschikbaar</div>';
+                const cl = document.getElementById('carrierList');
+                cl.textContent = '';
+                const empty = document.createElement('div');
+                empty.style.cssText = 'text-align:center;padding:20px;color:#999;';
+                empty.textContent = 'Geen data beschikbaar';
+                cl.appendChild(empty);
             }
         }
 
         // ============ INVENTORY ALERTS (live) ============
+        function createAlertItem(alertData) {
+            const stock = alertData.stock || alertData.stockLevel || 0;
+            const isCritical = stock <= 10;
+            const level = isCritical ? 'critical' : 'warning';
+            const titleText = isCritical ? 'Kritiek laag' : 'Onder bestelpunt';
+            const sku = alertData.sku || alertData.productSku || alertData.name || '\u2014';
+            const svgPath = isCritical
+                ? 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'
+                : 'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z';
+
+            const div = document.createElement('div');
+            div.className = 'alert-item ' + level;
+
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'alert-icon';
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('fill', 'none');
+            svg.setAttribute('viewBox', '0 0 24 24');
+            svg.setAttribute('stroke-width', '1.5');
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('stroke-linecap', 'round');
+            path.setAttribute('stroke-linejoin', 'round');
+            path.setAttribute('d', svgPath);
+            svg.appendChild(path);
+            iconDiv.appendChild(svg);
+
+            const content = document.createElement('div');
+            content.className = 'alert-content';
+            const tDiv = document.createElement('div');
+            tDiv.className = 'alert-title';
+            tDiv.textContent = titleText;
+            const sDiv = document.createElement('div');
+            sDiv.className = 'alert-subtitle';
+            sDiv.textContent = sku;
+            content.appendChild(tDiv);
+            content.appendChild(sDiv);
+
+            const countDiv = document.createElement('div');
+            countDiv.className = 'alert-count';
+            countDiv.textContent = stock;
+
+            div.appendChild(iconDiv);
+            div.appendChild(content);
+            div.appendChild(countDiv);
+            return div;
+        }
+
+        function showEmptyAlerts(alertsList) {
+            alertsList.textContent = '';
+            const empty = document.createElement('div');
+            empty.style.cssText = 'padding:20px;text-align:center;color:#16a34a;font-weight:500;';
+            empty.textContent = '\u2713 Geen voorraad alerts';
+            alertsList.appendChild(empty);
+        }
+
         async function loadInventoryAlerts() {
             try {
                 const res = await fetch(`${API_BASE}/api/inventory/alerts`, { headers: API_HEADERS });
@@ -1588,39 +1878,22 @@
 
                 const alertsList = document.getElementById('alertsList');
                 if (!Array.isArray(alerts) || alerts.length === 0) {
-                    alertsList.innerHTML = '<div style="padding:20px;text-align:center;color:#16a34a;font-weight:500;">✓ Geen voorraad alerts</div>';
+                    showEmptyAlerts(alertsList);
                     return;
                 }
 
-                alertsList.innerHTML = '';
+                alertsList.textContent = '';
                 alerts.slice(0, 5).forEach(alert => {
-                    const stock = alert.stock || alert.stockLevel || 0;
-                    const isCritical = stock <= 10;
-                    const level = isCritical ? 'critical' : 'warning';
-                    const title = isCritical ? 'Kritiek laag' : 'Onder bestelpunt';
-                    const sku = alert.sku || alert.productSku || alert.name || '—';
-
-                    const div = document.createElement('div');
-                    div.className = `alert-item ${level}`;
-                    div.innerHTML = `
-                        <div class="alert-icon">
-                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="${isCritical 
-                                    ? 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'
-                                    : 'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'}" />
-                            </svg>
-                        </div>
-                        <div class="alert-content">
-                            <div class="alert-title">${title}</div>
-                            <div class="alert-subtitle">${sku}</div>
-                        </div>
-                        <div class="alert-count">${stock}</div>
-                    `;
-                    alertsList.appendChild(div);
+                    alertsList.appendChild(createAlertItem(alert));
                 });
             } catch (e) {
                 console.log('Inventory alerts niet beschikbaar:', e.message);
-                document.getElementById('alertsList').innerHTML = '<div style="text-align:center;padding:20px;color:#999;">Geen data beschikbaar</div>';
+                const al = document.getElementById('alertsList');
+                al.textContent = '';
+                const empty = document.createElement('div');
+                empty.style.cssText = 'text-align:center;padding:20px;color:#999;';
+                empty.textContent = 'Geen data beschikbaar';
+                al.appendChild(empty);
             }
         }
 
@@ -1712,26 +1985,12 @@
                     const orders = d.recentOrders;
                     const tbody = document.getElementById('recentOrdersBody');
                     if (tbody) {
-                        tbody.innerHTML = '';
+                        tbody.textContent = '';
                         orders.forEach(order => {
-                            const displayId = order.orderId || order.externalDisplayId || order.uuid.slice(0, 8);
-                            const customer = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || order.webshopName || '—';
-                            const itemCount = (order.products && order.products.length) || 0;
-                            const statusLabel = STATUS_MAP[order.status] || order.status || '—';
-                            const statusClass = STATUS_CLASS_MAP[order.status] || 'pending';
-                            const carrier = extractCarrier(order);
-                            const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td><span class="order-id">${displayId}</span></td>
-                                <td>${customer}</td>
-                                <td>${itemCount} item${itemCount !== 1 ? 's' : ''}</td>
-                                <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusLabel}</span></td>
-                                <td>${carrier}</td>
-                            `;
-                            tbody.appendChild(tr);
+                            tbody.appendChild(renderOrderRow(order));
                         });
                         const subtitle = document.querySelector('.content-grid:last-of-type .card:first-child .card-subtitle');
-                        if (subtitle) subtitle.textContent = `Laatste ${orders.length} orders (live)`;
+                        if (subtitle) subtitle.textContent = 'Laatste ' + orders.length + ' orders (live)';
                     }
                 }
 
@@ -1743,32 +2002,11 @@
                     const alertsList = document.getElementById('alertsList');
                     if (alertsList) {
                         if (alerts.length === 0) {
-                            alertsList.innerHTML = '<div style="padding:20px;text-align:center;color:#16a34a;font-weight:500;">✓ Geen voorraad alerts</div>';
+                            showEmptyAlerts(alertsList);
                         } else {
-                            alertsList.innerHTML = '';
+                            alertsList.textContent = '';
                             alerts.slice(0, 5).forEach(alert => {
-                                const stock = alert.stock || alert.stockLevel || 0;
-                                const isCritical = stock <= 10;
-                                const level = isCritical ? 'critical' : 'warning';
-                                const title = isCritical ? 'Kritiek laag' : 'Onder bestelpunt';
-                                const sku = alert.sku || alert.productSku || alert.name || '—';
-                                const div = document.createElement('div');
-                                div.className = `alert-item ${level}`;
-                                div.innerHTML = `
-                                    <div class="alert-icon">
-                                        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="${isCritical 
-                                                ? 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'
-                                                : 'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'}" />
-                                        </svg>
-                                    </div>
-                                    <div class="alert-content">
-                                        <div class="alert-title">${title}</div>
-                                        <div class="alert-subtitle">${sku}</div>
-                                    </div>
-                                    <div class="alert-count">${stock}</div>
-                                `;
-                                alertsList.appendChild(div);
+                                alertsList.appendChild(createAlertItem(alert));
                             });
                         }
                     }
@@ -1783,15 +2021,160 @@
             loadCarrierPerformance();
         }
 
+        // ============ SLA METRICS ============
+        var currentSLAPeriod = 'today';
+
+        function renderSLATrend(el, trend, currentVal, prevVal) {
+            if (!el || !trend) return;
+            if (trend === 'stable') {
+                el.style.display = 'none';
+                return;
+            }
+            el.style.display = '';
+            var isUp = trend === 'up';
+            el.className = 'kpi-trend ' + (isUp ? 'up' : 'down');
+            var arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            arrow.setAttribute('fill', 'none');
+            arrow.setAttribute('viewBox', '0 0 24 24');
+            arrow.setAttribute('stroke-width', '2');
+            arrow.setAttribute('stroke', 'currentColor');
+            var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('stroke-linecap', 'round');
+            path.setAttribute('stroke-linejoin', 'round');
+            path.setAttribute('d', isUp ? 'M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25' : 'M4.5 4.5l15 15m0 0V8.25m0 11.25H8.25');
+            arrow.appendChild(path);
+            el.textContent = '';
+            el.appendChild(arrow);
+            if (prevVal !== undefined && prevVal !== null) {
+                var diff = document.createTextNode(' ' + Number(prevVal).toFixed(1) + '%');
+                el.appendChild(diff);
+            }
+        }
+
+        async function loadSLAMetrics(period) {
+            period = period || currentSLAPeriod;
+            try {
+                var res = await fetch(API_BASE + '/api/metrics/sla?period=' + period, { headers: API_HEADERS });
+                if (!res.ok) return;
+                var json = await res.json();
+                var d = json.data;
+
+                // On-Time Shipping
+                var otEl = document.getElementById('slaOnTime');
+                if (otEl && d.on_time_shipping) {
+                    otEl.textContent = Number(d.on_time_shipping.percentage).toFixed(1) + '%';
+                    renderSLATrend(
+                        document.getElementById('slaOnTimeTrend'),
+                        d.on_time_shipping.trend,
+                        d.on_time_shipping.percentage,
+                        d.on_time_shipping.prev_percentage
+                    );
+                }
+
+                // Order Accuracy
+                var accEl = document.getElementById('slaAccuracy');
+                if (accEl && d.order_accuracy) {
+                    accEl.textContent = Number(d.order_accuracy.percentage).toFixed(1) + '%';
+                    renderSLATrend(
+                        document.getElementById('slaAccuracyTrend'),
+                        d.order_accuracy.trend,
+                        d.order_accuracy.percentage,
+                        d.order_accuracy.prev_percentage
+                    );
+                }
+
+                // Cycle Time
+                var ctEl = document.getElementById('slaCycleTime');
+                if (ctEl && d.order_cycle_time) {
+                    var mins = Number(d.order_cycle_time.avg_minutes);
+                    if (mins >= 60) {
+                        ctEl.textContent = (mins / 60).toFixed(1) + 'u';
+                    } else {
+                        ctEl.textContent = Math.round(mins) + 'min';
+                    }
+                    // For cycle time, "down" is good (faster), "up" is bad (slower)
+                    var ctTrend = d.order_cycle_time.trend;
+                    var ctTrendEl = document.getElementById('slaCycleTrend');
+                    if (ctTrendEl && ctTrend && ctTrend !== 'stable') {
+                        ctTrendEl.style.display = '';
+                        var ctIsGood = ctTrend === 'down';
+                        ctTrendEl.className = 'kpi-trend ' + (ctIsGood ? 'up' : 'down');
+                        var ctArrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                        ctArrow.setAttribute('fill', 'none');
+                        ctArrow.setAttribute('viewBox', '0 0 24 24');
+                        ctArrow.setAttribute('stroke-width', '2');
+                        ctArrow.setAttribute('stroke', 'currentColor');
+                        var ctPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        ctPath.setAttribute('stroke-linecap', 'round');
+                        ctPath.setAttribute('stroke-linejoin', 'round');
+                        ctPath.setAttribute('d', ctTrend === 'down' ? 'M4.5 4.5l15 15m0 0V8.25m0 11.25H8.25' : 'M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25');
+                        ctArrow.appendChild(ctPath);
+                        ctTrendEl.textContent = '';
+                        ctTrendEl.appendChild(ctArrow);
+                        if (d.order_cycle_time.prev_avg_minutes !== undefined) {
+                            var prevMins = Number(d.order_cycle_time.prev_avg_minutes);
+                            var prevText = prevMins >= 60 ? (prevMins / 60).toFixed(1) + 'u' : Math.round(prevMins) + 'min';
+                            ctTrendEl.appendChild(document.createTextNode(' ' + prevText));
+                        }
+                    } else if (ctTrendEl) {
+                        ctTrendEl.style.display = 'none';
+                    }
+                }
+
+                // Perfect Order Rate
+                var prEl = document.getElementById('slaPerfect');
+                if (prEl && d.perfect_order_rate) {
+                    prEl.textContent = Number(d.perfect_order_rate.percentage).toFixed(1) + '%';
+                    renderSLATrend(
+                        document.getElementById('slaPerfectTrend'),
+                        d.perfect_order_rate.trend,
+                        d.perfect_order_rate.percentage,
+                        d.perfect_order_rate.prev_percentage
+                    );
+                }
+
+                // Status indicator
+                var slaStatus = document.getElementById('slaStatus');
+                if (slaStatus) {
+                    var periodLabel = period === 'today' ? 'vandaag' : period === 'week' ? 'deze week' : 'deze maand';
+                    slaStatus.textContent = 'Live — ' + periodLabel;
+                }
+            } catch (e) {
+                console.log('SLA metrics niet beschikbaar:', e.message);
+            }
+        }
+
+        // SLA period selector
+        document.getElementById('slaPeriodBtns').addEventListener('click', function(e) {
+            var btn = e.target.closest('.sla-period-btn');
+            if (!btn) return;
+            var period = btn.getAttribute('data-period');
+            if (period === currentSLAPeriod) return;
+            currentSLAPeriod = period;
+            var btns = document.querySelectorAll('.sla-period-btn');
+            btns.forEach(function(b) {
+                b.style.background = 'white';
+                b.style.color = 'var(--gray-dark)';
+                b.classList.remove('active');
+            });
+            btn.style.background = 'var(--blue)';
+            btn.style.color = 'white';
+            btn.classList.add('active');
+            loadSLAMetrics(period);
+        });
+
         // ============ INIT ============
         initChart();
         loadAll();
+        loadSLAMetrics();
 
         // Feature 7: Auto-refresh elke 60 seconden (GEEN page reload)
         setInterval(() => {
             loadAll();
+            loadSLAMetrics();
         }, 60000);
     </script>
+<script src="nav.js"></script>
 <script src="ai-insights.js"></script>
 </body>
 </html>

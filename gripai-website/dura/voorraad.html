@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voorraad — Dura Fulfilment</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
         .loading-spinner {
@@ -55,6 +53,11 @@
                     <div class="user-avatar" id="userAvatar">DF</div>
                     <span class="user-name" id="userName">Demo Account</span>
                 </div>
+                <button class="hamburger" aria-label="Menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </nav>
@@ -358,13 +361,56 @@
             return stock || product.stockLevel || 0;
         }
 
+        function showTableMessage(tbody, colspan, text, color) {
+            tbody.textContent = '';
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.colSpan = colspan;
+            td.style.cssText = 'text-align:center;padding:40px;color:' + (color || '#999') + ';';
+            td.textContent = text;
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        }
+
+        function createProductRow(sku, name, stock, statusClass, statusLabel, stockClass) {
+            const tr = document.createElement('tr');
+            const tdSku = document.createElement('td');
+            const code = document.createElement('code');
+            code.textContent = sku;
+            tdSku.appendChild(code);
+
+            const tdName = document.createElement('td');
+            tdName.textContent = name;
+
+            const tdStock = document.createElement('td');
+            const strong = document.createElement('strong');
+            if (stockClass) strong.className = stockClass;
+            strong.textContent = stock.toLocaleString('nl-NL');
+            tdStock.appendChild(strong);
+
+            const tdStatus = document.createElement('td');
+            const badge = document.createElement('span');
+            badge.className = 'status-badge ' + statusClass;
+            const dot = document.createElement('span');
+            dot.className = 'status-dot';
+            badge.appendChild(dot);
+            badge.appendChild(document.createTextNode(statusLabel));
+            tdStatus.appendChild(badge);
+
+            tr.appendChild(tdSku);
+            tr.appendChild(tdName);
+            tr.appendChild(tdStock);
+            tr.appendChild(tdStatus);
+            return tr;
+        }
+
         async function loadInventory(page) {
             currentInvPage = page || 1;
             const tbody = document.getElementById('productsBody');
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#999;"><div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div class="loading-spinner"></div>Bezig met laden...</div></td></tr>';
+            showTableMessage(tbody, 4, 'Bezig met laden...');
 
             try {
-                const res = await fetch(`${API_BASE}/api/inventory?page=${currentInvPage}`, { headers: API_HEADERS });
+                const res = await fetch(API_BASE + '/api/inventory?page=' + currentInvPage, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Inventory API error: ' + res.status);
                 const json = await res.json();
                 const allProducts = json.data || [];
@@ -374,14 +420,14 @@
                 // Filter: toon ALLEEN producten met voorraad > 0
                 const products = allProducts.filter(p => getStockNumber(p) > 0);
 
-                // Update stats - tel alle producten met voorraad
+                // Update stats
                 const inStockCount = products.length;
                 document.getElementById('statTotalProducts').textContent = totalFromApi.toLocaleString('nl-NL');
-                document.getElementById('productsSubtitle').textContent = `${inStockCount} van ${allProducts.length} producten op deze pagina hebben voorraad`;
+                document.getElementById('productsSubtitle').textContent = inStockCount + ' van ' + allProducts.length + ' producten op deze pagina hebben voorraad';
 
-                tbody.innerHTML = '';
+                tbody.textContent = '';
                 if (!products.length) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#999;">Geen producten met voorraad op deze pagina</td></tr>';
+                    showTableMessage(tbody, 4, 'Geen producten met voorraad op deze pagina');
                     updateInvPagination();
                     return;
                 }
@@ -390,8 +436,8 @@
                 products.sort((a, b) => getStockNumber(a) - getStockNumber(b));
 
                 products.forEach(product => {
-                    const sku = product.sku || product.productSku || '—';
-                    const name = product.name || product.productName || '—';
+                    const sku = product.sku || product.productSku || '\u2014';
+                    const name = product.name || product.productName || '\u2014';
                     const stock = getStockNumber(product);
 
                     let statusClass = 'ok', statusLabel = 'Op peil', stockClass = 'green';
@@ -399,40 +445,59 @@
                     else if (stock <= 25) { statusClass = 'warning'; statusLabel = 'Laag'; stockClass = 'orange'; }
                     else if (stock <= 100) { stockClass = ''; }
 
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><code>${sku}</code></td>
-                        <td>${name}</td>
-                        <td><strong class="${stockClass}">${stock.toLocaleString('nl-NL')}</strong></td>
-                        <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusLabel}</span></td>
-                    `;
-                    tbody.appendChild(tr);
+                    tbody.appendChild(createProductRow(sku, name, stock, statusClass, statusLabel, stockClass));
                 });
 
                 updateInvPagination();
             } catch (e) {
                 console.log('Inventory API niet beschikbaar:', e.message);
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#c00;">Fout bij laden: ' + e.message + '</td></tr>';
+                showTableMessage(tbody, 4, 'Fout bij laden: ' + e.message, '#c00');
             }
+        }
+
+        function createInvPagBtn(text, page, disabled) {
+            const btn = document.createElement('button');
+            btn.textContent = text;
+            btn.disabled = disabled;
+            btn.style.cssText = 'padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:' + (disabled ? '#f3f4f6' : '#fff') + ';cursor:' + (disabled ? 'default' : 'pointer');
+            if (!disabled) btn.addEventListener('click', function() { loadInventory(page); });
+            return btn;
         }
 
         function updateInvPagination() {
             const pagDiv = document.getElementById('inventoryPagination');
+            pagDiv.textContent = '';
+
             if (totalInvPages <= 1) {
-                pagDiv.innerHTML = `<span style="color:#8e93a6;font-size:14px;">Pagina 1 van 1 (${totalInvProducts} producten)</span>`;
+                const span = document.createElement('span');
+                span.style.cssText = 'color:#8e93a6;font-size:14px;';
+                span.textContent = 'Pagina 1 van 1 (' + totalInvProducts + ' producten)';
+                pagDiv.appendChild(span);
                 return;
             }
-            pagDiv.innerHTML = `
-                <button onclick="loadInventory(${currentInvPage - 1})" ${currentInvPage <= 1 ? 'disabled' : ''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${currentInvPage <= 1 ? '#f3f4f6' : '#fff'};cursor:${currentInvPage <= 1 ? 'default' : 'pointer'}">‹ Vorige</button>
-                <span style="font-size:14px;color:#6b7084;">Pagina <strong>${currentInvPage}</strong> van <strong>${totalInvPages}</strong> (${totalInvProducts.toLocaleString('nl-NL')} producten)</span>
-                <button onclick="loadInventory(${currentInvPage + 1})" ${currentInvPage >= totalInvPages ? 'disabled' : ''} style="padding:6px 12px;border:1px solid #e5e7eb;border-radius:6px;background:${currentInvPage >= totalInvPages ? '#f3f4f6' : '#fff'};cursor:${currentInvPage >= totalInvPages ? 'default' : 'pointer'}">Volgende ›</button>
-            `;
+
+            pagDiv.appendChild(createInvPagBtn('\u2039 Vorige', currentInvPage - 1, currentInvPage <= 1));
+
+            const info = document.createElement('span');
+            info.style.cssText = 'font-size:14px;color:#6b7084;';
+            info.appendChild(document.createTextNode('Pagina '));
+            const b1 = document.createElement('strong');
+            b1.textContent = currentInvPage;
+            info.appendChild(b1);
+            info.appendChild(document.createTextNode(' van '));
+            const b2 = document.createElement('strong');
+            b2.textContent = totalInvPages;
+            info.appendChild(b2);
+            info.appendChild(document.createTextNode(' (' + totalInvProducts.toLocaleString('nl-NL') + ' producten)'));
+            pagDiv.appendChild(info);
+
+            pagDiv.appendChild(createInvPagBtn('Volgende \u203A', currentInvPage + 1, currentInvPage >= totalInvPages));
         }
 
         async function loadAlerts() {
             const tbody = document.getElementById('alertsBody');
             try {
-                const res = await fetch(`${API_BASE}/api/inventory/alerts`, { headers: API_HEADERS });
+                const res = await fetch(API_BASE + '/api/inventory/alerts', { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Alerts API error');
                 const json = await res.json();
                 const alerts = json.data || [];
@@ -448,29 +513,34 @@
                 document.getElementById('statWarning').textContent = lowCount;
 
                 if (!alerts.length) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#16a34a;font-weight:500;">✓ Geen voorraad alerts</td></tr>';
+                    tbody.textContent = '';
+                    const tr = document.createElement('tr');
+                    const td = document.createElement('td');
+                    td.colSpan = 4;
+                    td.style.cssText = 'text-align:center;padding:40px;color:#16a34a;font-weight:500;';
+                    td.textContent = '\u2713 Geen voorraad alerts';
+                    tr.appendChild(td);
+                    tbody.appendChild(tr);
                     return;
                 }
 
-                tbody.innerHTML = '';
+                tbody.textContent = '';
                 alerts.slice(0, 20).forEach(alert => {
-                    const sku = alert.sku || alert.productSku || '—';
-                    const name = alert.name || alert.productName || '—';
+                    const sku = alert.sku || alert.productSku || '\u2014';
+                    const name = alert.name || alert.productName || '\u2014';
                     const stock = getStockNumber(alert);
                     const isCritical = stock <= 5;
 
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><code>${sku}</code></td>
-                        <td>${name}</td>
-                        <td><strong class="${isCritical ? 'red' : 'orange'}">${stock.toLocaleString('nl-NL')}</strong></td>
-                        <td><span class="status-badge ${isCritical ? 'critical' : 'warning'}"><span class="status-dot"></span>${isCritical ? 'Kritiek' : 'Laag'}</span></td>
-                    `;
-                    tbody.appendChild(tr);
+                    tbody.appendChild(createProductRow(
+                        sku, name, stock,
+                        isCritical ? 'critical' : 'warning',
+                        isCritical ? 'Kritiek' : 'Laag',
+                        isCritical ? 'red' : 'orange'
+                    ));
                 });
             } catch (e) {
                 console.log('Alerts API niet beschikbaar:', e.message);
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#999;">Alerts niet beschikbaar</td></tr>';
+                showTableMessage(tbody, 4, 'Alerts niet beschikbaar');
             }
         }
 
@@ -543,6 +613,7 @@
             }
         });
     </script>
+<script src="nav.js"></script>
 <script src="ai-insights.js"></script>
 </body>
 </html>

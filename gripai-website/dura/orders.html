@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders — Dura Fulfilment</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -44,6 +42,11 @@
                     <div class="user-avatar" id="userAvatar">DF</div>
                     <span class="user-name" id="userName">Demo Account</span>
                 </div>
+                <button class="hamburger" aria-label="Menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </nav>
@@ -222,6 +225,81 @@
         const API_BASE = window.DURA_API_BASE;
         const API_HEADERS = window.DURA_API_HEADERS;
 
+        // XSS-safe helper: escape user/API data for the few cases where innerHTML is needed (e.g. SVG icons)
+        function escapeHtml(str) {
+            if (str == null) return '';
+            const s = String(str);
+            const div = document.createElement('div');
+            div.textContent = s;
+            return div.innerHTML;
+        }
+
+        // XSS-safe helper: create a table cell with text content
+        function createTd(text, opts) {
+            const td = document.createElement('td');
+            if (opts && opts.style) td.style.cssText = opts.style;
+            td.textContent = text;
+            return td;
+        }
+
+        // XSS-safe helper: create a status badge element
+        function createStatusBadge(statusClass, statusLabel) {
+            const span = document.createElement('span');
+            span.className = 'status-badge ' + statusClass;
+            const dot = document.createElement('span');
+            dot.className = 'status-dot';
+            span.appendChild(dot);
+            span.appendChild(document.createTextNode(statusLabel));
+            return span;
+        }
+
+        // XSS-safe helper: create a carrier badge element
+        function createCarrierBadge(carrierKey, carrierLabel) {
+            if (!carrierKey) return document.createTextNode('\u2014');
+            const span = document.createElement('span');
+            span.className = 'carrier-badge ' + carrierKey;
+            span.textContent = carrierLabel;
+            return span;
+        }
+
+        // XSS-safe helper: create a detail row for modals
+        function createDetailRow(label, value) {
+            const row = document.createElement('div');
+            row.className = 'detail-row';
+            const lbl = document.createElement('span');
+            lbl.className = 'detail-label';
+            lbl.textContent = label;
+            const val = document.createElement('span');
+            val.className = 'detail-value';
+            if (typeof value === 'string') {
+                val.textContent = value;
+            } else if (value instanceof HTMLElement) {
+                val.appendChild(value);
+            }
+            row.appendChild(lbl);
+            row.appendChild(val);
+            return row;
+        }
+
+        // XSS-safe helper: create a timeline item
+        function createTimelineItem(title, subtitle, cssClass) {
+            const item = document.createElement('div');
+            item.className = 'timeline-item ' + (cssClass || '');
+            const dot = document.createElement('div');
+            dot.className = 'timeline-dot';
+            const content = document.createElement('div');
+            content.className = 'timeline-content';
+            const strong = document.createElement('strong');
+            strong.textContent = title;
+            const span = document.createElement('span');
+            span.textContent = subtitle;
+            content.appendChild(strong);
+            content.appendChild(span);
+            item.appendChild(dot);
+            item.appendChild(content);
+            return item;
+        }
+
         const STATUS_MAP = {
             'open': 'Nieuw',
             'processing': 'In verwerking',
@@ -247,6 +325,89 @@
             'backorder': 'critical',
             'on_hold': 'processing'
         };
+
+        const SLA_HOURS = 24;
+
+        function createSLABar(order) {
+            if (!order.createDate) return null;
+
+            var createTime = new Date(order.createDate).getTime();
+            var slaMs = SLA_HOURS * 60 * 60 * 1000;
+            var slaDeadline = createTime + slaMs;
+
+            // Determine end time: shippedDate > finishDate > now
+            var endTime;
+            var isResolved = false;
+            if (order.shippedDate) {
+                endTime = new Date(order.shippedDate).getTime();
+                isResolved = true;
+            } else if (order.finishDate) {
+                endTime = new Date(order.finishDate).getTime();
+                isResolved = true;
+            } else {
+                endTime = Date.now();
+            }
+
+            var elapsed = endTime - createTime;
+            var isOnTime = elapsed <= slaMs;
+            var progress = Math.min(elapsed / slaMs, 1.5);
+
+            var bar = document.createElement('div');
+            bar.style.cssText = 'display:flex;align-items:center;gap:16px;padding:14px 18px;border-radius:12px;margin-bottom:16px;';
+
+            var badgeColor, badgeText, detailText, barColor;
+
+            if (isResolved && isOnTime) {
+                bar.style.background = '#f0fdf4';
+                bar.style.border = '1px solid rgba(22,163,74,0.15)';
+                badgeColor = '#16a34a';
+                badgeText = 'Op tijd';
+                var hrs = Math.floor(elapsed / 3600000);
+                var mins = Math.floor((elapsed % 3600000) / 60000);
+                detailText = 'Verwerkt in ' + hrs + 'u ' + mins + 'min';
+                barColor = '#16a34a';
+            } else if (!isResolved && isOnTime) {
+                bar.style.background = '#fff7ed';
+                bar.style.border = '1px solid rgba(234,88,12,0.15)';
+                badgeColor = '#ea580c';
+                badgeText = 'In behandeling';
+                var remaining = slaDeadline - endTime;
+                var remHrs = Math.floor(remaining / 3600000);
+                var remMins = Math.floor((remaining % 3600000) / 60000);
+                detailText = 'Nog ' + remHrs + 'u ' + remMins + 'min binnen SLA';
+                barColor = '#ea580c';
+            } else {
+                bar.style.background = '#fef2f2';
+                bar.style.border = '1px solid rgba(220,38,38,0.15)';
+                badgeColor = '#dc2626';
+                badgeText = 'Vertraagd';
+                var overMs = elapsed - slaMs;
+                var overHrs = Math.floor(overMs / 3600000);
+                var overMins = Math.floor((overMs % 3600000) / 60000);
+                detailText = overHrs + 'u ' + overMins + 'min over SLA';
+                if (isResolved) detailText = 'Verwerkt ' + detailText;
+                barColor = '#dc2626';
+            }
+
+            var badge = document.createElement('span');
+            badge.style.cssText = 'padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;color:white;background:' + badgeColor + ';flex-shrink:0;';
+            badge.textContent = badgeText;
+            bar.appendChild(badge);
+
+            var progressOuter = document.createElement('div');
+            progressOuter.style.cssText = 'flex:1;height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;';
+            var progressInner = document.createElement('div');
+            progressInner.style.cssText = 'height:100%;border-radius:3px;transition:width 0.3s;background:' + barColor + ';width:' + Math.min(progress * 100, 100) + '%;';
+            progressOuter.appendChild(progressInner);
+            bar.appendChild(progressOuter);
+
+            var detail = document.createElement('span');
+            detail.style.cssText = 'font-size:13px;color:#6b7084;white-space:nowrap;flex-shrink:0;';
+            detail.textContent = detailText;
+            bar.appendChild(detail);
+
+            return bar;
+        }
 
         function extractCarrier(shippingMethod) {
             if (!shippingMethod) return '';
@@ -331,16 +492,30 @@
                 updatePagination();
             } catch (e) {
                 console.log('Orders API not available:', e.message);
-                document.querySelector('#ordersTable tbody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#c00;">Fout bij laden: ' + e.message + '</td></tr>';
+                var errTbody = document.querySelector('#ordersTable tbody');
+                errTbody.textContent = '';
+                var errTr = document.createElement('tr');
+                var errTd = document.createElement('td');
+                errTd.colSpan = 8;
+                errTd.style.cssText = 'text-align:center;padding:40px;color:#c00;';
+                errTd.textContent = 'Fout bij laden: ' + e.message;
+                errTr.appendChild(errTd);
+                errTbody.appendChild(errTr);
             }
         }
 
         function renderOrders(orders) {
             const tbody = document.querySelector('#ordersTable tbody');
-            tbody.innerHTML = '';
+            tbody.textContent = '';
 
             if (!Array.isArray(orders) || orders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#999;">Geen orders gevonden</td></tr>';
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                td.colSpan = 8;
+                td.style.cssText = 'text-align:center;padding:40px;color:#999;';
+                td.textContent = 'Geen orders gevonden';
+                tr.appendChild(td);
+                tbody.appendChild(tr);
                 return;
             }
 
@@ -349,12 +524,12 @@
                 if (order.uuid) _ordersMap[order.uuid] = order;
 
                 const displayId = order.externalDisplayId || order.uuid.slice(0, 8);
-                const customerName = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || '—';
+                const customerName = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || '\u2014';
                 const customerCity = order.billingCity || '';
                 const webshop = order.webshopName || '';
                 const itemCount = (order.products && order.products.length) || 0;
                 const totalPaid = formatCurrency(order.totalPaid);
-                const statusLabel = STATUS_MAP[order.status] || order.status || '—';
+                const statusLabel = STATUS_MAP[order.status] || order.status || '\u2014';
                 const statusClass = STATUS_CLASS_MAP[order.status] || 'pending';
                 const carrierKey = extractCarrier(order.shippingMethod);
                 const carrierLabel = extractCarrierLabel(order.shippingMethod);
@@ -364,28 +539,59 @@
                 const tr = document.createElement('tr');
                 tr.dataset.status = order.status || '';
                 tr.dataset.carrier = carrierKey;
-                tr.innerHTML = `
-                    <td><a class="order-id-link" onclick="viewOrderByUuid('${uuid}')" title="Bekijk order details">${displayId}</a></td>
-                    <td>
-                        <div class="customer-info">
-                            <strong>${customerName}</strong>
-                            <span>${webshop || customerCity}</span>
-                        </div>
-                    </td>
-                    <td>${itemCount} item${itemCount !== 1 ? 's' : ''}</td>
-                    <td>${totalPaid}</td>
-                    <td><span class="status-badge ${statusClass}"><span class="status-dot"></span>${statusLabel}</span></td>
-                    <td>${carrierKey ? `<span class="carrier-badge ${carrierKey}">${carrierLabel}</span>` : '—'}</td>
-                    <td>${dateFormatted}</td>
-                    <td>
-                        <button class="btn-icon" onclick="viewOrderByUuid('${uuid}')" title="Bekijk details">
-                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                        </button>
-                    </td>
-                `;
+
+                // Order ID cell
+                const tdId = document.createElement('td');
+                const idLink = document.createElement('a');
+                idLink.className = 'order-id-link';
+                idLink.title = 'Bekijk order details';
+                idLink.textContent = displayId;
+                idLink.addEventListener('click', function() { viewOrderByUuid(uuid); });
+                tdId.appendChild(idLink);
+                tr.appendChild(tdId);
+
+                // Customer cell
+                const tdCustomer = document.createElement('td');
+                const custDiv = document.createElement('div');
+                custDiv.className = 'customer-info';
+                const custStrong = document.createElement('strong');
+                custStrong.textContent = customerName;
+                const custSpan = document.createElement('span');
+                custSpan.textContent = webshop || customerCity;
+                custDiv.appendChild(custStrong);
+                custDiv.appendChild(custSpan);
+                tdCustomer.appendChild(custDiv);
+                tr.appendChild(tdCustomer);
+
+                // Items cell
+                tr.appendChild(createTd(itemCount + ' item' + (itemCount !== 1 ? 's' : '')));
+
+                // Total cell
+                tr.appendChild(createTd(totalPaid));
+
+                // Status cell
+                const tdStatus = document.createElement('td');
+                tdStatus.appendChild(createStatusBadge(statusClass, statusLabel));
+                tr.appendChild(tdStatus);
+
+                // Carrier cell
+                const tdCarrier = document.createElement('td');
+                tdCarrier.appendChild(createCarrierBadge(carrierKey, carrierLabel));
+                tr.appendChild(tdCarrier);
+
+                // Date cell
+                tr.appendChild(createTd(dateFormatted));
+
+                // Actions cell (SVG icon is static/safe, no API data)
+                const tdActions = document.createElement('td');
+                const actionBtn = document.createElement('button');
+                actionBtn.className = 'btn-icon';
+                actionBtn.title = 'Bekijk details';
+                actionBtn.addEventListener('click', function() { viewOrderByUuid(uuid); });
+                actionBtn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>';
+                tdActions.appendChild(actionBtn);
+                tr.appendChild(tdActions);
+
                 tbody.appendChild(tr);
             });
         }
@@ -458,17 +664,67 @@
         }
 
         // ============ ORDER DETAIL MODAL ============
+        function showModalLoading() {
+            var body = document.getElementById('modalBody');
+            body.textContent = '';
+            var wrapper = document.createElement('div');
+            wrapper.style.cssText = 'text-align:center;padding:40px;color:#999;';
+            var spinner = document.createElement('div');
+            spinner.className = 'loading-spinner';
+            var p = document.createElement('p');
+            p.style.marginTop = '12px';
+            p.textContent = 'Order details laden...';
+            wrapper.appendChild(spinner);
+            wrapper.appendChild(p);
+            body.appendChild(wrapper);
+        }
+
+        function showModalError(msg) {
+            var body = document.getElementById('modalBody');
+            body.textContent = '';
+            var wrapper = document.createElement('div');
+            wrapper.style.cssText = 'text-align:center;padding:40px;color:#c00;';
+            var p = document.createElement('p');
+            p.textContent = 'Fout bij laden van order: ' + msg;
+            var btn = document.createElement('button');
+            btn.className = 'btn btn-secondary';
+            btn.style.marginTop = '16px';
+            btn.textContent = 'Sluiten';
+            btn.addEventListener('click', function() { closeModal(); });
+            wrapper.appendChild(p);
+            wrapper.appendChild(btn);
+            body.appendChild(wrapper);
+        }
+
+        // Build address element with line breaks (safe)
+        function createAddressValue(lines) {
+            var span = document.createElement('span');
+            span.className = 'detail-value';
+            span.style.textAlign = 'right';
+            lines.forEach(function(line, i) {
+                if (i > 0) span.appendChild(document.createElement('br'));
+                span.appendChild(document.createTextNode(line));
+            });
+            return span;
+        }
+
+        // Build a detail row with a custom value element
+        function createDetailRowEl(label, valueEl) {
+            var row = document.createElement('div');
+            row.className = 'detail-row';
+            var lbl = document.createElement('span');
+            lbl.className = 'detail-label';
+            lbl.textContent = label;
+            row.appendChild(lbl);
+            row.appendChild(valueEl);
+            return row;
+        }
+
         async function viewOrderByUuid(uuid) {
             if (!uuid) return;
-            
-            // Open modal with loading state
+
             document.getElementById('modalOrderId').textContent = '';
-            document.getElementById('modalBody').innerHTML = `
-                <div style="text-align:center;padding:40px;color:#999;">
-                    <div class="loading-spinner"></div>
-                    <p style="margin-top:12px;">Order details laden...</p>
-                </div>
-            `;
+            showModalLoading();
             document.getElementById('orderModal').classList.add('active');
 
             try {
@@ -480,71 +736,219 @@
                 const displayId = order.externalDisplayId || order.uuid.slice(0, 8);
                 document.getElementById('modalOrderId').textContent = displayId;
 
-                // Build modal content with real data
-                const customerName = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || '—';
+                const customerName = [order.billingFirstName, order.billingLastName].filter(Boolean).join(' ') || '\u2014';
                 const shippingName = [order.shippingFirstName, order.shippingLastName].filter(Boolean).join(' ') || customerName;
                 const billingAddress = [order.billingAddress, order.billingHouseNumber, order.billingHouseNumberAddition].filter(Boolean).join(' ');
-                const billingCityLine = [order.billingZipcode, order.billingCity].filter(Boolean).join(' ');
+                const billingCityLine = [order.billingZipcode, order.billingCity].filter(Boolean).join(' ') + (order.billingCountry ? ', ' + order.billingCountry : '');
                 const shippingAddress = [order.shippingAddress, order.shippingHouseNumber, order.shippingHousenumberAddition || order.shippingHouseNumberAddition].filter(Boolean).join(' ');
-                const shippingCityLine = [order.shippingZipcode, order.shippingCity].filter(Boolean).join(' ');
-                const email = order.billingEmail || order.shippingEmail || '—';
-                const phone = order.billingPhone || order.shippingPhone || '—';
-                const webshop = order.webshopName || '—';
-                const statusLabel = STATUS_MAP[order.status] || order.status || '—';
+                const shippingCityLine = [order.shippingZipcode, order.shippingCity].filter(Boolean).join(' ') + (order.shippingCountry ? ', ' + order.shippingCountry : '');
+                const email = order.billingEmail || order.shippingEmail || '\u2014';
+                const phone = order.billingPhone || order.shippingPhone || '\u2014';
+                const webshop = order.webshopName || '\u2014';
+                const statusLabel = STATUS_MAP[order.status] || order.status || '\u2014';
                 const statusClass = STATUS_CLASS_MAP[order.status] || 'pending';
-
-                // Carrier from shipping method
                 const carrierLabel = extractCarrierLabel(order.shippingMethod);
-                const shippingMethodText = order.shippingMethod || '—';
-
-                // Shipments / tracking
+                const carrierKey = extractCarrier(order.shippingMethod);
+                const shippingMethodText = order.shippingMethod || '\u2014';
+                const paymentMethod = order.paymentMethod || '\u2014';
                 const shipments = order.shipments || [];
-                let trackingHtml = '';
-                if (shipments.length > 0) {
-                    shipments.forEach(s => {
-                        const code = s.trackTraceCode || '—';
-                        const url = s.trackTraceUrl || '#';
-                        trackingHtml += `<div style="margin-bottom:4px;">${url !== '#' ? `<a href="${url}" target="_blank" class="link" style="color:#2563eb;">${code}</a>` : code}</div>`;
-                    });
-                } else {
-                    trackingHtml = '<span style="color:#999;">Nog geen verzending</span>';
+                const products = order.products || [];
+
+                // Build modal DOM
+                var modalBody = document.getElementById('modalBody');
+                modalBody.textContent = '';
+
+                // Status header
+                var statusHeader = document.createElement('div');
+                statusHeader.style.marginBottom = '16px';
+                statusHeader.appendChild(createStatusBadge(statusClass, statusLabel));
+                var webshopSpan = document.createElement('span');
+                webshopSpan.style.cssText = 'margin-left:12px;font-size:13px;color:#6b7084;';
+                webshopSpan.textContent = webshop;
+                statusHeader.appendChild(webshopSpan);
+                if (order.totalPaid && order.totalPaid !== '0.00') {
+                    var totalSpan = document.createElement('span');
+                    totalSpan.style.cssText = 'margin-left:12px;font-weight:600;';
+                    totalSpan.textContent = formatCurrency(order.totalPaid);
+                    statusHeader.appendChild(totalSpan);
+                }
+                modalBody.appendChild(statusHeader);
+
+                // SLA status bar
+                var slaBar = createSLABar(order);
+                if (slaBar) modalBody.appendChild(slaBar);
+
+                // Detail grid
+                var detailGrid = document.createElement('div');
+                detailGrid.className = 'detail-grid';
+
+                // Left: Klantgegevens
+                var custSection = document.createElement('div');
+                custSection.className = 'detail-section';
+                var custH3 = document.createElement('h3');
+                custH3.textContent = 'Klantgegevens';
+                custSection.appendChild(custH3);
+                custSection.appendChild(createDetailRow('Naam', customerName));
+                if (order.billingCompany) {
+                    custSection.appendChild(createDetailRow('Bedrijf', order.billingCompany));
+                }
+                custSection.appendChild(createDetailRowEl('Adres', createAddressValue([billingAddress, billingCityLine])));
+                // Email with link
+                var emailVal = document.createElement('span');
+                emailVal.className = 'detail-value';
+                var emailLink = document.createElement('a');
+                emailLink.href = 'mailto:' + email;
+                emailLink.style.color = '#2563eb';
+                emailLink.textContent = email;
+                emailVal.appendChild(emailLink);
+                custSection.appendChild(createDetailRowEl('E-mail', emailVal));
+                if (phone !== '\u2014') {
+                    custSection.appendChild(createDetailRow('Telefoon', phone));
+                }
+                custSection.appendChild(createDetailRow('Betaling', paymentMethod));
+                detailGrid.appendChild(custSection);
+
+                // Right: Verzending
+                var shipSection = document.createElement('div');
+                shipSection.className = 'detail-section';
+                var shipH3 = document.createElement('h3');
+                shipH3.textContent = 'Verzending';
+                shipSection.appendChild(shipH3);
+                shipSection.appendChild(createDetailRow('Methode', shippingMethodText));
+                // Carrier with badge
+                var carrierVal = document.createElement('span');
+                carrierVal.className = 'detail-value';
+                carrierVal.appendChild(createCarrierBadge(carrierKey, carrierLabel));
+                shipSection.appendChild(createDetailRowEl('Carrier', carrierVal));
+
+                // Verwachte levertijd (geschat op basis van carrier)
+                if (order.createDate && ['shipped', 'completed', 'delivered'].indexOf(order.status) < 0) {
+                    var createMs2 = new Date(order.createDate).getTime();
+                    var slaMs2 = 24 * 60 * 60 * 1000;
+                    var deliveryDays = carrierKey === 'postnl' ? 1 : carrierKey === 'dhl' ? 1 : carrierKey === 'dpd' ? 2 : carrierKey === 'ups' ? 2 : 2;
+                    var estDate = new Date(createMs2 + slaMs2 + (deliveryDays * 24 * 60 * 60 * 1000));
+                    var estStr = estDate.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' });
+                    shipSection.appendChild(createDetailRow('Verwachte levering', estStr));
                 }
 
+                // Track & trace
+                var trackVal = document.createElement('span');
+                trackVal.className = 'detail-value';
+                if (shipments.length > 0) {
+                    shipments.forEach(function(s) {
+                        var trackDiv = document.createElement('div');
+                        trackDiv.style.marginBottom = '4px';
+                        var code = s.trackTraceCode || '\u2014';
+                        var url = s.trackTraceUrl || '#';
+                        if (url !== '#') {
+                            var a = document.createElement('a');
+                            a.href = url;
+                            a.target = '_blank';
+                            a.className = 'link';
+                            a.style.color = '#2563eb';
+                            a.textContent = code;
+                            trackDiv.appendChild(a);
+                        } else {
+                            trackDiv.textContent = code;
+                        }
+                        trackVal.appendChild(trackDiv);
+                    });
+                } else {
+                    var noTrack = document.createElement('span');
+                    noTrack.style.color = '#999';
+                    noTrack.textContent = 'Nog geen verzending';
+                    trackVal.appendChild(noTrack);
+                }
+                shipSection.appendChild(createDetailRowEl('Track & Trace', trackVal));
+                shipSection.appendChild(createDetailRowEl('Verzendadres', createAddressValue([shippingName, shippingAddress, shippingCityLine])));
+                detailGrid.appendChild(shipSection);
+                modalBody.appendChild(detailGrid);
+
                 // Products table
-                const products = order.products || [];
-                let productsHtml = '';
-                products.forEach(p => {
-                    const picked = p.pickedQuantity || 0;
-                    const qty = p.productQuantity || 0;
-                    const pickedClass = picked >= qty ? 'green' : (picked > 0 ? 'orange' : '');
-                    productsHtml += `
-                        <tr>
-                            <td><code>${p.sku || '—'}</code></td>
-                            <td>${p.productName || '—'}</td>
-                            <td style="text-align:center;">${qty}</td>
-                            <td style="text-align:center;"><span class="${pickedClass}">${picked}</span></td>
-                            <td style="text-align:right;">${formatCurrency(p.productPrice)}</td>
-                        </tr>
-                    `;
+                var prodSection = document.createElement('div');
+                prodSection.className = 'detail-section';
+                prodSection.style.marginTop = '24px';
+                var prodH3 = document.createElement('h3');
+                prodH3.textContent = 'Orderregels (' + products.length + ' product' + (products.length !== 1 ? 'en' : '') + ')';
+                prodSection.appendChild(prodH3);
+                var prodTable = document.createElement('table');
+                prodTable.className = 'detail-table';
+                var prodThead = document.createElement('thead');
+                var prodHeadRow = document.createElement('tr');
+                ['SKU', 'Product', 'Aantal', 'Gepickt', 'Prijs'].forEach(function(h, i) {
+                    var th = document.createElement('th');
+                    th.textContent = h;
+                    if (i === 2 || i === 3) th.style.textAlign = 'center';
+                    if (i === 4) th.style.textAlign = 'right';
+                    prodHeadRow.appendChild(th);
                 });
+                prodThead.appendChild(prodHeadRow);
+                prodTable.appendChild(prodThead);
+                var prodTbody = document.createElement('tbody');
+                if (products.length === 0) {
+                    var emptyTr = document.createElement('tr');
+                    var emptyTd = document.createElement('td');
+                    emptyTd.colSpan = 5;
+                    emptyTd.style.cssText = 'text-align:center;color:#999;padding:20px;';
+                    emptyTd.textContent = 'Geen producten';
+                    emptyTr.appendChild(emptyTd);
+                    prodTbody.appendChild(emptyTr);
+                } else {
+                    products.forEach(function(p) {
+                        var picked = p.pickedQuantity || 0;
+                        var qty = p.productQuantity || 0;
+                        var tr = document.createElement('tr');
+                        var tdSku = document.createElement('td');
+                        var codeSku = document.createElement('code');
+                        codeSku.textContent = p.sku || '\u2014';
+                        tdSku.appendChild(codeSku);
+                        tr.appendChild(tdSku);
+                        tr.appendChild(createTd(p.productName || '\u2014'));
+                        tr.appendChild(createTd(String(qty), { style: 'text-align:center;' }));
+                        var tdPicked = document.createElement('td');
+                        tdPicked.style.textAlign = 'center';
+                        var pickedSpan = document.createElement('span');
+                        pickedSpan.className = picked >= qty ? 'green' : (picked > 0 ? 'orange' : '');
+                        pickedSpan.textContent = String(picked);
+                        tdPicked.appendChild(pickedSpan);
+                        tr.appendChild(tdPicked);
+                        tr.appendChild(createTd(formatCurrency(p.productPrice), { style: 'text-align:right;' }));
+                        prodTbody.appendChild(tr);
+                    });
+                }
+                prodTable.appendChild(prodTbody);
+                prodSection.appendChild(prodTable);
+                modalBody.appendChild(prodSection);
 
                 // Timeline
-                let timelineHtml = '';
-                
-                // Order aangemaakt
-                timelineHtml += `
-                    <div class="timeline-item completed">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <strong>Order ontvangen</strong>
-                            <span>${formatDutchDate(order.createDate)}</span>
-                        </div>
-                    </div>
-                `;
+                var tlSection = document.createElement('div');
+                tlSection.className = 'detail-section';
+                tlSection.style.marginTop = '24px';
+                var tlH3 = document.createElement('h3');
+                tlH3.textContent = 'Timeline';
+                tlSection.appendChild(tlH3);
+                var tlDiv = document.createElement('div');
+                tlDiv.className = 'timeline';
 
-                // Status-based timeline events
-                const statusOrder = ['ready_for_picking', 'processing', 'picked', 'packed', 'shipped', 'completed', 'delivered'];
-                const statusTimeline = {
+                tlDiv.appendChild(createTimelineItem('Order ontvangen', formatDutchDate(order.createDate), 'completed'));
+                if (order.finishDate) {
+                    tlDiv.appendChild(createTimelineItem('Verwerking afgerond', formatDutchDate(order.finishDate), 'completed'));
+                }
+                if (order.shippedDate) {
+                    tlDiv.appendChild(createTimelineItem('Verzonden', formatDutchDate(order.shippedDate) + (carrierLabel !== '\u2014' ? ' \u2014 ' + carrierLabel : ''), 'completed'));
+                }
+                if (shipments.length > 0) {
+                    shipments.forEach(function(s) {
+                        if (s.createDate && !order.shippedDate) {
+                            tlDiv.appendChild(createTimelineItem('Verzending aangemaakt', formatDutchDate(s.createDate), 'completed'));
+                        }
+                    });
+                }
+                if (order.status === 'completed' && !order.shippedDate) {
+                    tlDiv.appendChild(createTimelineItem('Afgerond', order.finishDate ? formatDutchDate(order.finishDate) : '\u2014', 'completed'));
+                }
+                var statusOrder = ['ready_for_picking', 'processing', 'picked', 'packed', 'shipped', 'completed', 'delivered'];
+                var statusTimeline = {
                     'ready_for_picking': 'Klaar voor picking',
                     'processing': 'In verwerking',
                     'picked': 'Gepickt',
@@ -553,169 +957,47 @@
                     'completed': 'Afgerond',
                     'delivered': 'Afgeleverd'
                 };
-                
-                const currentIdx = statusOrder.indexOf(order.status);
-
-                // Finish date (picking klaar)
-                if (order.finishDate) {
-                    timelineHtml += `
-                        <div class="timeline-item completed">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-content">
-                                <strong>Verwerking afgerond</strong>
-                                <span>${formatDutchDate(order.finishDate)}</span>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                // Shipped date
-                if (order.shippedDate) {
-                    timelineHtml += `
-                        <div class="timeline-item completed">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-content">
-                                <strong>Verzonden</strong>
-                                <span>${formatDutchDate(order.shippedDate)}${carrierLabel !== '—' ? ' — ' + carrierLabel : ''}</span>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                // Shipment tracking
-                if (shipments.length > 0) {
-                    shipments.forEach(s => {
-                        if (s.createDate && !order.shippedDate) {
-                            timelineHtml += `
-                                <div class="timeline-item completed">
-                                    <div class="timeline-dot"></div>
-                                    <div class="timeline-content">
-                                        <strong>Verzending aangemaakt</strong>
-                                        <span>${formatDutchDate(s.createDate)}</span>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    });
-                }
-
-                // Current status if not yet covered
-                if (order.status === 'completed' && !order.shippedDate) {
-                    timelineHtml += `
-                        <div class="timeline-item completed">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-content">
-                                <strong>Afgerond</strong>
-                                <span>${order.finishDate ? formatDutchDate(order.finishDate) : '—'}</span>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                // Next expected steps
+                var currentIdx = statusOrder.indexOf(order.status);
                 if (currentIdx >= 0 && currentIdx < statusOrder.length - 1) {
-                    const nextStatus = statusOrder[currentIdx + 1];
+                    var nextStatus = statusOrder[currentIdx + 1];
                     if (statusTimeline[nextStatus]) {
-                        timelineHtml += `
-                            <div class="timeline-item active">
-                                <div class="timeline-dot"></div>
-                                <div class="timeline-content">
-                                    <strong>${statusTimeline[nextStatus]}</strong>
-                                    <span>Verwacht</span>
-                                </div>
-                            </div>
-                        `;
+                        tlDiv.appendChild(createTimelineItem(statusTimeline[nextStatus], 'Verwacht', 'active'));
                     }
                 }
+                tlSection.appendChild(tlDiv);
+                modalBody.appendChild(tlSection);
 
-                // Payment info
-                const paymentMethod = order.paymentMethod || '—';
+                // Customer note
+                if (order.customerNote) {
+                    var noteDiv = document.createElement('div');
+                    noteDiv.style.cssText = 'margin-top:20px;padding:16px;background:#fffbeb;border-radius:10px;border:1px solid #fde68a;';
+                    var noteStrong = document.createElement('strong');
+                    noteStrong.style.cssText = 'font-size:13px;color:#92400e;';
+                    noteStrong.textContent = 'Klantopmerking:';
+                    var noteP = document.createElement('p');
+                    noteP.style.cssText = 'margin-top:4px;font-size:14px;color:#78350f;';
+                    noteP.textContent = order.customerNote;
+                    noteDiv.appendChild(noteStrong);
+                    noteDiv.appendChild(noteP);
+                    modalBody.appendChild(noteDiv);
+                }
 
-                document.getElementById('modalBody').innerHTML = `
-                    <div style="margin-bottom:16px;">
-                        <span class="status-badge ${statusClass}" style="font-size:14px;"><span class="status-dot"></span>${statusLabel}</span>
-                        <span style="margin-left:12px;font-size:13px;color:#6b7084;">${webshop}</span>
-                        ${order.totalPaid && order.totalPaid !== '0.00' ? `<span style="margin-left:12px;font-weight:600;">${formatCurrency(order.totalPaid)}</span>` : ''}
-                    </div>
-
-                    <div class="detail-grid">
-                        <div class="detail-section">
-                            <h3>Klantgegevens</h3>
-                            <div class="detail-row">
-                                <span class="detail-label">Naam</span>
-                                <span class="detail-value">${customerName}</span>
-                            </div>
-                            ${order.billingCompany ? `<div class="detail-row"><span class="detail-label">Bedrijf</span><span class="detail-value">${order.billingCompany}</span></div>` : ''}
-                            <div class="detail-row">
-                                <span class="detail-label">Adres</span>
-                                <span class="detail-value" style="text-align:right;">${billingAddress}<br>${billingCityLine}${order.billingCountry ? ', ' + order.billingCountry : ''}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">E-mail</span>
-                                <span class="detail-value"><a href="mailto:${email}" style="color:#2563eb;">${email}</a></span>
-                            </div>
-                            ${phone !== '—' ? `<div class="detail-row"><span class="detail-label">Telefoon</span><span class="detail-value">${phone}</span></div>` : ''}
-                            <div class="detail-row">
-                                <span class="detail-label">Betaling</span>
-                                <span class="detail-value">${paymentMethod}</span>
-                            </div>
-                        </div>
-                        <div class="detail-section">
-                            <h3>Verzending</h3>
-                            <div class="detail-row">
-                                <span class="detail-label">Methode</span>
-                                <span class="detail-value">${shippingMethodText}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Carrier</span>
-                                <span class="detail-value">${carrierLabel !== '—' ? `<span class="carrier-badge ${extractCarrier(order.shippingMethod)}">${carrierLabel}</span>` : '—'}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Track & Trace</span>
-                                <span class="detail-value">${trackingHtml}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Verzendadres</span>
-                                <span class="detail-value" style="text-align:right;">${shippingName}<br>${shippingAddress}<br>${shippingCityLine}${order.shippingCountry ? ', ' + order.shippingCountry : ''}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="detail-section" style="margin-top: 24px;">
-                        <h3>Orderregels (${products.length} product${products.length !== 1 ? 'en' : ''})</h3>
-                        <table class="detail-table">
-                            <thead>
-                                <tr>
-                                    <th>SKU</th>
-                                    <th>Product</th>
-                                    <th style="text-align:center;">Aantal</th>
-                                    <th style="text-align:center;">Gepickt</th>
-                                    <th style="text-align:right;">Prijs</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${productsHtml || '<tr><td colspan="5" style="text-align:center;color:#999;padding:20px;">Geen producten</td></tr>'}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="detail-section" style="margin-top: 24px;">
-                        <h3>Timeline</h3>
-                        <div class="timeline">
-                            ${timelineHtml}
-                        </div>
-                    </div>
-
-                    ${order.customerNote ? `<div style="margin-top:20px;padding:16px;background:#fffbeb;border-radius:10px;border:1px solid #fde68a;"><strong style="font-size:13px;color:#92400e;">Klantopmerking:</strong><p style="margin-top:4px;font-size:14px;color:#78350f;">${order.customerNote}</p></div>` : ''}
-                    ${order.internComment ? `<div style="margin-top:12px;padding:16px;background:#f0f4ff;border-radius:10px;border:1px solid #bfdbfe;"><strong style="font-size:13px;color:#1e40af;">Interne opmerking:</strong><p style="margin-top:4px;font-size:14px;color:#1e3a5f;">${order.internComment}</p></div>` : ''}
-                `;
+                // Internal comment
+                if (order.internComment) {
+                    var commentDiv = document.createElement('div');
+                    commentDiv.style.cssText = 'margin-top:12px;padding:16px;background:#f0f4ff;border-radius:10px;border:1px solid #bfdbfe;';
+                    var commentStrong = document.createElement('strong');
+                    commentStrong.style.cssText = 'font-size:13px;color:#1e40af;';
+                    commentStrong.textContent = 'Interne opmerking:';
+                    var commentP = document.createElement('p');
+                    commentP.style.cssText = 'margin-top:4px;font-size:14px;color:#1e3a5f;';
+                    commentP.textContent = order.internComment;
+                    commentDiv.appendChild(commentStrong);
+                    commentDiv.appendChild(commentP);
+                    modalBody.appendChild(commentDiv);
+                }
             } catch (e) {
-                document.getElementById('modalBody').innerHTML = `
-                    <div style="text-align:center;padding:40px;color:#c00;">
-                        <p>Fout bij laden van order: ${e.message}</p>
-                        <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:16px;">Sluiten</button>
-                    </div>
-                `;
+                showModalError(e.message);
             }
         }
 
@@ -796,6 +1078,7 @@
             if (e.key === 'Escape') closeModal();
         });
     </script>
+<script src="nav.js"></script>
 <script src="ai-insights.js"></script>
 </body>
 </html>

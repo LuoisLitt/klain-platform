@@ -4,8 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warehouse Display — Dura Fulfilment</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Self-hosted fonts (GDPR compliant) */
+        @font-face {
+            font-family: 'DM Sans';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('../fonts/dm-sans-latin.woff2') format('woff2');
+        }
+    </style>
     <style>
         :root {
             --black: #1d1d1f;
@@ -129,7 +137,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--gray-light);
             color: var(--black);
             min-height: 100vh;
@@ -1063,21 +1071,28 @@
                 const maxVal = Math.max(...values, 1);
 
                 const chartContainer = document.querySelector('.chart-bars');
-                chartContainer.innerHTML = '';
+                chartContainer.textContent = '';
 
                 hours.forEach((h, i) => {
                     const val = values[i];
                     const pct = (val / maxVal) * 100;
                     const isCurrent = h === currentHour;
-                    
-                    chartContainer.innerHTML += `
-                        <div class="chart-bar-container">
-                            <div class="chart-bar ${isCurrent ? 'current' : ''}" style="height: ${Math.max(pct, 3)}%">
-                                <span class="chart-bar-value">${val}</span>
-                            </div>
-                            <span class="chart-bar-label">${String(h).padStart(2, '0')}u</span>
-                        </div>
-                    `;
+
+                    const container = document.createElement('div');
+                    container.className = 'chart-bar-container';
+                    const bar = document.createElement('div');
+                    bar.className = 'chart-bar' + (isCurrent ? ' current' : '');
+                    bar.style.height = Math.max(pct, 3) + '%';
+                    const valSpan = document.createElement('span');
+                    valSpan.className = 'chart-bar-value';
+                    valSpan.textContent = val;
+                    bar.appendChild(valSpan);
+                    const labelSpan = document.createElement('span');
+                    labelSpan.className = 'chart-bar-label';
+                    labelSpan.textContent = String(h).padStart(2, '0') + 'u';
+                    container.appendChild(bar);
+                    container.appendChild(labelSpan);
+                    chartContainer.appendChild(container);
                 });
             } catch (e) {
                 console.log('Hourly chart niet beschikbaar:', e.message);
@@ -1087,40 +1102,58 @@
         // ============ LIVE ALERTS ============
         async function loadWarehouseAlerts() {
             try {
-                const res = await fetch(`${API_BASE}/api/inventory?low_stock_only=true`, { headers: API_HEADERS });
+                const res = await fetch(API_BASE + '/api/inventory?low_stock_only=true', { headers: API_HEADERS });
                 if (!res.ok) return;
                 const json = await res.json();
                 const products = json.data || [];
-                
+
                 if (products.length === 0) return;
 
                 const alertsCard = document.querySelector('.alerts-card');
                 const titleEl = alertsCard.querySelector('.sidebar-title');
-                alertsCard.innerHTML = '';
+                // Clear card but keep title
+                while (alertsCard.firstChild) alertsCard.removeChild(alertsCard.firstChild);
                 alertsCard.appendChild(titleEl);
 
                 products.slice(0, 4).forEach(p => {
                     const stock = p.stockLevel || p.stock || 0;
                     const isCritical = stock <= 5;
                     const level = isCritical ? 'urgent' : 'warning';
-                    const sku = p.sku || p.productName || '—';
+                    const sku = p.sku || p.productName || '\u2014';
                     const name = p.productName || p.name || sku;
+                    const svgPath = isCritical
+                        ? 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'
+                        : 'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z';
 
                     const div = document.createElement('div');
-                    div.className = `alert-item ${level}`;
-                    div.innerHTML = `
-                        <div class="alert-icon">
-                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="${isCritical 
-                                    ? 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'
-                                    : 'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'}" />
-                            </svg>
-                        </div>
-                        <div class="alert-content">
-                            <div class="alert-title">${isCritical ? 'Kritiek laag' : 'Voorraad laag'}</div>
-                            <div class="alert-subtitle">${name}: ${stock} stuks</div>
-                        </div>
-                    `;
+                    div.className = 'alert-item ' + level;
+
+                    const iconDiv = document.createElement('div');
+                    iconDiv.className = 'alert-icon';
+                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.setAttribute('fill', 'none');
+                    svg.setAttribute('viewBox', '0 0 24 24');
+                    svg.setAttribute('stroke-width', '1.5');
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('stroke-linecap', 'round');
+                    path.setAttribute('stroke-linejoin', 'round');
+                    path.setAttribute('d', svgPath);
+                    svg.appendChild(path);
+                    iconDiv.appendChild(svg);
+
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'alert-content';
+                    const titleDiv = document.createElement('div');
+                    titleDiv.className = 'alert-title';
+                    titleDiv.textContent = isCritical ? 'Kritiek laag' : 'Voorraad laag';
+                    const subtitleDiv = document.createElement('div');
+                    subtitleDiv.className = 'alert-subtitle';
+                    subtitleDiv.textContent = name + ': ' + stock + ' stuks';
+                    contentDiv.appendChild(titleDiv);
+                    contentDiv.appendChild(subtitleDiv);
+
+                    div.appendChild(iconDiv);
+                    div.appendChild(contentDiv);
                     alertsCard.appendChild(div);
                 });
             } catch (e) {
@@ -1177,7 +1210,7 @@
 
                 const maxOrders = sorted.length > 0 ? sorted[0][1].orders : 1;
                 const grid = document.getElementById('webshopGrid');
-                grid.innerHTML = '';
+                grid.textContent = '';
 
                 sorted.forEach(([name, data], i) => {
                     const initials = name.split(/[\s.-]+/).map(w => w[0]).join('').toUpperCase().slice(0, 2);
@@ -1188,40 +1221,89 @@
                     const isTop = i === 0;
                     const progressClass = pct >= 80 ? 'excellent' : pct >= 50 ? 'good' : 'warning';
 
-                    grid.innerHTML += `
-                        <div class="employee-card ${isTop ? 'top-performer' : ''}">
-                            <div class="employee-header">
-                                <div class="employee-avatar ${AVATAR_COLORS[i % 6]}">${initials}</div>
-                                <div class="employee-info">
-                                    <div class="employee-name">${name}</div>
-                                    <div class="employee-role">Webshop</div>
-                                </div>
-                            </div>
-                            <div class="employee-stats">
-                                <div class="stat-item">
-                                    <div class="stat-value">${scaledOrders}</div>
-                                    <div class="stat-label">Orders</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-value">${scaledItems}</div>
-                                    <div class="stat-label">Items</div>
-                                </div>
-                            </div>
-                            <div class="employee-progress">
-                                <div class="progress-header">
-                                    <span class="progress-label">€${Number(scaledRevenue).toLocaleString('nl-NL')} omzet</span>
-                                    <span class="progress-value">${pct}%</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill ${progressClass}" style="width: ${pct}%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    const card = document.createElement('div');
+                    card.className = 'employee-card' + (isTop ? ' top-performer' : '');
+
+                    // Header
+                    const header = document.createElement('div');
+                    header.className = 'employee-header';
+                    const avatar = document.createElement('div');
+                    avatar.className = 'employee-avatar ' + AVATAR_COLORS[i % 6];
+                    avatar.textContent = initials;
+                    const info = document.createElement('div');
+                    info.className = 'employee-info';
+                    const nameDiv = document.createElement('div');
+                    nameDiv.className = 'employee-name';
+                    nameDiv.textContent = name;
+                    const roleDiv = document.createElement('div');
+                    roleDiv.className = 'employee-role';
+                    roleDiv.textContent = 'Webshop';
+                    info.appendChild(nameDiv);
+                    info.appendChild(roleDiv);
+                    header.appendChild(avatar);
+                    header.appendChild(info);
+
+                    // Stats
+                    const stats = document.createElement('div');
+                    stats.className = 'employee-stats';
+                    var statOrders = document.createElement('div');
+                    statOrders.className = 'stat-item';
+                    var sv1 = document.createElement('div');
+                    sv1.className = 'stat-value';
+                    sv1.textContent = scaledOrders;
+                    var sl1 = document.createElement('div');
+                    sl1.className = 'stat-label';
+                    sl1.textContent = 'Orders';
+                    statOrders.appendChild(sv1);
+                    statOrders.appendChild(sl1);
+                    var statItems = document.createElement('div');
+                    statItems.className = 'stat-item';
+                    var sv2 = document.createElement('div');
+                    sv2.className = 'stat-value';
+                    sv2.textContent = scaledItems;
+                    var sl2 = document.createElement('div');
+                    sl2.className = 'stat-label';
+                    sl2.textContent = 'Items';
+                    statItems.appendChild(sv2);
+                    statItems.appendChild(sl2);
+                    stats.appendChild(statOrders);
+                    stats.appendChild(statItems);
+
+                    // Progress
+                    const progress = document.createElement('div');
+                    progress.className = 'employee-progress';
+                    const progHeader = document.createElement('div');
+                    progHeader.className = 'progress-header';
+                    const progLabel = document.createElement('span');
+                    progLabel.className = 'progress-label';
+                    progLabel.textContent = '\u20AC' + Number(scaledRevenue).toLocaleString('nl-NL') + ' omzet';
+                    const progValue = document.createElement('span');
+                    progValue.className = 'progress-value';
+                    progValue.textContent = pct + '%';
+                    progHeader.appendChild(progLabel);
+                    progHeader.appendChild(progValue);
+                    const progBar = document.createElement('div');
+                    progBar.className = 'progress-bar';
+                    const progFill = document.createElement('div');
+                    progFill.className = 'progress-fill ' + progressClass;
+                    progFill.style.width = pct + '%';
+                    progBar.appendChild(progFill);
+                    progress.appendChild(progHeader);
+                    progress.appendChild(progBar);
+
+                    card.appendChild(header);
+                    card.appendChild(stats);
+                    card.appendChild(progress);
+                    grid.appendChild(card);
                 });
             } catch (e) {
                 console.log('Webshops laden mislukt:', e.message);
-                document.getElementById('webshopGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:#86868b;">Niet beschikbaar</div>';
+                const grid = document.getElementById('webshopGrid');
+                grid.textContent = '';
+                const empty = document.createElement('div');
+                empty.style.cssText = 'grid-column:1/-1;text-align:center;padding:60px 0;color:#86868b;';
+                empty.textContent = 'Niet beschikbaar';
+                grid.appendChild(empty);
             }
         }
 
