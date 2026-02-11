@@ -90,7 +90,7 @@
         <div class="stats-row">
             <div class="stat-box">
                 <span class="stat-value" id="statTotalProducts">—</span>
-                <span class="stat-label">Totaal producten</span>
+                <span class="stat-label">Producten op voorraad</span>
             </div>
             <div class="stat-box">
                 <span class="stat-value red" id="statCritical">—</span>
@@ -351,9 +351,9 @@
         let currentInvPage = 1;
         let totalInvPages = 1;
         let totalInvProducts = 0;
+        let searchDebounceTimer = null;
 
         function getStockNumber(product) {
-            // Stock kan een object zijn (Goedgepickt API) of een nummer
             const stock = product.stock;
             if (stock && typeof stock === 'object') {
                 return stock.freeStock || stock.totalStock || 0;
@@ -410,32 +410,38 @@
             showTableMessage(tbody, 4, 'Bezig met laden...');
 
             try {
-                const res = await fetch(API_BASE + '/api/inventory?page=' + currentInvPage, { headers: API_HEADERS });
+                // Bouw URL met active_only=true (backend filtert stock > 0)
+                const searchVal = document.getElementById('searchInput').value.trim();
+                let url = API_BASE + '/api/inventory?active_only=true&page=' + currentInvPage;
+                if (searchVal) {
+                    url += '&search=' + encodeURIComponent(searchVal);
+                }
+
+                const res = await fetch(url, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Inventory API error: ' + res.status);
                 const json = await res.json();
-                const allProducts = json.data || [];
-                totalInvPages = json.lastPage || 1;
-                const totalFromApi = json.total || json.count || allProducts.length;
 
-                // Filter: toon ALLEEN producten met voorraad > 0
-                const products = allProducts.filter(p => getStockNumber(p) > 0);
+                // Backend geeft al gefilterde producten (stock > 0), geen client-side filter nodig
+                const products = json.data || [];
+                totalInvPages = json.lastPage || 1;
+                totalInvProducts = json.total || 0;
 
                 // Update stats
-                const inStockCount = products.length;
-                document.getElementById('statTotalProducts').textContent = totalFromApi.toLocaleString('nl-NL');
-                document.getElementById('productsSubtitle').textContent = inStockCount + ' van ' + allProducts.length + ' producten op deze pagina hebben voorraad';
+                document.getElementById('statTotalProducts').textContent = totalInvProducts.toLocaleString('nl-NL');
+                if (searchVal) {
+                    document.getElementById('productsSubtitle').textContent = totalInvProducts.toLocaleString('nl-NL') + ' resultaten voor "' + searchVal + '"';
+                } else {
+                    document.getElementById('productsSubtitle').textContent = totalInvProducts.toLocaleString('nl-NL') + ' producten op voorraad';
+                }
 
                 tbody.textContent = '';
                 if (!products.length) {
-                    showTableMessage(tbody, 4, 'Geen producten met voorraad op deze pagina');
+                    showTableMessage(tbody, 4, searchVal ? 'Geen producten gevonden voor "' + searchVal + '"' : 'Geen producten met voorraad');
                     updateInvPagination();
                     return;
                 }
 
-                // Sorteer op voorraad (laagste eerst)
-                products.sort((a, b) => getStockNumber(a) - getStockNumber(b));
-
-                products.forEach(product => {
+                products.forEach(function(product) {
                     const sku = product.sku || product.productSku || '\u2014';
                     const name = product.name || product.productName || '\u2014';
                     const stock = getStockNumber(product);
@@ -471,7 +477,7 @@
             if (totalInvPages <= 1) {
                 const span = document.createElement('span');
                 span.style.cssText = 'color:#8e93a6;font-size:14px;';
-                span.textContent = 'Pagina 1 van 1 (' + totalInvProducts + ' producten)';
+                span.textContent = 'Pagina 1 van 1 (' + totalInvProducts.toLocaleString('nl-NL') + ' producten)';
                 pagDiv.appendChild(span);
                 return;
             }
@@ -502,9 +508,8 @@
                 const json = await res.json();
                 const alerts = json.data || [];
 
-                // Update stats
                 let criticalCount = 0, lowCount = 0;
-                alerts.forEach(a => {
+                alerts.forEach(function(a) {
                     const stock = getStockNumber(a);
                     if (stock <= 5) criticalCount++;
                     else lowCount++;
@@ -525,7 +530,7 @@
                 }
 
                 tbody.textContent = '';
-                alerts.slice(0, 20).forEach(alert => {
+                alerts.slice(0, 20).forEach(function(alert) {
                     const sku = alert.sku || alert.productSku || '\u2014';
                     const name = alert.name || alert.productName || '\u2014';
                     const stock = getStockNumber(alert);
@@ -549,25 +554,14 @@
         loadAlerts();
 
         // ============================================
-        // EXISTING FUNCTIONS
+        // SEARCH & FILTER — Backend search via API
         // ============================================
         function filterProducts() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const category = document.getElementById('categoryFilter').value;
-            const stock = document.getElementById('stockFilter').value;
-            const rows = document.querySelectorAll('#productsTable tbody tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                const rowCategory = row.dataset.category;
-                const rowStock = row.dataset.stock;
-                
-                const matchSearch = text.includes(search);
-                const matchCategory = !category || rowCategory === category;
-                const matchStock = !stock || rowStock === stock;
-                
-                row.style.display = matchSearch && matchCategory && matchStock ? '' : 'none';
-            });
+            // Debounce: wacht 300ms na laatste toetsaanslag
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(function() {
+                loadInventory(1);  // Zoek altijd vanaf pagina 1
+            }, 300);
         }
 
         function openAlertSettings() {
