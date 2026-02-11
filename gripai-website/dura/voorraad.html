@@ -421,17 +421,25 @@
                 if (!res.ok) throw new Error('Inventory API error: ' + res.status);
                 const json = await res.json();
 
-                // Backend geeft al gefilterde producten (stock > 0), geen client-side filter nodig
-                const products = json.data || [];
+                var allItems = json.data || [];
+                // Als index nog wordt opgebouwd, filter client-side op stock > 0
+                var products = json.indexing ? allItems.filter(function(p) { return getStockNumber(p) > 0; }) : allItems;
                 totalInvPages = json.lastPage || 1;
-                totalInvProducts = json.total || 0;
+                totalInvProducts = json.active_only ? (json.total || 0) : products.length;
 
                 // Update stats
                 document.getElementById('statTotalProducts').textContent = totalInvProducts.toLocaleString('nl-NL');
                 if (searchVal) {
                     document.getElementById('productsSubtitle').textContent = totalInvProducts.toLocaleString('nl-NL') + ' resultaten voor "' + searchVal + '"';
+                } else if (json.indexing) {
+                    document.getElementById('productsSubtitle').textContent = 'Index wordt opgebouwd... ' + products.length + ' producten op deze pagina';
                 } else {
                     document.getElementById('productsSubtitle').textContent = totalInvProducts.toLocaleString('nl-NL') + ' producten op voorraad';
+                }
+
+                // Bij fallback: sorteer client-side (laagste voorraad eerst)
+                if (json.indexing) {
+                    products.sort(function(a, b) { return getStockNumber(a) - getStockNumber(b); });
                 }
 
                 tbody.textContent = '';
