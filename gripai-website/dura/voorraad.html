@@ -405,6 +405,75 @@
             return tr;
         }
 
+        let indexingPollTimer = null;
+        let isIndexReady = false;
+
+        async function checkIndexStatus() {
+            try {
+                const res = await fetch(API_BASE + '/api/inventory/status');
+                if (!res.ok) return null;
+                return await res.json();
+            } catch (e) { return null; }
+        }
+
+        function showIndexingBanner(status) {
+            let banner = document.getElementById('indexingBanner');
+            if (!banner) {
+                banner = document.createElement('div');
+                banner.id = 'indexingBanner';
+                banner.style.cssText = 'background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:12px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;gap:12px;';
+                var subtitle = document.getElementById('productsSubtitle');
+                if (subtitle && subtitle.parentNode && subtitle.parentNode.parentNode) {
+                    subtitle.parentNode.parentNode.parentNode.insertBefore(banner, subtitle.parentNode.parentNode);
+                }
+            }
+            if (!status || status.indexer.state === 'ready') {
+                if (banner.parentNode) banner.parentNode.removeChild(banner);
+                return;
+            }
+            var pct = status.indexer.progress || 0;
+            var found = status.indexer.products || 0;
+            var state = status.indexer.state;
+            var msg = state === 'waiting' ? 'Voorraadindex wordt voorbereid...'
+                    : state === 'scanning' ? 'Voorraadindex wordt opgebouwd — ' + pct + '% (' + found.toLocaleString('nl-NL') + ' producten gevonden)'
+                    : state === 'error' ? 'Indexer fout — wordt automatisch herstart'
+                    : 'Index status: ' + state;
+            banner.textContent = '';
+            var spinner = document.createElement('div');
+            spinner.className = 'loading-spinner';
+            banner.appendChild(spinner);
+            var textDiv = document.createElement('div');
+            var msgP = document.createElement('div');
+            msgP.style.cssText = 'font-weight:500;color:#1e40af;font-size:14px;';
+            msgP.textContent = msg;
+            textDiv.appendChild(msgP);
+            if (state === 'scanning' && pct > 0) {
+                var barOuter = document.createElement('div');
+                barOuter.style.cssText = 'width:200px;height:6px;background:#dbeafe;border-radius:3px;margin-top:6px;';
+                var barInner = document.createElement('div');
+                barInner.style.cssText = 'height:100%;background:#2563eb;border-radius:3px;transition:width 0.3s;width:' + pct + '%;';
+                barOuter.appendChild(barInner);
+                textDiv.appendChild(barOuter);
+            }
+            banner.appendChild(textDiv);
+        }
+
+        async function startIndexPolling() {
+            if (indexingPollTimer) return;
+            indexingPollTimer = setInterval(async function() {
+                var status = await checkIndexStatus();
+                if (!status) return;
+                showIndexingBanner(status);
+                if (status.indexer.state === 'ready' && status.cache_has_data && !isIndexReady) {
+                    isIndexReady = true;
+                    clearInterval(indexingPollTimer);
+                    indexingPollTimer = null;
+                    showIndexingBanner(null);
+                    loadInventory(1); // Auto-refresh met volledige index
+                }
+            }, 5000);
+        }
+
         async function loadInventory(page) {
             currentInvPage = page || 1;
             const tbody = document.getElementById('productsBody');
@@ -433,8 +502,11 @@
                 if (searchVal) {
                     document.getElementById('productsSubtitle').textContent = totalInvProducts.toLocaleString('nl-NL') + ' resultaten voor "' + searchVal + '"';
                 } else if (json.indexing) {
-                    document.getElementById('productsSubtitle').textContent = 'Index wordt opgebouwd... ' + products.length + ' producten op deze pagina';
+                    document.getElementById('productsSubtitle').textContent = 'Index wordt opgebouwd — toont voorlopige resultaten';
+                    startIndexPolling(); // Start polling voor progress
                 } else {
+                    isIndexReady = true;
+                    showIndexingBanner(null); // Verwijder banner als index klaar is
                     document.getElementById('productsSubtitle').textContent = totalInvProducts.toLocaleString('nl-NL') + ' producten op voorraad';
                 }
 
