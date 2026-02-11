@@ -735,6 +735,7 @@
     </style>
 </head>
 <body>
+    <script src="auth.js"></script>
     <div class="display-container">
         <!-- Header -->
         <header class="header">
@@ -935,8 +936,8 @@
     </div>
 
     <script>
-        const API_BASE = 'https://dura-backend-production.up.railway.app';
-        const API_HEADERS = { 'X-API-Key': 'V-pp2ua1yNmcsskUPFdQLz2ZB2EYZTd4USjjWYmMlUU' };
+        const API_BASE = window.DURA_API_BASE;
+        const API_HEADERS = window.DURA_API_HEADERS;
 
         // ============ CLOCK & DATE ============
         function updateClock() {

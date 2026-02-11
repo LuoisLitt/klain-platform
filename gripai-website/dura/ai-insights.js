@@ -4,8 +4,8 @@
  * Include this script on every page.
  */
 (function() {
-    const API_BASE = 'https://dura-backend-production.up.railway.app';
-    const API_HEADERS = { 'X-API-Key': 'V-pp2ua1yNmcsskUPFdQLz2ZB2EYZTd4USjjWYmMlUU' };
+    const API_BASE = window.DURA_API_BASE || 'https://dura-backend-production.up.railway.app';
+    const API_HEADERS = window.DURA_API_HEADERS || { 'X-API-Key': 'V-pp2ua1yNmcsskUPFdQLz2ZB2EYZTd4USjjWYmMlUU' };
 
     // Detect current page
     const path = window.location.pathname;

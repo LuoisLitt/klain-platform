@@ -778,6 +778,7 @@
     </style>
 </head>
 <body>
+    <script src="auth.js"></script>
     <!-- Navigation -->
     <nav>
         <div class="nav-content">
@@ -1121,8 +1122,8 @@
         // ============================================
         // LIVE API INTEGRATION — Alle data uit Goedgepickt
         // ============================================
-        const API_BASE = 'https://dura-backend-production.up.railway.app';
-        const API_HEADERS = { 'X-API-Key': 'V-pp2ua1yNmcsskUPFdQLz2ZB2EYZTd4USjjWYmMlUU' };
+        const API_BASE = window.DURA_API_BASE;
+        const API_HEADERS = window.DURA_API_HEADERS;
 
         const STATUS_MAP = {
             'open': 'Nieuw',
@@ -1790,17 +1791,6 @@
         setInterval(() => {
             loadAll();
         }, 60000);
-    </script>
-    <script>
-    // User session
-    (function() {
-        var user = JSON.parse(sessionStorage.getItem('dura_user') || 'null');
-        if (!user) { window.location.href = '../demo-dura-login.html'; return; }
-        var avatar = document.getElementById('userAvatar');
-        var uname = document.getElementById('userName');
-        if (avatar) avatar.textContent = user.name.charAt(0).toUpperCase();
-        if (uname) uname.textContent = user.name;
-    })();
     </script>
 <script src="ai-insights.js"></script>
 </body>

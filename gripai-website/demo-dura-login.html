@@ -337,27 +337,47 @@
     </div>
 
     <script>
-        // Demo-only credentials — no real employee accounts
-        const accounts = {
-            'demo@durafulfilment.nl': { password: 'demo123', name: 'Demo' }
-        };
+        const API_BASE = 'https://dura-backend-production.up.railway.app';
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            const btn = document.querySelector('.login-btn');
             const email = document.getElementById('emailInput').value.trim().toLowerCase();
             const password = document.getElementById('passwordInput').value;
-            const account = accounts[email];
 
-            if (account && account.password === password) {
-                sessionStorage.setItem('dura_user', JSON.stringify({ email, name: account.name }));
-                window.location.href = 'dura/index.html';
-            } else {
-                const btn = document.querySelector('.login-btn');
-                btn.textContent = 'Ongeldige inloggegevens';
+            if (!email || !password) return;
+
+            btn.textContent = 'Bezig met inloggen...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(API_BASE + '/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    sessionStorage.setItem('dura_token', data.token);
+                    sessionStorage.setItem('dura_user', JSON.stringify(data.user));
+                    window.location.href = 'dura/index.html';
+                } else {
+                    btn.textContent = data.error || 'Ongeldige inloggegevens';
+                    btn.style.background = '#ef4444';
+                    setTimeout(() => {
+                        btn.textContent = 'Inloggen';
+                        btn.style.background = '';
+                        btn.disabled = false;
+                    }, 2000);
+                }
+            } catch (err) {
+                btn.textContent = 'Verbindingsfout';
                 btn.style.background = '#ef4444';
                 setTimeout(() => {
                     btn.textContent = 'Inloggen';
                     btn.style.background = '';
+                    btn.disabled = false;
                 }, 2000);
             }
         });
