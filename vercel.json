@@ -1,14 +1,8 @@
 {
-  "builds": [
+  "rewrites": [
     {
-      "src": "gripai-website/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "gripai-website/$1"
+      "source": "/(.*)",
+      "destination": "/gripai-website/$1"
     }
   ],
   "headers": [
