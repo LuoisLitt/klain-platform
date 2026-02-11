@@ -2057,7 +2057,7 @@
                 var res = await fetch(API_BASE + '/api/metrics/sla?period=' + period, { headers: API_HEADERS });
                 if (!res.ok) return;
                 var json = await res.json();
-                var d = json.data;
+                var d = json.data && json.data.metrics ? json.data.metrics : {};
 
                 // On-Time Shipping
                 var otEl = document.getElementById('slaOnTime');
