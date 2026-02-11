@@ -1625,27 +1625,16 @@
             if (!ordersChartInstance || !ordersPerDay) return;
             const dagNamen = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
             const sortedDates = Object.keys(ordersPerDay).sort();
-            
-            // We need cumulative counts per day. The API gives createdAfter which is cumulative.
-            // Calculate per-day by diffing consecutive totals.
+
             const labels = [];
             const values = [];
-            
+
             for (let i = 0; i < sortedDates.length; i++) {
                 const date = new Date(sortedDates[i] + 'T00:00:00');
                 const dagNaam = dagNamen[date.getDay()];
                 const dagNum = date.getDate();
                 labels.push(`${dagNaam.charAt(0).toUpperCase() + dagNaam.slice(1)} ${dagNum}`);
-                
-                // ordersPerDay values are cumulative from that date onwards
-                // Per-day = current - next (if available), otherwise it's the last day's count
-                if (i < sortedDates.length - 1) {
-                    const thisTotal = ordersPerDay[sortedDates[i]] || 0;
-                    const nextTotal = ordersPerDay[sortedDates[i + 1]] || 0;
-                    values.push(Math.max(0, thisTotal - nextTotal));
-                } else {
-                    values.push(ordersPerDay[sortedDates[i]] || 0);
-                }
+                values.push(ordersPerDay[sortedDates[i]] || 0);
             }
 
             ordersChartInstance.data.labels = labels;

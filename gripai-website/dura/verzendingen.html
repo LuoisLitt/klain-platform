@@ -383,6 +383,14 @@
             'no_update_supported': { label: 'Verwerkt', class: 'processing' }
         };
 
+        function carrierNameToClass(name) {
+            const lower = (name || '').toLowerCase();
+            if (lower.includes('dhl')) return 'dhl';
+            if (lower.includes('postnl')) return 'postnl';
+            if (lower.includes('dpd')) return 'dpd';
+            return 'postnl';
+        }
+
         function extractCarrier(shipment) {
             const method = (shipment.shippingMethod || shipment.shippingCarrier || shipment.carrier || '').toLowerCase();
             if (method.includes('dhl')) return { name: 'DHL', class: 'dhl' };
@@ -637,20 +645,29 @@
                     document.getElementById('statShipTransit').textContent = transit;
                     document.getElementById('statShipOther').textContent = Math.max(0, d.shipments.length - delivered - transit);
 
-                    // Carrier cards
-                    const carriers = {};
-                    d.shipments.forEach(s => {
-                        const c = extractCarrier(s);
-                        if (!carriers[c.name]) carriers[c.name] = { count: 0, class: c.class };
-                        carriers[c.name].count++;
-                    });
+                    // Carrier cards — gebruik dashboard stats (alle shipments) indien beschikbaar
+                    const dashCarriers = d.dashboard && d.dashboard.shipments && d.dashboard.shipments.top_carriers;
+                    let sorted;
+                    let carrierTotal;
+                    if (dashCarriers && dashCarriers.length > 0) {
+                        sorted = dashCarriers.map(c => [c.name, { count: c.count, class: carrierNameToClass(c.name) }]);
+                        carrierTotal = sorted.reduce((sum, e) => sum + e[1].count, 0);
+                    } else {
+                        const carriers = {};
+                        d.shipments.forEach(s => {
+                            const c = extractCarrier(s);
+                            if (!carriers[c.name]) carriers[c.name] = { count: 0, class: c.class };
+                            carriers[c.name].count++;
+                        });
+                        sorted = Object.entries(carriers).sort((a, b) => b[1].count - a[1].count);
+                        carrierTotal = d.shipments.length;
+                    }
                     const carrierCards = document.getElementById('carrierCards');
-                    const sorted = Object.entries(carriers).sort((a, b) => b[1].count - a[1].count);
                     const cols = Math.min(sorted.length, 4);
                     carrierCards.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
                     carrierCards.textContent = '';
                     sorted.forEach(([name, info]) => {
-                        const pct = ((info.count / d.shipments.length) * 100).toFixed(1);
+                        const pct = carrierTotal > 0 ? ((info.count / carrierTotal) * 100).toFixed(1) : '0.0';
                         const card = document.createElement('div');
                         card.style.cssText = 'padding: 24px; background: var(--gray-light); border-radius: 12px;';
 
