@@ -936,6 +936,7 @@
 
     <script>
         const API_BASE = 'https://dura-backend-production.up.railway.app';
+        const API_HEADERS = { 'X-API-Key': 'V-pp2ua1yNmcsskUPFdQLz2ZB2EYZTd4USjjWYmMlUU' };
 
         // ============ CLOCK & DATE ============
         function updateClock() {
@@ -967,7 +968,7 @@
         // ============ LIVE KPIs ============
         async function loadWarehouseData() {
             try {
-                const res = await fetch(`${API_BASE}/api/dashboard`);
+                const res = await fetch(`${API_BASE}/api/dashboard`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Dashboard API error');
                 const json = await res.json();
                 const d = json.data;
@@ -1015,7 +1016,7 @@
                 let lastPage = 1;
 
                 // Haal eerst pagina info op
-                const probe = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=1&limit=50`);
+                const probe = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=1&limit=50`, { headers: API_HEADERS });
                 if (!probe.ok) throw new Error('Orders API error');
                 const probeJson = await probe.json();
                 lastPage = probeJson.lastPage || 1;
@@ -1023,10 +1024,10 @@
                 // Haal max 10 pagina's verspreid op voor een goede sample
                 const pagesToFetch = Math.min(lastPage, 10);
                 const pageStep = Math.max(1, Math.floor(lastPage / pagesToFetch));
-                
+
                 for (let i = 0; i < pagesToFetch; i++) {
                     const p = Math.min(1 + i * pageStep, lastPage);
-                    const r = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=${p}&limit=50`);
+                    const r = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=${p}&limit=50`, { headers: API_HEADERS });
                     if (r.ok) {
                         const j = await r.json();
                         if (j.data) allOrders = allOrders.concat(j.data);
@@ -1085,7 +1086,7 @@
         // ============ LIVE ALERTS ============
         async function loadWarehouseAlerts() {
             try {
-                const res = await fetch(`${API_BASE}/api/inventory?low_stock_only=true`);
+                const res = await fetch(`${API_BASE}/api/inventory?low_stock_only=true`, { headers: API_HEADERS });
                 if (!res.ok) return;
                 const json = await res.json();
                 const products = json.data || [];
@@ -1136,7 +1137,7 @@
                 let allOrders = [];
 
                 // Probe voor totaal
-                const probe = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=1&limit=50`);
+                const probe = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=1&limit=50`, { headers: API_HEADERS });
                 if (!probe.ok) throw new Error('API error');
                 const probeJson = await probe.json();
                 const lastPage = probeJson.lastPage || 1;
@@ -1148,7 +1149,7 @@
                 for (let i = 0; i < extraPages; i++) {
                     const p = Math.max(1, Math.round(lastPage * (i + 1) / (extraPages + 1)));
                     if (p === 1) continue;
-                    const r = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=${p}&limit=50`);
+                    const r = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=${p}&limit=50`, { headers: API_HEADERS });
                     if (r.ok) {
                         const j = await r.json();
                         if (j.data) allOrders = allOrders.concat(j.data);

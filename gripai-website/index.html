@@ -5,9 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>klain | AI-automatisering voor MKB</title>
     <meta name="description" content="Automatische weekrapportages, slimme offertes en AI-workflows voor MKB ondernemers. Minder gedoe, meer grip.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+    <meta property="og:title" content="klain | AI-automatisering voor MKB">
+    <meta property="og:description" content="Automatische weekrapportages, slimme offertes en AI-workflows voor MKB ondernemers. Minder gedoe, meer grip.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://klain.nl">
+    <meta property="og:locale" content="nl_NL">
+    <link rel="canonical" href="https://klain.nl">
+    <style>
+        @font-face {
+            font-family: 'DM Sans';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('fonts/dm-sans-latin.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: normal;
+            font-weight: 400 700;
+            font-display: swap;
+            src: url('fonts/fraunces-latin.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: italic;
+            font-weight: 400;
+            font-display: swap;
+            src: url('fonts/fraunces-italic-latin.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+    </style>
     <style>
         :root {
             --black: #0f1117;
@@ -518,7 +547,7 @@
             gap: 48px; margin-bottom: 48px;
         }
         .footer-brand .logo {
-            font-size: 22px; display: inline-block; margin-bottom: 12px; color: var(--white);
+            font-size: 22px; display: inline-block; margin-bottom: 12px; color: var(--black);
         }
         .footer-brand p { font-size: 14px; color: var(--gray-500); line-height: 1.6; max-width: 280px; }
         .footer-col h4 {
@@ -564,6 +593,16 @@
             .footer-grid { grid-template-columns: 1fr; gap: 32px; }
             section { padding: 64px 16px; }
         }
+
+        /* ─── SKIP LINK ─── */
+        .skip-link {
+            position: absolute; top: -100%; left: 50%; transform: translateX(-50%);
+            background: var(--blue); color: var(--white);
+            padding: 12px 24px; border-radius: 0 0 8px 8px;
+            font-size: 14px; font-weight: 600; text-decoration: none;
+            z-index: 10000; transition: top 0.2s;
+        }
+        .skip-link:focus { top: 0; }
 
         /* ─── ANIMATIONS ─── */
         @keyframes fadeUp {
@@ -638,6 +677,8 @@
     </style>
 </head>
 <body>
+    <a href="#main" class="skip-link">Naar hoofdinhoud</a>
+
     <!-- Navigation -->
     <nav>
         <div class="nav-inner">
@@ -649,7 +690,7 @@
                 <li><a href="#over">Over</a></li>
             </ul>
             <a href="#contact" class="nav-cta">Gratis kennismaking →</a>
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu" aria-expanded="false" id="mobileMenuBtn">
                 <span></span><span></span><span></span>
             </button>
         </div>
@@ -661,10 +702,11 @@
         <a href="#prijzen" onclick="toggleMobileMenu()">Prijzen</a>
         <a href="#over" onclick="toggleMobileMenu()">Over Ernst</a>
         <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
+        <a href="#contact" onclick="toggleMobileMenu()" style="background:var(--blue);color:var(--white);text-align:center;border-radius:var(--radius-sm);padding:14px;margin-top:8px;border:none;">Gratis kennismaking</a>
     </div>
 
     <!-- Hero -->
-    <section class="hero">
+    <section class="hero" id="main">
         <div class="hero-badge fade-up">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             Voor MKB-ondernemers in Drenthe en omstreken
@@ -1099,39 +1141,39 @@
             </div>
             <div class="faq-grid">
                 <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
+                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-1">
                         Wat is klain precies?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">klain is een AI-platform dat speciaal is gebouwd voor MKB-ondernemers. Het koppelt met uw boekhoudsoftware en levert automatisch weekrapportages, cashflow forecasts en slimme offertes. Alles zonder technische kennis.</div></div>
+                    <div class="faq-answer" id="faq-1" role="region"><div class="faq-answer-inner">klain is een AI-platform dat speciaal is gebouwd voor MKB-ondernemers. Het koppelt met uw boekhoudsoftware en levert automatisch weekrapportages, cashflow forecasts en slimme offertes. Alles zonder technische kennis.</div></div>
                 </div>
                 <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
+                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-2">
                         Hoe veilig is mijn data?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">Uw data wordt versleuteld verwerkt via beveiligde API-verbindingen. klain slaat geen financiële gegevens permanent op. De verwerking gebeurt via officiële boekhoud-API's en Anthropic's Claude AI, beiden met enterprise-grade beveiliging.</div></div>
+                    <div class="faq-answer" id="faq-2" role="region"><div class="faq-answer-inner">Uw data wordt versleuteld verwerkt via beveiligde API-verbindingen. klain slaat geen financiële gegevens permanent op. De verwerking gebeurt via officiële boekhoud-API's en Anthropic's Claude AI, beiden met enterprise-grade beveiliging.</div></div>
                 </div>
                 <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
+                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-3">
                         Moet ik iets installeren?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">Nee, helemaal niets. U hoeft alleen eenmalig klain toegang te geven tot uw boekhouding. Dat duurt een kwartiertje en ik help u erbij. Daarna ontvangt u alles per e-mail.</div></div>
+                    <div class="faq-answer" id="faq-3" role="region"><div class="faq-answer-inner">Nee, helemaal niets. U hoeft alleen eenmalig klain toegang te geven tot uw boekhouding. Dat duurt een kwartiertje en ik help u erbij. Daarna ontvangt u alles per e-mail.</div></div>
                 </div>
                 <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
+                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-4">
                         Kan ik het eerst uitproberen?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">Ja, de eerste kennismaking is gratis en vrijblijvend. Ik bespreek uw situatie en laat zien hoe klain er voor uw bedrijf uit zou zien. Geen verplichtingen.</div></div>
+                    <div class="faq-answer" id="faq-4" role="region"><div class="faq-answer-inner">Ja, de eerste kennismaking is gratis en vrijblijvend. Ik bespreek uw situatie en laat zien hoe klain er voor uw bedrijf uit zou zien. Geen verplichtingen.</div></div>
                 </div>
                 <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
+                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-5">
                         Werkt klain ook met andere boekhoudpakketten?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">klain ondersteunt koppelingen met de meest gebruikte boekhoudpakketten zoals Moneybird, Exact Online, e-Boekhouden en Twinfield. Neem contact op als u een ander pakket gebruikt.</div></div>
+                    <div class="faq-answer" id="faq-5" role="region"><div class="faq-answer-inner">klain ondersteunt koppelingen met de meest gebruikte boekhoudpakketten zoals Moneybird, Exact Online, e-Boekhouden en Twinfield. Neem contact op als u een ander pakket gebruikt.</div></div>
                 </div>
             </div>
         </div>
@@ -1165,7 +1207,9 @@
     <section class="cta-section" id="contact">
         <h2>Klaar om grip te krijgen op uw bedrijf?</h2>
         <p>Plan een gratis kennismaking en ontdek wat klain voor u kan betekenen. Geen verplichtingen, wel inzichten.</p>
-        <a href="mailto:ernst@klain.nl" class="btn-primary">Plan een kennismaking →</a>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;">
+            <a href="mailto:ernst@klain.nl" class="btn-primary">Mail ernst@klain.nl</a>
+        </div>
     </section>
 
     <!-- Footer -->
@@ -1180,6 +1224,7 @@
                 <a href="#oplossingen">Weekrapportages</a>
                 <a href="#oplossingen">Offerte Generator</a>
                 <a href="#oplossingen">Cashflow Forecast</a>
+                <a href="demo-debiteuren.html">Debiteurenbeheer</a>
                 <a href="#vergelijking">Vergelijking</a>
             </div>
             <div class="footer-col">
@@ -1198,20 +1243,38 @@
         </div>
         <div class="footer-bottom">
             <p>© 2026 klain</p>
-            <a href="#">Privacy</a>
+            <a href="privacy.html">Privacy</a>
         </div>
     </footer>
 
     <script>
         function toggleMobileMenu() {
-            document.getElementById('mobileMenu').classList.toggle('active');
+            const menu = document.getElementById('mobileMenu');
+            const btn = document.getElementById('mobileMenuBtn');
+            const isOpen = menu.classList.toggle('active');
+            btn.setAttribute('aria-expanded', isOpen);
         }
+
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('mobileMenu');
+            const btn = document.getElementById('mobileMenuBtn');
+            if (menu.classList.contains('active') && !menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.remove('active');
+                btn.setAttribute('aria-expanded', 'false');
+            }
+        });
 
         function toggleFaq(btn) {
             const item = btn.parentElement;
             const wasOpen = item.classList.contains('open');
-            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-            if (!wasOpen) item.classList.add('open');
+            document.querySelectorAll('.faq-item').forEach(i => {
+                i.classList.remove('open');
+                i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+            });
+            if (!wasOpen) {
+                item.classList.add('open');
+                btn.setAttribute('aria-expanded', 'true');
+            }
         }
 
         // Intersection Observer for scroll animations

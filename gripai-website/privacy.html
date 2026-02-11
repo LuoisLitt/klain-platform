@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacyverklaring — klain</title>
+    <style>
+        @font-face {
+            font-family: 'DM Sans';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('fonts/dm-sans-latin.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: normal;
+            font-weight: 400 700;
+            font-display: swap;
+            src: url('fonts/fraunces-latin.woff2') format('woff2');
+        }
+
+        :root {
+            --black: #0f1117;
+            --gray-500: #6b7084;
+            --gray-400: #8e93a6;
+            --gray-100: #eef0f5;
+            --gray-50: #f7f8fa;
+            --white: #ffffff;
+            --blue: #2563eb;
+            --blue-hover: #1d4ed8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--black);
+            line-height: 1.6;
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 64px; background: var(--white);
+            z-index: 1000; border-bottom: 1px solid var(--gray-100);
+        }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            height: 100%; display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-size: 26px; font-weight: 700; color: var(--black);
+            text-decoration: none;
+        }
+        .nav-back {
+            color: var(--blue); text-decoration: none; font-size: 14px; font-weight: 500;
+        }
+        .nav-back:hover { text-decoration: underline; }
+
+        .content {
+            max-width: 760px; margin: 0 auto;
+            padding: 120px 24px 80px;
+        }
+
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 36px; font-weight: 700; margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 15px; color: var(--gray-400); margin-bottom: 48px;
+        }
+
+        h2 {
+            font-size: 20px; font-weight: 700; margin-top: 40px; margin-bottom: 12px;
+        }
+        p, ul {
+            font-size: 15px; color: var(--gray-500); line-height: 1.8; margin-bottom: 16px;
+        }
+        ul { padding-left: 24px; }
+        li { margin-bottom: 8px; }
+
+        a { color: var(--blue); }
+
+        footer {
+            background: var(--white); border-top: 1px solid var(--gray-100);
+            padding: 32px 24px; text-align: center;
+        }
+        footer p { font-size: 13px; color: var(--gray-400); }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a href="index.html" class="logo">klain</a>
+            <a href="index.html" class="nav-back">Terug naar home</a>
+        </div>
+    </nav>
+
+    <div class="content">
+        <h1>Privacyverklaring</h1>
+        <p class="subtitle">Laatst bijgewerkt: februari 2026</p>
+
+        <h2>1. Wie zijn wij</h2>
+        <p>klain is een dienst van Ernst Beekman, gevestigd in Drenthe, Nederland. Wij bieden AI-automatisering voor MKB-ondernemers. U kunt ons bereiken via <a href="mailto:ernst@klain.nl">ernst@klain.nl</a>.</p>
+
+        <h2>2. Welke gegevens verzamelen wij</h2>
+        <p>Wij verzamelen uitsluitend gegevens die nodig zijn om onze dienst te leveren:</p>
+        <ul>
+            <li>Contactgegevens (naam, e-mailadres, telefoonnummer) wanneer u contact met ons opneemt</li>
+            <li>Bedrijfsgegevens uit uw boekhoudsoftware (omzet, facturen, debiteuren) via beveiligde API-koppelingen, uitsluitend met uw toestemming</li>
+        </ul>
+
+        <h2>3. Waarvoor gebruiken wij uw gegevens</h2>
+        <ul>
+            <li>Het genereren van weekrapportages, offertes en cashflow forecasts</li>
+            <li>Het versturen van automatische rapportages per e-mail</li>
+            <li>Het verlenen van klantenservice en ondersteuning</li>
+        </ul>
+
+        <h2>4. Hoe beveiligen wij uw gegevens</h2>
+        <p>Alle dataverwerking vindt plaats via versleutelde verbindingen (HTTPS/TLS). Boekhouddata wordt opgehaald via officiële API's van uw boekhoudsoftware. Wij slaan geen financiële gegevens permanent op op onze servers.</p>
+
+        <h2>5. Delen met derden</h2>
+        <p>Wij delen uw gegevens niet met derden, behalve:</p>
+        <ul>
+            <li>Anthropic (Claude AI) voor het genereren van analyses — hierbij worden geen herleidbare persoonsgegevens verwerkt</li>
+            <li>Uw boekhoudsoftware-aanbieder via hun officiële API</li>
+        </ul>
+
+        <h2>6. Cookies</h2>
+        <p>Deze website maakt geen gebruik van tracking cookies of analytics van derden. Wij gebruiken geen Google Analytics of vergelijkbare diensten.</p>
+
+        <h2>7. Uw rechten</h2>
+        <p>Op grond van de AVG heeft u het recht om:</p>
+        <ul>
+            <li>Uw persoonsgegevens in te zien</li>
+            <li>Uw gegevens te laten corrigeren of verwijderen</li>
+            <li>Uw toestemming in te trekken</li>
+            <li>Een klacht in te dienen bij de Autoriteit Persoonsgegevens</li>
+        </ul>
+
+        <h2>8. Contact</h2>
+        <p>Heeft u vragen over deze privacyverklaring of over de verwerking van uw gegevens? Neem contact op via <a href="mailto:ernst@klain.nl">ernst@klain.nl</a>.</p>
+    </div>
+
+    <footer>
+        <p>© 2026 klain | KvK: [nummer] | BTW: [nummer]</p>
+    </footer>
+</body>
+</html>

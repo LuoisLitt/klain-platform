@@ -1122,6 +1122,7 @@
         // LIVE API INTEGRATION — Alle data uit Goedgepickt
         // ============================================
         const API_BASE = 'https://dura-backend-production.up.railway.app';
+        const API_HEADERS = { 'X-API-Key': 'V-pp2ua1yNmcsskUPFdQLz2ZB2EYZTd4USjjWYmMlUU' };
 
         const STATUS_MAP = {
             'open': 'Nieuw',
@@ -1257,7 +1258,7 @@
         // ============ DASHBOARD KPIs ============
         async function loadDashboard() {
             try {
-                const res = await fetch(`${API_BASE}/api/dashboard`);
+                const res = await fetch(`${API_BASE}/api/dashboard`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Dashboard API error');
                 const json = await res.json();
                 const d = json.data;
@@ -1481,7 +1482,7 @@
         // ============ RECENT ORDERS ============
         async function loadRecentOrders() {
             try {
-                const res = await fetch(`${API_BASE}/api/orders/latest?limit=5`);
+                const res = await fetch(`${API_BASE}/api/orders/latest?limit=5`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Orders API error');
                 const json = await res.json();
                 const orders = json.data || [];
@@ -1522,7 +1523,7 @@
         // ============ CARRIER PERFORMANCE (live) ============
         async function loadCarrierPerformance() {
             try {
-                const res = await fetch(`${API_BASE}/api/shipments/latest?limit=50`);
+                const res = await fetch(`${API_BASE}/api/shipments/latest?limit=50`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Shipments API error');
                 const json = await res.json();
                 const shipments = json.data || [];
@@ -1575,7 +1576,7 @@
         // ============ INVENTORY ALERTS (live) ============
         async function loadInventoryAlerts() {
             try {
-                const res = await fetch(`${API_BASE}/api/inventory/alerts`);
+                const res = await fetch(`${API_BASE}/api/inventory/alerts`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Alerts API error');
                 const json = await res.json();
                 const alerts = json.data || [];
@@ -1625,7 +1626,7 @@
         // ============ FAST COMBINED LOAD ============
         async function loadAll() {
             try {
-                const res = await fetch(`${API_BASE}/api/page-data/dashboard`);
+                const res = await fetch(`${API_BASE}/api/page-data/dashboard`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Page data error');
                 const json = await res.json();
                 const d = json.data;

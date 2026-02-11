@@ -343,6 +343,7 @@
         // LIVE API INTEGRATION — Alles uit Goedgepickt
         // ============================================
         const API_BASE = 'https://dura-backend-production.up.railway.app';
+        const API_HEADERS = { 'X-API-Key': 'V-pp2ua1yNmcsskUPFdQLz2ZB2EYZTd4USjjWYmMlUU' };
         let currentInvPage = 1;
         let totalInvPages = 1;
         let totalInvProducts = 0;
@@ -362,7 +363,7 @@
             tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:#999;"><div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><div class="loading-spinner"></div>Bezig met laden...</div></td></tr>';
 
             try {
-                const res = await fetch(`${API_BASE}/api/inventory?page=${currentInvPage}`);
+                const res = await fetch(`${API_BASE}/api/inventory?page=${currentInvPage}`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Inventory API error: ' + res.status);
                 const json = await res.json();
                 const allProducts = json.data || [];
@@ -430,7 +431,7 @@
         async function loadAlerts() {
             const tbody = document.getElementById('alertsBody');
             try {
-                const res = await fetch(`${API_BASE}/api/inventory/alerts`);
+                const res = await fetch(`${API_BASE}/api/inventory/alerts`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Alerts API error');
                 const json = await res.json();
                 const alerts = json.data || [];

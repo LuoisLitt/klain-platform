@@ -219,6 +219,7 @@
         // LIVE API INTEGRATION
         // ============================================
         const API_BASE = 'https://dura-backend-production.up.railway.app';
+        const API_HEADERS = { 'X-API-Key': 'V-pp2ua1yNmcsskUPFdQLz2ZB2EYZTd4USjjWYmMlUU' };
 
         const STATUS_MAP = {
             'open': 'Nieuw',
@@ -304,7 +305,7 @@
                 const today = new Date().toISOString().slice(0, 10);
 
                 if (_apiLastPage === null) {
-                    const probe = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=1&limit=50`);
+                    const probe = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=1&limit=50`, { headers: API_HEADERS });
                     if (!probe.ok) throw new Error('Orders API error');
                     const probeJson = await probe.json();
                     _apiLastPage = probeJson.lastPage || 1;
@@ -313,7 +314,7 @@
                 }
 
                 const apiPage = Math.max(1, _apiLastPage - (currentPage - 1));
-                const res = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=${apiPage}&limit=50`);
+                const res = await fetch(`${API_BASE}/api/orders?created_after=${today}&page=${apiPage}&limit=50`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Orders API error');
                 const json = await res.json();
                 const orders = json.data || json;
@@ -414,7 +415,7 @@
         // ============ FAST COMBINED LOAD ============
         async function loadAllOrders() {
             try {
-                const res = await fetch(`${API_BASE}/api/page-data/orders`);
+                const res = await fetch(`${API_BASE}/api/page-data/orders`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Page data error');
                 const json = await res.json();
                 const d = json.data;
@@ -470,7 +471,7 @@
             document.getElementById('orderModal').classList.add('active');
 
             try {
-                const res = await fetch(`${API_BASE}/api/orders/${uuid}`);
+                const res = await fetch(`${API_BASE}/api/orders/${uuid}`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Kan order niet ophalen');
                 const json = await res.json();
                 const order = json.data;

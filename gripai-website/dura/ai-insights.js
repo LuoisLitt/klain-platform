@@ -5,7 +5,8 @@
  */
 (function() {
     const API_BASE = 'https://dura-backend-production.up.railway.app';
-    
+    const API_HEADERS = { 'X-API-Key': 'V-pp2ua1yNmcsskUPFdQLz2ZB2EYZTd4USjjWYmMlUU' };
+
     // Detect current page
     const path = window.location.pathname;
     const isDashboard = path.endsWith('/') || path.endsWith('index.html');
@@ -80,14 +81,18 @@
         const actions = document.querySelector('.ai-briefing-actions');
         
         if (title) title.textContent = insights.title || 'AI Briefing';
-        if (text) text.innerHTML = insights.summary || '';
+        if (text) text.textContent = insights.summary || '';
         if (time) time.textContent = `Gegenereerd om ${formatTime(data.generated_at)}`;
         
         if (actions && insights.actions && insights.actions.length > 0) {
-            actions.innerHTML = insights.actions.map(a => {
+            actions.textContent = '';
+            insights.actions.forEach(a => {
                 const cls = a.type === 'warning' ? 'warning' : a.type === 'success' ? 'info' : 'info';
-                return `<span class="ai-action ${cls}">${a.text}</span>`;
-            }).join('');
+                const span = document.createElement('span');
+                span.className = 'ai-action ' + cls;
+                span.textContent = a.text;
+                actions.appendChild(span);
+            });
         }
     }
     
@@ -107,7 +112,7 @@
     
     async function fetchAndRender() {
         try {
-            const res = await fetch(`${API_BASE}/api/ai-insights`);
+            const res = await fetch(`${API_BASE}/api/ai-insights`, { headers: API_HEADERS });
             if (!res.ok) return;
             const json = await res.json();
             const data = json.data;
@@ -147,6 +152,6 @@
     // Fetch on load
     fetchAndRender();
     
-    // Refresh every 15 seconds
-    setInterval(fetchAndRender, 15000);
+    // Refresh every 5 minutes
+    setInterval(fetchAndRender, 300000);
 })();

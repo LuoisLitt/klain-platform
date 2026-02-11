@@ -239,11 +239,12 @@
 
     <script>
         const API_BASE = 'https://dura-backend-production.up.railway.app';
+        const API_HEADERS = { 'X-API-Key': 'V-pp2ua1yNmcsskUPFdQLz2ZB2EYZTd4USjjWYmMlUU' };
 
         // ============ LIVE DATA LADEN ============
         async function loadRapportageData() {
             try {
-                const res = await fetch(`${API_BASE}/api/dashboard`);
+                const res = await fetch(`${API_BASE}/api/dashboard`, { headers: API_HEADERS });
                 if (!res.ok) throw new Error('Dashboard API error');
                 const json = await res.json();
                 const d = json.data;
@@ -279,7 +280,7 @@
         // Carrier chart live uit shipments
         async function loadCarrierChart() {
             try {
-                const res = await fetch(`${API_BASE}/api/shipments/latest?limit=50`);
+                const res = await fetch(`${API_BASE}/api/shipments/latest?limit=50`, { headers: API_HEADERS });
                 if (!res.ok) return;
                 const json = await res.json();
                 const shipments = json.data || [];
