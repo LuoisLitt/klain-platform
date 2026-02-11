@@ -26,11 +26,18 @@
         'Authorization': 'Bearer ' + token
     };
 
-    // Nav user info invullen
-    var avatar = document.getElementById('userAvatar');
-    var uname = document.getElementById('userName');
-    if (avatar) avatar.textContent = (user.name || 'D').charAt(0).toUpperCase();
-    if (uname) uname.textContent = user.name || 'Gebruiker';
+    // Nav user info invullen (defer tot DOM klaar is)
+    function setUserInfo() {
+        var avatar = document.getElementById('userAvatar');
+        var uname = document.getElementById('userName');
+        if (avatar) avatar.textContent = (user.name || 'D').charAt(0).toUpperCase();
+        if (uname) uname.textContent = user.name || 'Gebruiker';
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setUserInfo);
+    } else {
+        setUserInfo();
+    }
 
     // Async token verificatie — redirect bij ongeldig/verlopen token
     fetch(API_BASE + '/api/auth/verify', {
