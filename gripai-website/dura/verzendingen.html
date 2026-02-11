@@ -624,8 +624,9 @@
                 const json = await res.json();
                 const d = json.data;
 
-                // Stats
-                const total = d.total || 0;
+                // Stats — gebruik dashboard shipments.today (alle shipments) als dat hoger is dan API total
+                var dashToday = d.dashboard && d.dashboard.shipments && d.dashboard.shipments.today;
+                var total = Math.max(d.total || 0, dashToday || 0);
                 document.getElementById('statShipTotal').textContent = total.toLocaleString('nl-NL');
 
                 // Paginering setup
@@ -634,32 +635,41 @@
                 shipTotalCount = d.total || 0;
                 shipCurrentPage = 1;
 
-                if (d.shipments && d.shipments.length > 0) {
-                    // Stats uit shipments data
-                    let delivered = 0, transit = 0;
-                    d.shipments.forEach(s => {
+                // Status KPI's — gebruik dashboard stats (alle shipments) indien beschikbaar
+                var dashShip = d.dashboard && d.dashboard.shipments;
+                var dashStatus = dashShip && dashShip.by_status;
+                if (dashStatus && (dashStatus.delivered + dashStatus.transit + dashStatus.other) > 0) {
+                    document.getElementById('statShipDelivered').textContent = dashStatus.delivered.toLocaleString('nl-NL');
+                    document.getElementById('statShipTransit').textContent = dashStatus.transit.toLocaleString('nl-NL');
+                    document.getElementById('statShipOther').textContent = dashStatus.other.toLocaleString('nl-NL');
+                } else if (d.shipments && d.shipments.length > 0) {
+                    // Fallback: tel uit pagina-shipments
+                    var delivered = 0, transit = 0;
+                    d.shipments.forEach(function(s) {
                         if (s.status === 'delivered_at_recipient' || s.status === 'delivered') delivered++;
                         if (s.status === 'shipped' || s.status === 'in_transit' || s.status === 'out_for_delivery' || s.status === 'registered') transit++;
                     });
                     document.getElementById('statShipDelivered').textContent = delivered;
                     document.getElementById('statShipTransit').textContent = transit;
                     document.getElementById('statShipOther').textContent = Math.max(0, d.shipments.length - delivered - transit);
+                }
 
+                if (d.shipments && d.shipments.length > 0) {
                     // Carrier cards — gebruik dashboard stats (alle shipments) indien beschikbaar
-                    const dashCarriers = d.dashboard && d.dashboard.shipments && d.dashboard.shipments.top_carriers;
-                    let sorted;
-                    let carrierTotal;
+                    var dashCarriers = dashShip && dashShip.top_carriers;
+                    var sorted;
+                    var carrierTotal;
                     if (dashCarriers && dashCarriers.length > 0) {
-                        sorted = dashCarriers.map(c => [c.name, { count: c.count, class: carrierNameToClass(c.name) }]);
-                        carrierTotal = sorted.reduce((sum, e) => sum + e[1].count, 0);
+                        sorted = dashCarriers.map(function(c) { return [c.name, { count: c.count, class: carrierNameToClass(c.name) }]; });
+                        carrierTotal = sorted.reduce(function(sum, e) { return sum + e[1].count; }, 0);
                     } else {
-                        const carriers = {};
-                        d.shipments.forEach(s => {
-                            const c = extractCarrier(s);
+                        var carriers = {};
+                        d.shipments.forEach(function(s) {
+                            var c = extractCarrier(s);
                             if (!carriers[c.name]) carriers[c.name] = { count: 0, class: c.class };
                             carriers[c.name].count++;
                         });
-                        sorted = Object.entries(carriers).sort((a, b) => b[1].count - a[1].count);
+                        sorted = Object.entries(carriers).sort(function(a, b) { return b[1].count - a[1].count; });
                         carrierTotal = d.shipments.length;
                     }
                     const carrierCards = document.getElementById('carrierCards');
