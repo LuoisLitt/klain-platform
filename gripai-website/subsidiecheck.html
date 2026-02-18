@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subsidiecheck | klain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #003d7a;
+            --accent: #ff6200;
+            --black: #0f1117;
+            --gray-dark: #6b7084;
+            --gray-medium: #d1d5e0;
+            --gray-light: #f7f8fa;
+            --white: #ffffff;
+            --green: #16a34a;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+            background:var(--gray-light); color:var(--black); line-height:1.5;
+            -webkit-font-smoothing:antialiased;
+        }
+        nav {
+            position:fixed; top:0; left:0; right:0; height:64px;
+            background:var(--white); z-index:1000; border-bottom:1px solid var(--gray-medium);
+        }
+        .nav-inner {
+            max-width:1200px; margin:0 auto; padding:0 24px;
+            height:100%; display:flex; align-items:center; justify-content:space-between;
+        }
+        .nav-logo {
+            font-family:'Fraunces',serif; font-size:26px; font-weight:700;
+            color:var(--primary); text-decoration:none;
+        }
+        .nav-cta {
+            background:var(--accent); color:var(--white); padding:10px 22px;
+            border-radius:10px; text-decoration:none; font-size:14px; font-weight:600;
+        }
+        .container { max-width:800px; margin:64px auto 0; padding:40px 24px 80px; }
+
+        /* HERO */
+        .hero { text-align:center; padding:60px 0 40px; }
+        .hero h1 {
+            font-family:'Fraunces',serif; font-size:clamp(28px,5vw,44px);
+            font-weight:700; color:var(--primary); margin-bottom:16px; line-height:1.2;
+        }
+        .hero p { font-size:18px; color:var(--gray-dark); max-width:560px; margin:0 auto 32px; }
+        .btn-primary {
+            display:inline-block; background:var(--accent); color:var(--white);
+            padding:16px 40px; border-radius:12px; font-size:18px; font-weight:600;
+            border:none; cursor:pointer; transition:transform .15s,box-shadow .15s;
+        }
+        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(255,98,0,.3); }
+
+        /* FORM */
+        .form-section { display:none; }
+        .form-section.active { display:block; }
+        .form-card {
+            background:var(--white); border-radius:16px; padding:40px;
+            box-shadow:0 2px 12px rgba(0,0,0,.06);
+        }
+        .form-card h2 {
+            font-family:'Fraunces',serif; font-size:24px; color:var(--primary);
+            margin-bottom:8px;
+        }
+        .form-card .subtitle { color:var(--gray-dark); margin-bottom:32px; font-size:15px; }
+        .form-group { margin-bottom:24px; }
+        .form-group label {
+            display:block; font-weight:600; margin-bottom:8px; font-size:15px;
+        }
+        .form-group select {
+            width:100%; padding:12px 16px; border:1px solid var(--gray-medium);
+            border-radius:10px; font-size:15px; font-family:inherit; background:var(--white);
+        }
+        .radio-group, .checkbox-group { display:flex; flex-wrap:wrap; gap:8px; }
+        .radio-group label, .checkbox-group label {
+            display:inline-flex; align-items:center; gap:6px;
+            padding:10px 16px; border:1px solid var(--gray-medium); border-radius:10px;
+            cursor:pointer; font-weight:400; font-size:14px; transition:all .15s;
+        }
+        .radio-group input:checked+span, .checkbox-group input:checked+span {
+            color:var(--primary); font-weight:600;
+        }
+        .radio-group label:has(input:checked), .checkbox-group label:has(input:checked) {
+            border-color:var(--primary); background:rgba(0,61,122,.05);
+        }
+        .radio-group input, .checkbox-group input { display:none; }
+        .step-indicator {
+            text-align:center; margin-bottom:24px; font-size:14px; color:var(--gray-dark);
+        }
+        .step-indicator span { font-weight:700; color:var(--primary); }
+
+        /* RESULTS */
+        .results-section { display:none; }
+        .results-section.active { display:block; }
+        .results-banner {
+            background:linear-gradient(135deg,var(--primary),#005baa);
+            color:var(--white); border-radius:16px; padding:32px; text-align:center;
+            margin-bottom:32px;
+        }
+        .results-banner .check { font-size:48px; margin-bottom:8px; }
+        .results-banner h2 { font-family:'Fraunces',serif; font-size:clamp(20px,4vw,28px); font-weight:700; }
+        .subsidy-card {
+            background:var(--white); border-radius:12px; padding:24px;
+            box-shadow:0 2px 8px rgba(0,0,0,.05); margin-bottom:16px;
+            border-left:4px solid var(--primary);
+        }
+        .subsidy-card .card-header { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+        .subsidy-card h3 { font-size:17px; font-weight:700; }
+        .badge {
+            display:inline-block; padding:3px 10px; border-radius:20px;
+            font-size:11px; font-weight:700; color:var(--white); text-transform:uppercase;
+        }
+        .badge-nationaal { background:var(--primary); }
+        .badge-regionaal { background:#16a34a; }
+        .badge-provinciaal { background:#7c3aed; }
+        .badge-europees { background:#d97706; }
+        .badge-fiscaal { background:var(--accent); }
+        .badge-gemeentelijk { background:#6b7084; }
+        .tag-snel {
+            display:inline-block; padding:3px 10px; border-radius:20px;
+            font-size:11px; font-weight:600; background:#dcfce7; color:#16a34a;
+        }
+        .subsidy-card .bedrag { color:var(--green); font-weight:700; font-size:16px; margin:6px 0; }
+        .subsidy-card .uitleg { color:var(--gray-dark); font-size:14px; margin-bottom:4px; }
+        .subsidy-card .moeilijkheid { font-size:13px; color:var(--gray-dark); }
+
+        /* LEAD */
+        .lead-box {
+            background:var(--accent); border-radius:16px; padding:40px;
+            margin-top:40px; color:var(--white);
+        }
+        .lead-box h3 { font-family:'Fraunces',serif; font-size:22px; margin-bottom:8px; }
+        .lead-box .lead-sub { opacity:.9; margin-bottom:24px; font-size:15px; }
+        .lead-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .lead-grid input {
+            width:100%; padding:12px 16px; border:none; border-radius:10px;
+            font-size:15px; font-family:inherit;
+        }
+        .lead-grid .full { grid-column:1/-1; }
+        .btn-lead {
+            display:block; width:100%; margin-top:16px; padding:14px;
+            background:var(--primary); color:var(--white); border:none; border-radius:10px;
+            font-size:16px; font-weight:600; cursor:pointer; font-family:inherit;
+        }
+        .lead-success { display:none; text-align:center; padding:20px 0; }
+        .lead-success h3 { font-size:20px; margin-bottom:8px; }
+        .disclaimer { font-size:12px; opacity:.7; margin-top:16px; text-align:center; }
+        .btn-reset {
+            display:block; margin:32px auto 0; background:none; border:1px solid var(--gray-medium);
+            padding:12px 32px; border-radius:10px; font-size:15px; cursor:pointer;
+            font-family:inherit; color:var(--gray-dark);
+        }
+        footer {
+            text-align:center; padding:40px 24px; font-size:13px; color:var(--gray-dark);
+        }
+        @media(max-width:600px){
+            .form-card { padding:24px 20px; }
+            .lead-grid { grid-template-columns:1fr; }
+            .radio-group, .checkbox-group { flex-direction:column; }
+        }
+    </style>
+</head>
+<body>
+    <nav><div class="nav-inner">
+        <a href="/" class="nav-logo">klain</a>
+        <a href="/" class="nav-cta">Terug naar klain.nl</a>
+    </div></nav>
+
+    <div class="container">
+        <!-- STAP 1: HERO -->
+        <div id="step1" class="form-section active">
+            <div class="hero">
+                <h1>Ontdek welke subsidies u misloopt</h1>
+                <p>Gemiddeld laat MKB €15.000 per jaar liggen. In 2 minuten weet u waar u recht op heeft.</p>
+                <button class="btn-primary" onclick="showStep(2)">Start gratis subsidiecheck →</button>
+            </div>
+        </div>
+
+        <!-- STAP 2: INTAKE -->
+        <div id="step2" class="form-section">
+            <div class="step-indicator">Stap <span>2</span> van <span>3</span> — Uw bedrijfsgegevens</div>
+            <div class="form-card">
+                <h2>Vertel ons over uw bedrijf</h2>
+                <p class="subtitle">Wij matchen uw profiel met 72+ subsidies uit onze database.</p>
+
+                <div class="form-group">
+                    <label>1. Hoeveel medewerkers heeft u?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="medewerkers" value="zzp"><span>ZZP</span></label>
+                        <label><input type="radio" name="medewerkers" value="klein"><span>Klein (2-10)</span></label>
+                        <label><input type="radio" name="medewerkers" value="middel"><span>Middel (11-50)</span></label>
+                        <label><input type="radio" name="medewerkers" value="groot"><span>Groot (51-250)</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>2. In welke provincie is uw bedrijf gevestigd?</label>
+                    <select id="provincie">
+                        <option value="">Selecteer provincie...</option>
+                        <option>Drenthe</option><option>Groningen</option><option>Friesland</option>
+                        <option>Overijssel</option><option>Noord-Holland</option><option>Zuid-Holland</option>
+                        <option>Utrecht</option><option>Noord-Brabant</option><option>Gelderland</option>
+                        <option>Flevoland</option><option>Zeeland</option><option>Limburg</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>3. Wat is uw branche?</label>
+                    <select id="branche">
+                        <option value="">Selecteer branche...</option>
+                        <option value="bouw">Bouw & Installatie</option>
+                        <option value="retail">Retail & Groothandel</option>
+                        <option value="horeca">Horeca & Food</option>
+                        <option value="transport">Transport & Logistiek</option>
+                        <option value="zorg">Zorg & Welzijn</option>
+                        <option value="it">IT & Software</option>
+                        <option value="productie">Productie & Industrie</option>
+                        <option value="agrarisch">Agrarisch</option>
+                        <option value="dienstverlening">Zakelijke dienstverlening</option>
+                        <option value="overig">Overig</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>4. Wat zijn uw plannen dit jaar? (meerdere mogelijk)</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="plannen" value="personeel"><span>Personeel opleiden of aannemen</span></label>
+                        <label><input type="checkbox" name="plannen" value="verduurzamen"><span>Verduurzamen (energie, solar, warmtepomp)</span></label>
+                        <label><input type="checkbox" name="plannen" value="innoveren"><span>Innoveren of R&D uitvoeren</span></label>
+                        <label><input type="checkbox" name="plannen" value="digitaliseren"><span>Digitaliseren (software, automatisering, AI)</span></label>
+                        <label><input type="checkbox" name="plannen" value="exporteren"><span>Exporteren naar buitenland</span></label>
+                        <label><input type="checkbox" name="plannen" value="investeren"><span>Investeren in machines of bedrijfsmiddelen</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>5. Voert u R&D-activiteiten uit?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="rd" value="ja"><span>Ja</span></label>
+                        <label><input type="radio" name="rd" value="nee"><span>Nee</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>6. Heeft u een investering gepland?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="investering" value="geen"><span>Nee</span></label>
+                        <label><input type="radio" name="investering" value="0_50k"><span>Ja, minder dan €50k</span></label>
+                        <label><input type="radio" name="investering" value="50k_250k"><span>Ja, €50k - €250k</span></label>
+                        <label><input type="radio" name="investering" value="250k_plus"><span>Ja, meer dan €250k</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>7. Wat is uw jaaromzet?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="omzet" value="0_500k"><span>Tot €500k</span></label>
+                        <label><input type="radio" name="omzet" value="500k_2m"><span>€500k - €2M</span></label>
+                        <label><input type="radio" name="omzet" value="2m_10m"><span>€2M - €10M</span></label>
+                        <label><input type="radio" name="omzet" value="10m_plus"><span>Meer dan €10M</span></label>
+                    </div>
+                </div>
+
+                <button class="btn-primary" style="width:100%;margin-top:8px" onclick="berekenen()">Bereken mijn subsidies →</button>
+            </div>
+        </div>
+
+        <!-- STAP 3: RESULTATEN -->
+        <div id="step3" class="results-section">
+            <div class="step-indicator">Stap <span>3</span> van <span>3</span> — Uw resultaten</div>
+            <div class="results-banner">
+                <div class="check">✓</div>
+                <h2 id="resultsBanner"></h2>
+            </div>
+            <div id="subsidyCards"></div>
+
+            <div class="lead-box">
+                <div id="leadForm">
+                    <h3>Wilt u weten hoe u deze subsidies aanvraagt?</h3>
+                    <p class="lead-sub">Ontvang binnen 2 werkdagen een gratis subsidie-analyse van onze expert.</p>
+                    <div class="lead-grid">
+                        <input type="text" id="voornaam" placeholder="Voornaam">
+                        <input type="text" id="achternaam" placeholder="Achternaam">
+                        <input type="email" id="email" placeholder="E-mailadres" class="full">
+                        <input type="tel" id="telefoon" placeholder="Telefoonnummer" class="full">
+                    </div>
+                    <button class="btn-lead" onclick="submitLead()">Ontvang gratis analyse →</button>
+                </div>
+                <div class="lead-success" id="leadSuccess">
+                    <h3 id="successMsg"></h3>
+                    <p>Wij nemen binnen 2 werkdagen contact op.</p>
+                </div>
+                <p class="disclaimer">klain is het persoonlijke initiatief van Ernst Beekman en staat los van de Rabobank.</p>
+            </div>
+
+            <button class="btn-reset" onclick="resetForm()">← Opnieuw invullen</button>
+        </div>
+    </div>
+
+    <footer>© 2026 klain | Persoonlijk initiatief van Ernst Beekman | Los van Rabobank</footer>
+
+<script>
+const noordNL = ["Drenthe","Groningen","Friesland"];
+const noordNLplus = ["Drenthe","Groningen","Friesland","Overijssel"];
+
+const subsidies = [
+  // === NATIONAAL ===
+  {naam:"WBSO",categorie:"R&D",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"36-50% loonkostenkorting R&D",bedragMax:200000,uitleg:"Fiscale korting op loonkosten voor technisch onderzoek en ontwikkeling.",moeilijkheid:2,match:a=>a.rdActiviteiten},
+  {naam:"Innovatiebox",categorie:"R&D",niveau:"Fiscaal",regio:"Heel Nederland",bedrag:"9% VPB i.p.v. 25,8%",bedragMax:150000,uitleg:"Verlaagd belastingtarief op winsten uit innovatieve producten en diensten.",moeilijkheid:3,match:a=>a.rdActiviteiten},
+  {naam:"MIA (Milieu-investeringsaftrek)",categorie:"Verduurzaming",niveau:"Fiscaal",regio:"Heel Nederland",bedrag:"27-45% extra fiscale aftrek",bedragMax:60000,uitleg:"Extra aftrekpost bij investering in milieuvriendelijke bedrijfsmiddelen.",moeilijkheid:2,match:a=>a.plannen.includes("verduurzamen")||a.plannen.includes("investeren")},
+  {naam:"Vamil",categorie:"Verduurzaming",niveau:"Fiscaal",regio:"Heel Nederland",bedrag:"75% willekeurig afschrijven",bedragMax:40000,uitleg:"Zelf bepalen wanneer u afschrijft op milieu-investeringen (liquiditeitsvoordeel).",moeilijkheid:2,match:a=>a.plannen.includes("verduurzamen")||a.plannen.includes("investeren")},
+  {naam:"EIA (Energie-investeringsaftrek)",categorie:"Verduurzaming",niveau:"Fiscaal",regio:"Heel Nederland",bedrag:"45,5% extra fiscale aftrek",bedragMax:80000,uitleg:"Extra aftrekpost op energiebesparende investeringen.",moeilijkheid:2,match:a=>a.plannen.includes("verduurzamen")||a.plannen.includes("investeren")},
+  {naam:"ISDE",categorie:"Verduurzaming",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Tot 30% van investering",bedragMax:30000,uitleg:"Subsidie voor warmtepompen, zonneboilers, isolatie en ventilatie.",moeilijkheid:1,match:a=>a.plannen.includes("verduurzamen")},
+  {naam:"BMKB",categorie:"Financiering",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Borgstelling tot 75% van lening",bedragMax:300000,uitleg:"Overheid staat borg bij te weinig onderpand voor financiering.",moeilijkheid:2,match:a=>a.plannen.includes("investeren")||a.plannen.includes("innoveren")},
+  {naam:"Innovatiekrediet",categorie:"Innovatie",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Tot €10M (45% projectkosten)",bedragMax:500000,uitleg:"Lening voor ontwikkeling van technisch risicovolle innovaties.",moeilijkheid:4,match:a=>a.plannen.includes("innoveren")&&a.rdActiviteiten},
+  {naam:"VFF (Vroegefasefinanciering)",categorie:"Innovatie",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Tot €450.000",bedragMax:450000,uitleg:"Krediet om haalbaarheid van een innovatief idee te onderzoeken.",moeilijkheid:3,match:a=>a.plannen.includes("innoveren")&&(a.medewerkers==="zzp"||a.medewerkers==="klein")},
+  {naam:"SLIM-regeling",categorie:"Personeel",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Tot €25.000",bedragMax:25000,uitleg:"Subsidie voor leren en ontwikkelen van uw personeel.",moeilijkheid:2,match:a=>a.plannen.includes("personeel")&&a.medewerkers!=="zzp"},
+  {naam:"Praktijkleren",categorie:"Personeel",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Tot €2.700 per leerling",bedragMax:15000,uitleg:"Vergoeding voor het begeleiden van leerlingen en studenten.",moeilijkheid:1,match:a=>a.plannen.includes("personeel")},
+  {naam:"Praktijkleren Klimaat & Energie",categorie:"Personeel",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Extra budget bovenop Praktijkleren",bedragMax:10000,uitleg:"Extra vergoeding voor leerwerkplekken in techniek, energie en klimaat.",moeilijkheid:1,match:a=>a.plannen.includes("personeel")&&["bouw","productie"].includes(a.branche)},
+  {naam:"MIT-Haalbaarheidsprojecten",categorie:"Innovatie",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Tot €20.000",bedragMax:20000,uitleg:"Subsidie voor haalbaarheidsonderzoek van een innovatief idee.",moeilijkheid:2,match:a=>a.plannen.includes("innoveren")},
+  {naam:"MIT R&D-samenwerkingsprojecten",categorie:"Innovatie",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"35% van kosten, tot €350.000",bedragMax:350000,uitleg:"Subsidie voor gezamenlijke R&D-projecten met andere MKB'ers.",moeilijkheid:3,match:a=>a.plannen.includes("innoveren")&&a.medewerkers!=="zzp"},
+  {naam:"DEI+ (Demonstratie Energie-innovatie)",categorie:"Verduurzaming",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"25-45% van projectkosten",bedragMax:300000,uitleg:"Subsidie voor pilots en demonstraties van CO₂-reducerende innovaties.",moeilijkheid:4,match:a=>a.plannen.includes("verduurzamen")&&a.rdActiviteiten},
+  {naam:"VEKI",categorie:"Verduurzaming",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Variabel",bedragMax:200000,uitleg:"Subsidie voor bewezen klimaatmaatregelen met lange terugverdientijd.",moeilijkheid:3,match:a=>a.plannen.includes("verduurzamen")&&a.plannen.includes("investeren")&&["productie","bouw"].includes(a.branche)},
+  {naam:"SDE++",categorie:"Verduurzaming",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Exploitatiesubsidie 12-15 jaar",bedragMax:1000000,uitleg:"Langjarige subsidie voor grootschalige duurzame energieprojecten.",moeilijkheid:4,match:a=>a.plannen.includes("verduurzamen")&&a.investering==="250k_plus"},
+  {naam:"Regeling Groenprojecten",categorie:"Verduurzaming",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Lening tegen lage rente",bedragMax:100000,uitleg:"Financiering tegen gunstig tarief voor duurzame bedrijfsprojecten.",moeilijkheid:3,match:a=>a.plannen.includes("verduurzamen")&&a.investering!=="geen"},
+  {naam:"Groeifaciliteit",categorie:"Financiering",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Garantie tot €25M",bedragMax:500000,uitleg:"Overheidsgarantie voor groeifinancieringen bij snelgroeiende bedrijven.",moeilijkheid:3,match:a=>a.plannen.includes("investeren")&&a.omzet!=="0_500k"},
+  {naam:"Qredits Microfinanciering",categorie:"Financiering",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"€1.000 - €250.000",bedragMax:50000,uitleg:"Toegankelijke financiering specifiek voor kleine ondernemers en ZZP'ers.",moeilijkheid:2,match:a=>a.medewerkers==="zzp"||a.medewerkers==="klein"},
+  {naam:"SIB (Starters International Business)",categorie:"Export",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Coaching t.w.v. €2.400",bedragMax:2400,uitleg:"Gratis coachingtraject voor ondernemers die willen exporteren.",moeilijkheid:1,match:a=>a.plannen.includes("exporteren")},
+  {naam:"DHI",categorie:"Export",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"€25.000 - €200.000",bedragMax:200000,uitleg:"Subsidie voor demonstratieprojecten en haalbaarheidsstudies in het buitenland.",moeilijkheid:3,match:a=>a.plannen.includes("exporteren")},
+  {naam:"Eurostars",categorie:"Innovatie",niveau:"Europees",regio:"Heel Nederland",bedrag:"Tot 50% van kosten",bedragMax:200000,uitleg:"Subsidie voor R&D-samenwerking met Europese partners.",moeilijkheid:4,match:a=>a.plannen.includes("innoveren")&&a.plannen.includes("exporteren")&&a.rdActiviteiten},
+  {naam:"SBIR",categorie:"Innovatie",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Variabel per challenge",bedragMax:100000,uitleg:"Overheid daagt ondernemers uit om innovatieve oplossingen te ontwikkelen.",moeilijkheid:3,match:a=>a.plannen.includes("innoveren")&&a.rdActiviteiten},
+  {naam:"MOOI",categorie:"Verduurzaming",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Tot enkele miljoenen",bedragMax:500000,uitleg:"Subsidie voor grootschalige innovatieprojecten gericht op energietransitie.",moeilijkheid:5,match:a=>a.plannen.includes("verduurzamen")&&a.plannen.includes("innoveren")&&a.rdActiviteiten},
+  {naam:"HER+",categorie:"Verduurzaming",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Variabel",bedragMax:200000,uitleg:"Subsidie voor hernieuwbare energie en systeemintegratie.",moeilijkheid:4,match:a=>a.plannen.includes("verduurzamen")&&a.rdActiviteiten},
+  {naam:"Digitalisatievouchers",categorie:"Digitalisering",niveau:"Regionaal",regio:"Heel Nederland",bedrag:"€2.500 - €25.000",bedragMax:25000,uitleg:"Voucher voor digitaliseringsadvies en -implementatie.",moeilijkheid:2,match:a=>a.plannen.includes("digitaliseren")},
+
+  // === REGIONAAL NOORD-NL (SNN) ===
+  {naam:"VIA Drenthe-Fryslân (EFRO)",categorie:"Innovatie",niveau:"Regionaal",regio:"Drenthe, Friesland",bedrag:"Tot €100.000",bedragMax:100000,uitleg:"Subsidie voor innovatieve productontwikkeling in Drenthe of Friesland.",moeilijkheid:3,match:a=>(a.provincie==="Drenthe"||a.provincie==="Friesland")&&a.plannen.includes("innoveren")},
+  {naam:"VIA Groningen (JTF)",categorie:"Innovatie",niveau:"Regionaal",regio:"Groningen",bedrag:"Tot €100.000",bedragMax:100000,uitleg:"Subsidie voor innovatieve projecten van MKB'ers in Groningen.",moeilijkheid:3,match:a=>a.provincie==="Groningen"&&a.plannen.includes("innoveren")},
+  {naam:"MKB Digitalisering & Robotisering 2.0 (JTF)",categorie:"Digitalisering",niveau:"Regionaal",regio:"Groningen",bedrag:"50% van kosten",bedragMax:75000,uitleg:"Subsidie voor digitalisering en robotisering in Groningen.",moeilijkheid:2,match:a=>a.provincie==="Groningen"&&a.plannen.includes("digitaliseren")},
+  {naam:"MKB Personeel & Scholing (JTF)",categorie:"Personeel",niveau:"Regionaal",regio:"Groningen",bedrag:"50% van kosten",bedragMax:25000,uitleg:"Subsidie voor personeelsadvies en scholing in Groningen.",moeilijkheid:2,match:a=>a.provincie==="Groningen"&&a.plannen.includes("personeel")},
+  {naam:"MKB Haalbaarheidsvoucher (EFRO)",categorie:"Innovatie",niveau:"Regionaal",regio:"Noord-Nederland",bedrag:"Voucher",bedragMax:20000,uitleg:"Voucher voor haalbaarheidsonderzoek bij noordelijke proeftuinen.",moeilijkheid:2,match:a=>noordNL.includes(a.provincie)&&a.plannen.includes("innoveren")},
+  {naam:"Valorisatie Klein",categorie:"Innovatie",niveau:"Regionaal",regio:"Noord-Nederland",bedrag:"€100.000 - €350.000",bedragMax:350000,uitleg:"Subsidie voor ontwikkeling en demonstratie van innovaties in Noord-NL.",moeilijkheid:4,match:a=>noordNL.includes(a.provincie)&&a.plannen.includes("innoveren")},
+  {naam:"Valorisatie Middelgroot",categorie:"Innovatie",niveau:"Regionaal",regio:"Noord-Nederland",bedrag:"€350.000 - €1.000.000",bedragMax:1000000,uitleg:"Grotere subsidie voor innovatieprojecten met maatschappelijke impact.",moeilijkheid:5,match:a=>noordNL.includes(a.provincie)&&a.plannen.includes("innoveren")&&a.medewerkers!=="zzp"},
+  {naam:"SNN Slimme Energiesystemen",categorie:"Verduurzaming",niveau:"Regionaal",regio:"Noord-Nederland",bedrag:"Variabel",bedragMax:200000,uitleg:"Subsidie voor ontwikkeling van slimme en duurzame energieoplossingen.",moeilijkheid:4,match:a=>noordNL.includes(a.provincie)&&a.plannen.includes("verduurzamen")},
+  {naam:"Subsidie Energiebesparing Drents MKB",categorie:"Verduurzaming",niveau:"Regionaal",regio:"Drenthe",bedrag:"Variabel",bedragMax:25000,uitleg:"Subsidie voor energiebesparende maatregelen in uw Drentse bedrijf.",moeilijkheid:2,match:a=>a.provincie==="Drenthe"&&a.plannen.includes("verduurzamen")},
+  {naam:"Digitaliseringsvoucher Drenthe",categorie:"Digitalisering",niveau:"Regionaal",regio:"Drenthe",bedrag:"Voucher",bedragMax:10000,uitleg:"Voucher voor digitalisering van bedrijfsprocessen in Drenthe.",moeilijkheid:1,match:a=>a.provincie==="Drenthe"&&a.plannen.includes("digitaliseren")},
+  {naam:"Werken aan Onderscheidend Vermogen",categorie:"Leefbaarheid",niveau:"Regionaal",regio:"Drenthe",bedrag:"Variabel",bedragMax:25000,uitleg:"Subsidie voor projecten die lokale economie en leefbaarheid versterken.",moeilijkheid:2,match:a=>a.provincie==="Drenthe"},
+  {naam:"Adviesvoucherregeling Fryslân",categorie:"Advies",niveau:"Regionaal",regio:"Friesland",bedrag:"Voucher voor advieskosten",bedragMax:5000,uitleg:"Voucher voor deskundig advies over innovatie en verduurzaming.",moeilijkheid:1,match:a=>a.provincie==="Friesland"},
+
+  // === PROVINCIAAL DRENTHE ===
+  {naam:"Subsidie Advies Voucher MKB Drenthe",categorie:"Advies",niveau:"Provinciaal",regio:"Drenthe",bedrag:"Tot €3.000",bedragMax:3000,uitleg:"Laagdrempelige voucher voor extern bedrijfsadvies in Drenthe.",moeilijkheid:1,match:a=>a.provincie==="Drenthe"},
+  {naam:"LEADER Drenthe",categorie:"Platteland",niveau:"Provinciaal",regio:"Drenthe",bedrag:"Variabel",bedragMax:50000,uitleg:"Subsidie voor projecten die bijdragen aan het Drentse platteland.",moeilijkheid:3,match:a=>a.provincie==="Drenthe"&&a.branche==="agrarisch"},
+  {naam:"Internationaal Ondernemen Drenthe",categorie:"Export",niveau:"Provinciaal",regio:"Drenthe",bedrag:"Variabel",bedragMax:15000,uitleg:"Ondersteuning voor Drentse ondernemers die internationaal willen groeien.",moeilijkheid:2,match:a=>a.provincie==="Drenthe"&&a.plannen.includes("exporteren")},
+  {naam:"Oplossingen Netcongestie Drenthe",categorie:"Verduurzaming",niveau:"Provinciaal",regio:"Drenthe",bedrag:"Variabel",bedragMax:50000,uitleg:"Subsidie bij belemmeringen door netcongestie voor Drentse bedrijven.",moeilijkheid:3,match:a=>a.provincie==="Drenthe"&&a.plannen.includes("verduurzamen")&&a.plannen.includes("investeren")},
+  {naam:"Duurzaam Boeren Drenthe",categorie:"Agrarisch",niveau:"Provinciaal",regio:"Drenthe",bedrag:"Tot €6.500/jaar",bedragMax:6500,uitleg:"Subsidie voor duurzame prestaties in de Drentse melkveehouderij.",moeilijkheid:2,match:a=>a.provincie==="Drenthe"&&a.branche==="agrarisch"},
+
+  // === PROVINCIAAL GRONINGEN ===
+  {naam:"Innovatief & Duurzaam MKB Groningen",categorie:"Innovatie",niveau:"Provinciaal",regio:"Groningen",bedrag:"Variabel",bedragMax:50000,uitleg:"Subsidie voor innovatie en verduurzaming van Groningse MKB'ers.",moeilijkheid:2,match:a=>a.provincie==="Groningen"&&(a.plannen.includes("innoveren")||a.plannen.includes("verduurzamen"))},
+  {naam:"Investeringsregeling MKB Groningen",categorie:"Financiering",niveau:"Provinciaal",regio:"Groningen",bedrag:"Tot €50.000 (80%)",bedragMax:50000,uitleg:"Investeringssubsidie voor ondernemers in het Groningse aardbevingsgebied.",moeilijkheid:2,match:a=>a.provincie==="Groningen"&&a.plannen.includes("investeren")},
+  {naam:"Verduurzamingsadvies MKB Groningen",categorie:"Verduurzaming",niveau:"Provinciaal",regio:"Groningen",bedrag:"Tot €2.500",bedragMax:2500,uitleg:"Adviesvoucher voor verduurzaming van uw pand of bedrijfsproces.",moeilijkheid:1,match:a=>a.provincie==="Groningen"&&a.plannen.includes("verduurzamen")},
+  {naam:"Groninger Ondernemersregeling",categorie:"Advies",niveau:"Provinciaal",regio:"Groningen",bedrag:"50% kosten, tot €5.000",bedragMax:5000,uitleg:"Voucher voor advieskosten via erkend ondernemersprogramma.",moeilijkheid:1,match:a=>a.provincie==="Groningen"},
+  {naam:"NPG Nationaal Programma Groningen",categorie:"Economie",niveau:"Provinciaal",regio:"Groningen",bedrag:"Tot €45.000",bedragMax:45000,uitleg:"Diverse subsidies voor economie, leefbaarheid en ontwikkeling in Groningen.",moeilijkheid:2,match:a=>a.provincie==="Groningen"},
+  {naam:"JTF Noord-Nederland (EU Just Transition)",categorie:"Transitie",niveau:"Europees",regio:"Groningen",bedrag:"Tot €2M",bedragMax:2000000,uitleg:"EU-subsidie voor economische transitie in het voormalig gaswinningsgebied.",moeilijkheid:4,match:a=>a.provincie==="Groningen"&&(a.plannen.includes("innoveren")||a.plannen.includes("verduurzamen"))},
+
+  // === PROVINCIAAL FRIESLAND ===
+  {naam:"MKB-voucherregeling Fryslân",categorie:"Innovatie",niveau:"Provinciaal",regio:"Friesland",bedrag:"Voucher",bedragMax:10000,uitleg:"Vouchers voor innovatieve, digitale en duurzame projecten in Friesland.",moeilijkheid:1,match:a=>a.provincie==="Friesland"&&(a.plannen.includes("innoveren")||a.plannen.includes("digitaliseren")||a.plannen.includes("verduurzamen"))},
+  {naam:"Iepen Mienskipsfûns",categorie:"Leefbaarheid",niveau:"Provinciaal",regio:"Friesland",bedrag:"Variabel",bedragMax:25000,uitleg:"Subsidie voor initiatieven die de Friese leefbaarheid verbeteren.",moeilijkheid:2,match:a=>a.provincie==="Friesland"},
+
+  // === PROVINCIAAL OVERIJSSEL ===
+  {naam:"Digitale en Circulaire Industrie Overijssel",categorie:"Digitalisering",niveau:"Provinciaal",regio:"Overijssel",bedrag:"Variabel",bedragMax:50000,uitleg:"Subsidie voor digitalisering en circulair ondernemen in Overijsselse industrie.",moeilijkheid:2,match:a=>a.provincie==="Overijssel"&&(a.plannen.includes("digitaliseren")||a.plannen.includes("verduurzamen"))&&["productie","bouw"].includes(a.branche)},
+  {naam:"MIT-Haalbaarheidsprojecten Overijssel",categorie:"Innovatie",niveau:"Provinciaal",regio:"Overijssel",bedrag:"Tot €20.000",bedragMax:20000,uitleg:"Subsidie voor haalbaarheidsonderzoek van innovatieve ideeën in Overijssel.",moeilijkheid:2,match:a=>a.provincie==="Overijssel"&&a.plannen.includes("innoveren")},
+  {naam:"MIT R&D Overijssel (TENDER)",categorie:"Innovatie",niveau:"Provinciaal",regio:"Overijssel",bedrag:"35% van kosten",bedragMax:175000,uitleg:"Subsidie voor R&D-samenwerkingsprojecten in Overijssel.",moeilijkheid:3,match:a=>a.provincie==="Overijssel"&&a.plannen.includes("innoveren")&&a.medewerkers!=="zzp"},
+  {naam:"Toeristisch MKB Overijssel",categorie:"Toerisme",niveau:"Provinciaal",regio:"Overijssel",bedrag:"Variabel",bedragMax:25000,uitleg:"Subsidie voor verduurzaming en digitalisering in de toeristische sector.",moeilijkheid:2,match:a=>a.provincie==="Overijssel"&&a.branche==="horeca"},
+  {naam:"Energie-innovatie Overijssel",categorie:"Verduurzaming",niveau:"Provinciaal",regio:"Overijssel",bedrag:"Variabel",bedragMax:50000,uitleg:"Subsidie voor het uitwerken van energie-innovaties in Overijssel.",moeilijkheid:3,match:a=>a.provincie==="Overijssel"&&a.plannen.includes("verduurzamen")&&a.plannen.includes("innoveren")},
+
+  // === EUROPEES ===
+  {naam:"EFRO Noord-Nederland",categorie:"Innovatie",niveau:"Europees",regio:"Noord-Nederland",bedrag:"€100.000 - €5M",bedragMax:500000,uitleg:"Europese subsidie voor innovatie en duurzaamheid in Noord-Nederland.",moeilijkheid:4,match:a=>noordNL.includes(a.provincie)&&(a.plannen.includes("innoveren")||a.plannen.includes("digitaliseren"))},
+  {naam:"EFRO Oost-Nederland",categorie:"Innovatie",niveau:"Europees",regio:"Overijssel, Gelderland",bedrag:"Variabel",bedragMax:300000,uitleg:"Europese subsidie voor innovatie en duurzaamheid in Oost-Nederland.",moeilijkheid:4,match:a=>(a.provincie==="Overijssel"||a.provincie==="Gelderland")&&(a.plannen.includes("innoveren")||a.plannen.includes("verduurzamen"))},
+  {naam:"EIC Accelerator (Horizon Europe)",categorie:"Innovatie",niveau:"Europees",regio:"Heel Europa",bedrag:"Tot €2,5M subsidie + equity",bedragMax:2500000,uitleg:"Europese subsidie voor doorbraakinnovaties met schaalpotentieel.",moeilijkheid:5,match:a=>a.plannen.includes("innoveren")&&a.rdActiviteiten&&a.plannen.includes("exporteren")},
+  {naam:"EUIPO MKB-Fonds (IE-bescherming)",categorie:"IE",niveau:"Europees",regio:"Heel EU",bedrag:"Vouchers voor IE-kosten",bedragMax:5000,uitleg:"Voucher voor bescherming van merken, octrooien en modellen.",moeilijkheid:2,match:a=>a.plannen.includes("innoveren")||a.plannen.includes("exporteren")},
+  {naam:"Interreg NL-Duitsland",categorie:"Samenwerking",niveau:"Europees",regio:"Grensregio's",bedrag:"Variabel",bedragMax:200000,uitleg:"Subsidie voor grensoverschrijdende samenwerking met Duitse partners.",moeilijkheid:4,match:a=>["Drenthe","Groningen","Overijssel","Gelderland"].includes(a.provincie)&&(a.plannen.includes("innoveren")||a.plannen.includes("exporteren"))},
+  {naam:"INDUSTR_I4.0 (Interreg Digitalisering)",categorie:"Digitalisering",niveau:"Europees",regio:"Grensregio NL-DE",bedrag:"Subsidie voor digitaliseringsprojecten",bedragMax:100000,uitleg:"Europese subsidie voor digitalisering en Industrie 4.0 in de grensregio.",moeilijkheid:3,match:a=>["Drenthe","Groningen","Overijssel","Gelderland"].includes(a.provincie)&&a.plannen.includes("digitaliseren")},
+  {naam:"SECURE (Cyberweerbaarheid)",categorie:"Digitalisering",niveau:"Europees",regio:"Heel EU",bedrag:"Variabel",bedragMax:15000,uitleg:"Europese subsidie om de cyberweerbaarheid van uw bedrijf te verbeteren.",moeilijkheid:2,match:a=>a.plannen.includes("digitaliseren")},
+
+  // === GEMEENTELIJK ===
+  {naam:"Energiebesparing MKB Groningen (gemeente)",categorie:"Verduurzaming",niveau:"Gemeentelijk",regio:"Gemeente Groningen",bedrag:"Variabel",bedragMax:5000,uitleg:"Gemeentelijke subsidie voor kleine energiebesparende maatregelen.",moeilijkheid:1,match:a=>a.provincie==="Groningen"&&a.plannen.includes("verduurzamen")},
+  {naam:"Dutch TechZone",categorie:"Innovatie",niveau:"Gemeentelijk",regio:"Emmen/Hoogeveen/Coevorden",bedrag:"Ondersteuning en netwerk",bedragMax:5000,uitleg:"Innovatiecluster met ondersteuning voor tech-ondernemers in ZO-Drenthe.",moeilijkheid:1,match:a=>a.provincie==="Drenthe"&&(a.branche==="it"||a.plannen.includes("innoveren"))},
+];
+
+function showStep(n) {
+    document.querySelectorAll('.form-section,.results-section').forEach(s=>s.classList.remove('active'));
+    document.getElementById('step'+n).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function getAnswers() {
+    const med = document.querySelector('input[name="medewerkers"]:checked');
+    const prov = document.getElementById('provincie').value;
+    const br = document.getElementById('branche').value;
+    const pl = [...document.querySelectorAll('input[name="plannen"]:checked')].map(c=>c.value);
+    const rd = document.querySelector('input[name="rd"]:checked');
+    const inv = document.querySelector('input[name="investering"]:checked');
+    const omz = document.querySelector('input[name="omzet"]:checked');
+    if(!med||!prov||!br||!rd||!inv||!omz){alert('Vul alle vragen in om uw subsidies te berekenen.');return null;}
+    return {
+        medewerkers: med.value,
+        provincie: prov,
+        branche: br,
+        plannen: pl,
+        rdActiviteiten: rd.value==="ja",
+        investering: inv.value,
+        omzet: omz.value
+    };
+}
+
+function berekenen() {
+    const a = getAnswers();
+    if(!a) return;
+    const matched = subsidies.filter(s => { try { return s.match(a); } catch(e) { return false; } });
+    matched.sort((x,y) => x.moeilijkheid - y.moeilijkheid || y.bedragMax - x.bedragMax);
+    let totaal = matched.reduce((s,x) => s + x.bedragMax, 0);
+    totaal = Math.min(totaal, 2000000);
+    totaal = Math.round(totaal / 10000) * 10000;
+    const fmt = n => n >= 1000000 ? '€' + (n/1000000).toFixed(1).replace('.0','') + 'M' : '€' + n.toLocaleString('nl-NL');
+
+    document.getElementById('resultsBanner').textContent =
+        `Wij vonden ${matched.length} subsidies voor uw bedrijf — potentiële waarde tot ${fmt(totaal)}`;
+
+    const niveauClass = {Nationaal:'nationaal',Regionaal:'regionaal',Provinciaal:'provinciaal',Europees:'europees',Fiscaal:'fiscaal',Gemeentelijk:'gemeentelijk'};
+    const container = document.getElementById('subsidyCards');
+    container.innerHTML = matched.map(s => `
+        <div class="subsidy-card">
+            <div class="card-header">
+                <h3>${s.naam}</h3>
+                <span class="badge badge-${niveauClass[s.niveau]||'nationaal'}">${s.niveau}</span>
+                ${s.moeilijkheid <= 2 ? '<span class="tag-snel">Snel aan te vragen</span>' : ''}
+            </div>
+            <div class="bedrag">${s.bedrag}</div>
+            <div class="uitleg">${s.uitleg}</div>
+            <div class="moeilijkheid">${'⭐'.repeat(s.moeilijkheid)} aanvraagcomplexiteit</div>
+        </div>
+    `).join('');
+
+    document.querySelectorAll('.form-section,.results-section').forEach(s=>s.classList.remove('active'));
+    document.getElementById('step3').classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function submitLead() {
+    const vn = document.getElementById('voornaam').value.trim();
+    if(!vn){alert('Vul uw voornaam in.');return;}
+    if(!document.getElementById('email').value.trim()){alert('Vul uw e-mailadres in.');return;}
+    document.getElementById('leadForm').style.display = 'none';
+    document.getElementById('leadSuccess').style.display = 'block';
+    document.getElementById('successMsg').textContent = `Bedankt ${vn}!`;
+}
+
+function resetForm() {
+    document.querySelectorAll('input[type="radio"],input[type="checkbox"]').forEach(i=>i.checked=false);
+    document.getElementById('provincie').selectedIndex=0;
+    document.getElementById('branche').selectedIndex=0;
+    ['voornaam','achternaam','email','telefoon'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('leadForm').style.display='block';
+    document.getElementById('leadSuccess').style.display='none';
+    showStep(1);
+}
+</script>
+</body>
+</html>
