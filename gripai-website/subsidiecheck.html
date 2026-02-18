@@ -3,193 +3,367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subsidiecheck | klain</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
+    <title>Gratis Subsidiecheck | klain</title>
+    <meta name="description" content="Ontdek welke subsidies u misloopt. Gratis subsidiescan voor MKB-ondernemers — in 2 minuten weet u waar u recht op heeft.">
+    <style>
+        @font-face {
+            font-family: 'DM Sans';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('fonts/dm-sans-latin.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: normal;
+            font-weight: 400 700;
+            font-display: swap;
+            src: url('fonts/fraunces-latin.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: italic;
+            font-weight: 400;
+            font-display: swap;
+            src: url('fonts/fraunces-italic-latin.woff2') format('woff2');
+        }
+    </style>
     <style>
         :root {
-            --primary: #003d7a;
-            --accent: #ff6200;
             --black: #0f1117;
-            --gray-dark: #6b7084;
-            --gray-medium: #d1d5e0;
-            --gray-light: #f7f8fa;
+            --gray-900: #1a1d27;
+            --gray-700: #3d4152;
+            --gray-500: #6b7084;
+            --gray-400: #8e93a6;
+            --gray-200: #d1d5e0;
+            --gray-100: #eef0f5;
+            --gray-50: #f7f8fa;
             --white: #ffffff;
+            --blue: #2563eb;
+            --blue-hover: #1d4ed8;
+            --blue-light: #eff6ff;
+            --blue-muted: #dbeafe;
             --green: #16a34a;
+            --green-light: #f0fdf4;
+            --orange: #ea580c;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-lg: 24px;
         }
-        * { margin:0; padding:0; box-sizing:border-box; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
         body {
-            font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
-            background:var(--gray-light); color:var(--black); line-height:1.5;
-            -webkit-font-smoothing:antialiased;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--black);
+            line-height: 1.6;
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
+
+        /* ─── NAV ─── */
         nav {
-            position:fixed; top:0; left:0; right:0; height:64px;
-            background:var(--white); z-index:1000; border-bottom:1px solid var(--gray-medium);
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 64px;
+            background: rgba(255,255,255,1);
+            z-index: 1000;
+            border-bottom: 1px solid var(--gray-100);
         }
         .nav-inner {
-            max-width:1200px; margin:0 auto; padding:0 24px;
-            height:100%; display:flex; align-items:center; justify-content:space-between;
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            height: 100%; display: flex; align-items: center; justify-content: space-between;
         }
-        .nav-logo {
-            font-family:'Fraunces',serif; font-size:26px; font-weight:700;
-            color:var(--primary); text-decoration:none;
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-size: 26px; font-weight: 700; color: var(--black);
+            text-decoration: none; letter-spacing: -0.5px;
         }
         .nav-cta {
-            background:var(--accent); color:var(--white); padding:10px 22px;
-            border-radius:10px; text-decoration:none; font-size:14px; font-weight:600;
+            background: var(--blue); color: var(--white); padding: 10px 22px;
+            border-radius: var(--radius-sm); text-decoration: none; font-size: 14px;
+            font-weight: 500; transition: all 0.2s;
         }
-        .container { max-width:800px; margin:64px auto 0; padding:40px 24px 80px; }
+        .nav-cta:hover { background: var(--blue-hover); transform: translateY(-1px); }
 
-        /* HERO */
-        .hero { text-align:center; padding:60px 0 40px; }
+        /* ─── HERO ─── */
+        .hero {
+            padding: 140px 24px 80px;
+            text-align: center;
+            background: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(37,99,235,0.06), transparent);
+            pointer-events: none;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--blue-light); color: var(--blue);
+            padding: 8px 18px; border-radius: 100px;
+            font-size: 13px; font-weight: 600; margin-bottom: 28px;
+            border: 1px solid var(--blue-muted);
+            position: relative;
+        }
         .hero h1 {
-            font-family:'Fraunces',serif; font-size:clamp(28px,5vw,44px);
-            font-weight:700; color:var(--primary); margin-bottom:16px; line-height:1.2;
+            font-family: 'Fraunces', serif;
+            font-size: clamp(34px, 5vw, 56px);
+            font-weight: 700; letter-spacing: -1.5px; line-height: 1.1;
+            max-width: 700px; margin: 0 auto 24px;
+            color: var(--black);
+            position: relative;
         }
-        .hero p { font-size:18px; color:var(--gray-dark); max-width:560px; margin:0 auto 32px; }
+        .hero h1 em {
+            font-style: italic; color: var(--blue);
+        }
+        .hero p {
+            font-size: clamp(16px, 2vw, 19px);
+            color: var(--gray-500); max-width: 520px;
+            margin: 0 auto 40px; line-height: 1.7;
+            position: relative;
+        }
         .btn-primary {
-            display:inline-block; background:var(--accent); color:var(--white);
-            padding:16px 40px; border-radius:12px; font-size:18px; font-weight:600;
-            border:none; cursor:pointer; transition:transform .15s,box-shadow .15s;
+            background: var(--blue); color: var(--white);
+            padding: 14px 30px; border-radius: var(--radius-sm);
+            font-size: 15px; font-weight: 600; text-decoration: none;
+            transition: all 0.2s; border: none; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: inherit; position: relative;
         }
-        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(255,98,0,.3); }
+        .btn-primary:hover { background: var(--blue-hover); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(37,99,235,0.25); }
 
-        /* FORM */
-        .form-section { display:none; }
-        .form-section.active { display:block; }
+        /* ─── FORM FLOW ─── */
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+        .results-section { display: none; }
+        .results-section.active { display: block; }
+
+        .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+        .container-wide { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+        .step-indicator {
+            text-align: center; margin-bottom: 24px; padding-top: 80px;
+            font-size: 13px; color: var(--gray-400); font-weight: 500;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .step-indicator span { font-weight: 700; color: var(--blue); }
+
+        /* ─── FORM CARD ─── */
         .form-card {
-            background:var(--white); border-radius:16px; padding:40px;
-            box-shadow:0 2px 12px rgba(0,0,0,.06);
+            background: var(--white);
+            border: 1px solid var(--gray-100);
+            border-radius: var(--radius-lg);
+            padding: 48px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.04);
         }
         .form-card h2 {
-            font-family:'Fraunces',serif; font-size:24px; color:var(--primary);
-            margin-bottom:8px;
+            font-family: 'Fraunces', serif;
+            font-size: 28px; font-weight: 700; color: var(--black);
+            margin-bottom: 8px; letter-spacing: -0.3px;
         }
-        .form-card .subtitle { color:var(--gray-dark); margin-bottom:32px; font-size:15px; }
-        .form-group { margin-bottom:24px; }
-        .form-group label {
-            display:block; font-weight:600; margin-bottom:8px; font-size:15px;
+        .form-card .subtitle {
+            color: var(--gray-500); margin-bottom: 36px; font-size: 15px; line-height: 1.6;
+        }
+        .form-group { margin-bottom: 28px; }
+        .form-group label.q-label {
+            display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px;
+            color: var(--black);
         }
         .form-group select {
-            width:100%; padding:12px 16px; border:1px solid var(--gray-medium);
-            border-radius:10px; font-size:15px; font-family:inherit; background:var(--white);
+            width: 100%; padding: 12px 16px; border: 1px solid var(--gray-200);
+            border-radius: var(--radius-sm); font-size: 15px; font-family: inherit;
+            background: var(--white); color: var(--black); transition: border-color 0.2s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%236b7084' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
         }
-        .radio-group, .checkbox-group { display:flex; flex-wrap:wrap; gap:8px; }
+        .form-group select:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+        .radio-group, .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; }
         .radio-group label, .checkbox-group label {
-            display:inline-flex; align-items:center; gap:6px;
-            padding:10px 16px; border:1px solid var(--gray-medium); border-radius:10px;
-            cursor:pointer; font-weight:400; font-size:14px; transition:all .15s;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 10px 18px; border: 1px solid var(--gray-200); border-radius: 100px;
+            cursor: pointer; font-weight: 500; font-size: 14px; transition: all 0.15s;
+            color: var(--gray-700); background: var(--white);
         }
-        .radio-group input:checked+span, .checkbox-group input:checked+span {
-            color:var(--primary); font-weight:600;
+        .radio-group label:hover, .checkbox-group label:hover {
+            border-color: var(--blue-muted); background: var(--blue-light);
         }
+        .radio-group input, .checkbox-group input { display: none; }
         .radio-group label:has(input:checked), .checkbox-group label:has(input:checked) {
-            border-color:var(--primary); background:rgba(0,61,122,.05);
+            border-color: var(--blue); background: var(--blue-light); color: var(--blue); font-weight: 600;
         }
-        .radio-group input, .checkbox-group input { display:none; }
-        .step-indicator {
-            text-align:center; margin-bottom:24px; font-size:14px; color:var(--gray-dark);
-        }
-        .step-indicator span { font-weight:700; color:var(--primary); }
 
-        /* RESULTS */
-        .results-section { display:none; }
-        .results-section.active { display:block; }
+        /* ─── RESULTS BANNER ─── */
         .results-banner {
-            background:linear-gradient(135deg,var(--primary),#005baa);
-            color:var(--white); border-radius:16px; padding:32px; text-align:center;
-            margin-bottom:32px;
+            background: var(--green-light);
+            border: 1px solid #bbf7d0;
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            margin-bottom: 32px;
+            display: flex; align-items: center; gap: 16px;
         }
-        .results-banner .check { font-size:48px; margin-bottom:8px; }
-        .results-banner h2 { font-family:'Fraunces',serif; font-size:clamp(20px,4vw,28px); font-weight:700; }
-        .subsidy-card {
-            background:var(--white); border-radius:12px; padding:24px;
-            box-shadow:0 2px 8px rgba(0,0,0,.05); margin-bottom:16px;
-            border-left:4px solid var(--primary);
+        .results-banner .check-icon {
+            width: 48px; height: 48px; flex-shrink: 0;
+            background: var(--green); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--white); font-size: 24px; font-weight: 700;
         }
-        .subsidy-card .card-header { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
-        .subsidy-card h3 { font-size:17px; font-weight:700; }
-        .badge {
-            display:inline-block; padding:3px 10px; border-radius:20px;
-            font-size:11px; font-weight:700; color:var(--white); text-transform:uppercase;
+        .results-banner h2 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(18px, 3vw, 24px); font-weight: 700;
+            color: var(--black); line-height: 1.3;
         }
-        .badge-nationaal { background:var(--primary); }
-        .badge-regionaal { background:#16a34a; }
-        .badge-provinciaal { background:#7c3aed; }
-        .badge-europees { background:#d97706; }
-        .badge-fiscaal { background:var(--accent); }
-        .badge-gemeentelijk { background:#6b7084; }
-        .tag-snel {
-            display:inline-block; padding:3px 10px; border-radius:20px;
-            font-size:11px; font-weight:600; background:#dcfce7; color:#16a34a;
-        }
-        .subsidy-card .bedrag { color:var(--green); font-weight:700; font-size:16px; margin:6px 0; }
-        .subsidy-card .uitleg { color:var(--gray-dark); font-size:14px; margin-bottom:4px; }
-        .subsidy-card .moeilijkheid { font-size:13px; color:var(--gray-dark); }
 
-        /* LEAD */
-        .lead-box {
-            background:var(--accent); border-radius:16px; padding:40px;
-            margin-top:40px; color:var(--white);
+        /* ─── SUBSIDY CARDS ─── */
+        .subsidy-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
         }
-        .lead-box h3 { font-family:'Fraunces',serif; font-size:22px; margin-bottom:8px; }
-        .lead-box .lead-sub { opacity:.9; margin-bottom:24px; font-size:15px; }
-        .lead-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-        .lead-grid input {
-            width:100%; padding:12px 16px; border:none; border-radius:10px;
-            font-size:15px; font-family:inherit;
+        .subsidy-card {
+            background: var(--white);
+            border: 1px solid var(--gray-100);
+            border-radius: var(--radius);
+            padding: 24px;
+            transition: all 0.2s;
         }
-        .lead-grid .full { grid-column:1/-1; }
-        .btn-lead {
-            display:block; width:100%; margin-top:16px; padding:14px;
-            background:var(--primary); color:var(--white); border:none; border-radius:10px;
-            font-size:16px; font-weight:600; cursor:pointer; font-family:inherit;
+        .subsidy-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            border-color: var(--gray-200);
         }
-        .lead-success { display:none; text-align:center; padding:20px 0; }
-        .lead-success h3 { font-size:20px; margin-bottom:8px; }
-        .disclaimer { font-size:12px; opacity:.7; margin-top:16px; text-align:center; }
+        .card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .badge {
+            display: inline-block; padding: 3px 10px; border-radius: 100px;
+            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;
+        }
+        .badge-nationaal { background: var(--blue-light); color: var(--blue); }
+        .badge-regionaal { background: var(--green-light); color: var(--green); }
+        .badge-provinciaal { background: #f5f3ff; color: #7c3aed; }
+        .badge-europees { background: #fffbeb; color: #d97706; }
+        .badge-fiscaal { background: #fff7ed; color: var(--orange); }
+        .badge-gemeentelijk { background: var(--gray-50); color: var(--gray-500); }
+        .tag-snel {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 10px; border-radius: 100px;
+            font-size: 11px; font-weight: 600; background: var(--blue-light); color: var(--blue);
+        }
+        .subsidy-card h3 {
+            font-size: 17px; font-weight: 700; color: var(--black); margin-bottom: 4px;
+        }
+        .subsidy-card .uitleg {
+            font-size: 13px; color: var(--gray-500); line-height: 1.5; margin-bottom: 12px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .subsidy-card .bedrag {
+            color: var(--green); font-weight: 700; font-size: 15px; margin-bottom: 6px;
+        }
+        .subsidy-card .moeilijkheid {
+            font-size: 12px; color: var(--gray-400);
+        }
+
+        /* ─── CTA SECTION ─── */
+        .cta-section {
+            background: var(--blue);
+            border-radius: var(--radius-lg);
+            padding: 48px;
+            margin-top: 40px;
+            text-align: center;
+            color: var(--white);
+        }
+        .cta-section h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 24px; font-weight: 700; margin-bottom: 12px;
+        }
+        .cta-section p {
+            opacity: 0.85; margin-bottom: 28px; font-size: 15px; line-height: 1.7;
+            max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 28px;
+        }
+        .btn-white {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--white); color: var(--blue);
+            padding: 14px 30px; border-radius: var(--radius-sm);
+            font-size: 15px; font-weight: 600; text-decoration: none;
+            transition: all 0.2s; border: none; cursor: pointer; font-family: inherit;
+        }
+        .btn-white:hover { background: var(--gray-50); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+
         .btn-reset {
-            display:block; margin:32px auto 0; background:none; border:1px solid var(--gray-medium);
-            padding:12px 32px; border-radius:10px; font-size:15px; cursor:pointer;
-            font-family:inherit; color:var(--gray-dark);
+            display: block; margin: 32px auto 0; background: none; border: 1px solid var(--gray-200);
+            padding: 12px 32px; border-radius: var(--radius-sm); font-size: 14px; cursor: pointer;
+            font-family: inherit; color: var(--gray-500); font-weight: 500; transition: all 0.2s;
         }
+        .btn-reset:hover { border-color: var(--gray-400); color: var(--gray-700); }
+
+        /* ─── FOOTER ─── */
         footer {
-            text-align:center; padding:40px 24px; font-size:13px; color:var(--gray-dark);
+            border-top: 1px solid var(--gray-100);
+            padding: 32px 24px;
+            margin-top: 80px;
         }
-        @media(max-width:600px){
-            .form-card { padding:24px 20px; }
-            .lead-grid { grid-template-columns:1fr; }
-            .radio-group, .checkbox-group { flex-direction:column; }
+        .footer-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .footer-inner .logo { font-size: 20px; }
+        .footer-inner span { font-size: 13px; color: var(--gray-400); }
+        .footer-inner a { font-size: 13px; color: var(--gray-400); text-decoration: none; transition: color 0.2s; }
+        .footer-inner a:hover { color: var(--blue); }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { opacity: 0; animation: fadeUp 0.6s ease-out forwards; }
+        .fade-up.d1 { animation-delay: 0.1s; }
+        .fade-up.d2 { animation-delay: 0.2s; }
+        .fade-up.d3 { animation-delay: 0.3s; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .form-card { padding: 28px 20px; }
+            .subsidy-grid { grid-template-columns: 1fr; }
+            .radio-group, .checkbox-group { flex-direction: column; }
+            .results-banner { flex-direction: column; text-align: center; }
+            .cta-section { padding: 36px 24px; }
+            .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
         }
     </style>
 </head>
 <body>
-    <nav><div class="nav-inner">
-        <a href="/" class="nav-logo">klain</a>
-        <a href="/" class="nav-cta">Terug naar klain.nl</a>
-    </div></nav>
 
-    <div class="container">
-        <!-- STAP 1: HERO -->
-        <div id="step1" class="form-section active">
-            <div class="hero">
-                <h1>Ontdek welke subsidies u misloopt</h1>
-                <p>Gemiddeld laat MKB €15.000 per jaar liggen. In 2 minuten weet u waar u recht op heeft.</p>
-                <button class="btn-primary" onclick="showStep(2)">Start gratis subsidiecheck →</button>
-            </div>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <a href="index.html" class="logo">klain</a>
+            <a href="index.html#contact" class="nav-cta">Kennismaking plannen</a>
         </div>
+    </nav>
 
-        <!-- STAP 2: INTAKE -->
-        <div id="step2" class="form-section">
-            <div class="step-indicator">Stap <span>2</span> van <span>3</span> — Uw bedrijfsgegevens</div>
+    <!-- STAP 1: HERO -->
+    <div id="step1" class="form-section active">
+        <section class="hero">
+            <div class="hero-badge fade-up">✦ Gratis subsidiescan</div>
+            <h1 class="fade-up d1">Ontdek welke subsidies u <em>misloopt</em></h1>
+            <p class="fade-up d2">Gemiddeld laat MKB €15.000 per jaar liggen. In 2 minuten weet u waar u recht op heeft.</p>
+            <button class="btn-primary fade-up d3" onclick="showStep(2)">Start gratis subsidiecheck <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        </section>
+    </div>
+
+    <!-- STAP 2: INTAKE -->
+    <div id="step2" class="form-section">
+        <div class="container">
+            <div class="step-indicator">Stap <span>1</span> van <span>2</span> — Uw bedrijfsgegevens</div>
             <div class="form-card">
                 <h2>Vertel ons over uw bedrijf</h2>
-                <p class="subtitle">Wij matchen uw profiel met 78 subsidies uit onze database.</p>
+                <p class="subtitle">Wij matchen uw profiel met 77 subsidies uit onze database.</p>
 
                 <div class="form-group">
-                    <label>1. Hoeveel medewerkers heeft u?</label>
+                    <label class="q-label">1. Hoeveel medewerkers heeft u?</label>
                     <div class="radio-group">
                         <label><input type="radio" name="medewerkers" value="zzp"><span>ZZP</span></label>
                         <label><input type="radio" name="medewerkers" value="klein"><span>Klein (2-10)</span></label>
@@ -199,7 +373,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>2. In welke provincie is uw bedrijf gevestigd?</label>
+                    <label class="q-label">2. In welke provincie is uw bedrijf gevestigd?</label>
                     <select id="provincie">
                         <option value="">Selecteer provincie...</option>
                         <option>Drenthe</option><option>Groningen</option><option>Friesland</option>
@@ -210,7 +384,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>3. Wat is uw branche?</label>
+                    <label class="q-label">3. Wat is uw branche?</label>
                     <select id="branche">
                         <option value="">Selecteer branche...</option>
                         <option value="bouw">Bouw & Installatie</option>
@@ -227,7 +401,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>4. Wat zijn uw plannen dit jaar? (meerdere mogelijk)</label>
+                    <label class="q-label">4. Wat zijn uw plannen dit jaar? (meerdere mogelijk)</label>
                     <div class="checkbox-group">
                         <label><input type="checkbox" name="plannen" value="personeel"><span>Personeel opleiden of aannemen</span></label>
                         <label><input type="checkbox" name="plannen" value="verduurzamen"><span>Verduurzamen (energie, solar, warmtepomp)</span></label>
@@ -239,7 +413,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>5. Voert u R&D-activiteiten uit?</label>
+                    <label class="q-label">5. Voert u R&D-activiteiten uit?</label>
                     <div class="radio-group">
                         <label><input type="radio" name="rd" value="ja"><span>Ja</span></label>
                         <label><input type="radio" name="rd" value="nee"><span>Nee</span></label>
@@ -247,7 +421,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>6. Heeft u een investering gepland?</label>
+                    <label class="q-label">6. Heeft u een investering gepland?</label>
                     <div class="radio-group">
                         <label><input type="radio" name="investering" value="geen"><span>Nee</span></label>
                         <label><input type="radio" name="investering" value="0_50k"><span>Ja, minder dan €50k</span></label>
@@ -257,7 +431,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>7. Wat is uw jaaromzet?</label>
+                    <label class="q-label">7. Wat is uw jaaromzet?</label>
                     <div class="radio-group">
                         <label><input type="radio" name="omzet" value="0_500k"><span>Tot €500k</span></label>
                         <label><input type="radio" name="omzet" value="500k_2m"><span>€500k - €2M</span></label>
@@ -266,43 +440,39 @@
                     </div>
                 </div>
 
-                <button class="btn-primary" style="width:100%;margin-top:8px" onclick="berekenen()">Bereken mijn subsidies →</button>
+                <button class="btn-primary" style="width:100%;justify-content:center;margin-top:8px;padding:16px 30px;" onclick="berekenen()">Bereken mijn subsidies <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
             </div>
         </div>
+    </div>
 
-        <!-- STAP 3: RESULTATEN -->
-        <div id="step3" class="results-section">
-            <div class="step-indicator">Stap <span>3</span> van <span>3</span> — Uw resultaten</div>
-            <div class="results-banner">
-                <div class="check">✓</div>
+    <!-- STAP 3: RESULTATEN -->
+    <div id="step3" class="results-section">
+        <div class="container-wide" style="padding-top:80px;">
+            <div class="step-indicator" style="padding-top:0;">Stap <span>2</span> van <span>2</span> — Uw resultaten</div>
+            <div class="results-banner" id="resultsBannerBox">
+                <div class="check-icon">✓</div>
                 <h2 id="resultsBanner"></h2>
             </div>
-            <div id="subsidyCards"></div>
+            <div class="subsidy-grid" id="subsidyCards"></div>
 
-            <div class="lead-box">
-                <div id="leadForm">
-                    <h3>Wilt u weten hoe u deze subsidies aanvraagt?</h3>
-                    <p class="lead-sub">Ontvang binnen 2 werkdagen een gratis subsidie-analyse van onze expert.</p>
-                    <div class="lead-grid">
-                        <input type="text" id="voornaam" placeholder="Voornaam">
-                        <input type="text" id="achternaam" placeholder="Achternaam">
-                        <input type="email" id="email" placeholder="E-mailadres" class="full">
-                        <input type="tel" id="telefoon" placeholder="Telefoonnummer" class="full">
-                    </div>
-                    <button class="btn-lead" onclick="submitLead()">Ontvang gratis analyse →</button>
-                </div>
-                <div class="lead-success" id="leadSuccess">
-                    <h3 id="successMsg"></h3>
-                    <p>Wij nemen binnen 2 werkdagen contact op.</p>
-                </div>
-                <p class="disclaimer">klain is het persoonlijke initiatief van Ernst Beekman en staat los van de Rabobank.</p>
+            <div class="cta-section">
+                <h3>Hulp nodig bij het aanvragen?</h3>
+                <p>Plan een gratis kennismaking en ontdek hoe klain u kan helpen met uw subsidieaanvragen en bedrijfsvoering.</p>
+                <a href="index.html#contact" class="btn-white">Kennismaking plannen <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
             </div>
 
             <button class="btn-reset" onclick="resetForm()">← Opnieuw invullen</button>
         </div>
     </div>
 
-    <footer>© 2026 klain | Persoonlijk initiatief van Ernst Beekman | Los van Rabobank</footer>
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <span class="logo" style="font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--black);">klain</span>
+            <span>© 2026 klain</span>
+            <a href="index.html">Terug naar klain.nl</a>
+        </div>
+    </footer>
 
 <script>
 const noordNL = ["Drenthe","Groningen","Friesland"];
@@ -329,7 +499,6 @@ const subsidies = [
   {naam:"SDE++",categorie:"Verduurzaming",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Exploitatiesubsidie 12-15 jaar",bedragMax:1000000,uitleg:"Langjarige subsidie voor grootschalige duurzame energieprojecten.",moeilijkheid:4,match:a=>a.plannen.includes("verduurzamen")&&a.investering==="250k_plus"},
   {naam:"Regeling Groenprojecten",categorie:"Verduurzaming",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Lening tegen lage rente",bedragMax:100000,uitleg:"Financiering tegen gunstig tarief voor duurzame bedrijfsprojecten.",moeilijkheid:3,match:a=>a.plannen.includes("verduurzamen")&&a.investering!=="geen"},
   {naam:"Groeifaciliteit",categorie:"Financiering",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Garantie tot €25M",bedragMax:500000,uitleg:"Overheidsgarantie voor groeifinancieringen bij snelgroeiende bedrijven.",moeilijkheid:3,match:a=>a.plannen.includes("investeren")&&a.omzet!=="0_500k"},
-  {naam:"Qredits Microfinanciering",categorie:"Financiering",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"€1.000 - €250.000",bedragMax:50000,uitleg:"Toegankelijke financiering specifiek voor kleine ondernemers en ZZP'ers.",moeilijkheid:2,match:a=>a.medewerkers==="zzp"||a.medewerkers==="klein"},
   {naam:"SIB (Starters International Business)",categorie:"Export",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"Coaching t.w.v. €2.400",bedragMax:2400,uitleg:"Gratis coachingtraject voor ondernemers die willen exporteren.",moeilijkheid:1,match:a=>a.plannen.includes("exporteren")},
   {naam:"DHI",categorie:"Export",niveau:"Nationaal",regio:"Heel Nederland",bedrag:"€25.000 - €200.000",bedragMax:200000,uitleg:"Subsidie voor demonstratieprojecten en haalbaarheidsstudies in het buitenland.",moeilijkheid:3,match:a=>a.plannen.includes("exporteren")},
   {naam:"Eurostars",categorie:"Innovatie",niveau:"Europees",regio:"Heel Nederland",bedrag:"Tot 50% van kosten",bedragMax:200000,uitleg:"Subsidie voor R&D-samenwerking met Europese partners.",moeilijkheid:4,match:a=>a.plannen.includes("innoveren")&&a.plannen.includes("exporteren")&&a.rdActiviteiten},
@@ -441,19 +610,19 @@ function berekenen() {
     const fmt = n => n >= 1000000 ? '€' + (n/1000000).toFixed(1).replace('.0','') + 'M' : '€' + n.toLocaleString('nl-NL');
 
     document.getElementById('resultsBanner').textContent =
-        `Wij vonden ${matched.length} subsidies voor uw bedrijf — potentiële waarde tot ${fmt(totaal)}`;
+        `${matched.length} subsidies gevonden — potentiële waarde tot ${fmt(totaal)}`;
 
     const niveauClass = {Nationaal:'nationaal',Regionaal:'regionaal',Provinciaal:'provinciaal',Europees:'europees',Fiscaal:'fiscaal',Gemeentelijk:'gemeentelijk'};
     const container = document.getElementById('subsidyCards');
     container.innerHTML = matched.map(s => `
         <div class="subsidy-card">
-            <div class="card-header">
-                <h3>${s.naam}</h3>
+            <div class="card-top">
                 <span class="badge badge-${niveauClass[s.niveau]||'nationaal'}">${s.niveau}</span>
-                ${s.moeilijkheid <= 2 ? '<span class="tag-snel">Snel aan te vragen</span>' : ''}
+                ${s.moeilijkheid <= 2 ? '<span class="tag-snel">⚡ Snel</span>' : ''}
             </div>
-            <div class="bedrag">${s.bedrag}</div>
+            <h3>${s.naam}</h3>
             <div class="uitleg">${s.uitleg}</div>
+            <div class="bedrag">💰 ${s.bedrag}</div>
             <div class="moeilijkheid">${'⭐'.repeat(s.moeilijkheid)} aanvraagcomplexiteit</div>
         </div>
     `).join('');
@@ -463,22 +632,10 @@ function berekenen() {
     window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function submitLead() {
-    const vn = document.getElementById('voornaam').value.trim();
-    if(!vn){alert('Vul uw voornaam in.');return;}
-    if(!document.getElementById('email').value.trim()){alert('Vul uw e-mailadres in.');return;}
-    document.getElementById('leadForm').style.display = 'none';
-    document.getElementById('leadSuccess').style.display = 'block';
-    document.getElementById('successMsg').textContent = `Bedankt ${vn}!`;
-}
-
 function resetForm() {
     document.querySelectorAll('input[type="radio"],input[type="checkbox"]').forEach(i=>i.checked=false);
     document.getElementById('provincie').selectedIndex=0;
     document.getElementById('branche').selectedIndex=0;
-    ['voornaam','achternaam','email','telefoon'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('leadForm').style.display='block';
-    document.getElementById('leadSuccess').style.display='none';
     showStep(1);
 }
 </script>
