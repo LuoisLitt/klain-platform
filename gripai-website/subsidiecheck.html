@@ -76,16 +76,24 @@
             height: 100%; display: flex; align-items: center; justify-content: space-between;
         }
         .logo {
-            font-family: 'Fraunces', serif;
-            font-size: 26px; font-weight: 700; color: var(--black);
-            text-decoration: none; letter-spacing: -0.5px;
+            display: inline-flex; align-items: center;
+            text-decoration: none;
         }
+        .logo img { height: 32px; width: auto; display: block; }
         .nav-cta {
             background: var(--blue); color: var(--white); padding: 10px 22px;
             border-radius: var(--radius-sm); text-decoration: none; font-size: 14px;
             font-weight: 500; transition: all 0.2s;
         }
         .nav-cta:hover { background: var(--blue-hover); transform: translateY(-1px); }
+        .complexiteit-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 4px 10px; border-radius: 100px; font-size: 12px; font-weight: 600; border: 1px solid;
+        }
+        .complexiteit-badge.c1,.complexiteit-badge.c2 { background:#f0fdf4; color:#16a34a; border-color:#bbf7d0; }
+        .complexiteit-badge.c3 { background:#fffbeb; color:#d97706; border-color:#fde68a; }
+        .complexiteit-badge.c4 { background:#fff7ed; color:#ea580c; border-color:#fed7aa; }
+        .complexiteit-badge.c5 { background:#fef2f2; color:#dc2626; border-color:#fecaca; }
 
         /* ─── HERO ─── */
         .hero {
@@ -357,7 +365,7 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-inner">
-            <a href="index.html" class="logo">klain</a>
+            <a href="index.html" class="logo"><img src="images/klain-logo.jpg" alt="klain"></a>
             <a href="https://klain.nl#contact" class="nav-cta">Kennismaking plannen</a>
         </div>
     </nav>
@@ -378,7 +386,7 @@
             <div class="step-indicator">Stap <span>1</span> van <span>2</span> — Uw bedrijfsgegevens</div>
             <div class="form-card">
                 <h2>Vertel ons over uw bedrijf</h2>
-                <p class="subtitle">Wij matchen uw profiel met 77 subsidies uit onze database.</p>
+                <p class="subtitle">Wij matchen uw profiel met 138 subsidies uit onze database.</p>
 
                 <div class="form-group">
                     <label class="q-label">1. Hoeveel medewerkers heeft u?</label>
@@ -486,7 +494,7 @@
     <!-- Footer -->
     <footer>
         <div class="footer-inner">
-            <span class="logo" style="font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--black);">klain</span>
+            <a href="index.html" class="logo"><img src="images/klain-logo.jpg" alt="klain" style="height:24px;"></a>
             <span>© 2026 klain</span>
             <a href="index.html">Terug naar klain.nl</a>
         </div>
@@ -590,6 +598,93 @@ const subsidies = [
   {naam:"Stimuleringsregeling Toerisme Emmen",categorie:"Toerisme",niveau:"Gemeentelijk",regio:"Gemeente Emmen",bedrag:"Variabel",bedragMax:10000,uitleg:"Subsidie voor creatieve toeristische initiatieven in gemeente Emmen.",moeilijkheid:1,url:"https://gemeente.emmen.nl/stimuleringsregeling-toerisme-en-recreatie",match:a=>a.provincie==="Drenthe"&&a.branche==="horeca"},
   {naam:"Compensatie OZB Leeuwarden",categorie:"Vastgoed",niveau:"Gemeentelijk",regio:"Gemeente Leeuwarden",bedrag:"Variabel",bedragMax:5000,uitleg:"Compensatie van OZB-lasten voor buurt-, wijk- en dorpshuizen in Leeuwarden.",moeilijkheid:1,url:"https://www.leeuwarden.nl/en/grants/subsidie-compensatie-ozb-2025-en-2026/",match:a=>a.provincie==="Friesland"},
   {naam:"Dutch TechZone",categorie:"Innovatie",niveau:"Gemeentelijk",regio:"Emmen/Hoogeveen/Coevorden",bedrag:"Ondersteuning en netwerk",bedragMax:5000,uitleg:"Innovatiecluster met ondersteuning voor tech-ondernemers in ZO-Drenthe.",moeilijkheid:1,url:"https://www.dutchtechzone.nl",match:a=>a.provincie==="Drenthe"&&(a.branche==="it"||a.plannen.includes("innoveren"))},
+
+  // === PROVINCIAAL NOORD-HOLLAND ===
+  {naam:"MIT Noord-Holland – Haalbaarheidsprojecten",categorie:"Innovatie",niveau:"Provinciaal",regio:"Noord-Holland",bedrag:"Tot €20.000 (40%)",bedragMax:20000,uitleg:"Haalbaarheidsonderzoek voor innovatieve producten/diensten binnen Topsectoren.",moeilijkheid:2,url:"https://www.noord-holland.nl/Producten_op_alfabet/MKB_innovatiestimulering_topsectoren_MIT_Noord_Holland_Haalbaarheidsproject_subsidie",match:a=>a.provincie==="Noord-Holland"&&a.plannen.includes("innoveren")},
+  {naam:"MIT Noord-Holland – R&D Samenwerking",categorie:"Innovatie",niveau:"Provinciaal",regio:"Noord-Holland",bedrag:"€50.000–€350.000 (35%)",bedragMax:350000,uitleg:"R&D-samenwerking met min. 2 MKB-bedrijven voor innovatieve producten.",moeilijkheid:4,url:"https://www.noord-holland.nl/Producten_op_alfabet/MKB_innovatiestimulering_topsectoren_MIT_Noord_Holland_Haalbaarheidsproject_subsidie",match:a=>a.provincie==="Noord-Holland"&&a.plannen.includes("innoveren")&&a.medewerkers!=="zzp"},
+  {naam:"Toekomstbestendige Bedrijventerreinen NH",categorie:"Verduurzaming",niveau:"Provinciaal",regio:"Noord-Holland",bedrag:"25% van kosten",bedragMax:100000,uitleg:"Vergroenings- en klimaatadaptatiemaatregelen op bedrijventerreinen.",moeilijkheid:3,url:"https://www.noord-holland.nl/Producten_op_alfabet/Toekomstbestendige_bedrijventerreinen_Noord_Holland_subsidie",match:a=>a.provincie==="Noord-Holland"&&a.plannen.includes("verduurzamen")&&a.plannen.includes("investeren")},
+  {naam:"Ondersteuning Toekomstbestendige Werklocaties NH",categorie:"Advies",niveau:"Provinciaal",regio:"Noord-Holland",bedrag:"Processubsidie",bedragMax:25000,uitleg:"Onderzoek en procesondersteuning voor verduurzaming werklocaties.",moeilijkheid:2,url:"https://www.noord-holland.nl/Producten_op_alfabet/Ondersteuning_toekomstbestendige_werklocaties_subsidie",match:a=>a.provincie==="Noord-Holland"&&a.plannen.includes("verduurzamen")},
+
+  // === PROVINCIAAL ZUID-HOLLAND ===
+  {naam:"MIT Zuid-Holland – Haalbaarheidsprojecten",categorie:"Innovatie",niveau:"Provinciaal",regio:"Zuid-Holland",bedrag:"Tot €20.000 (40%)",bedragMax:20000,uitleg:"Haalbaarheidsonderzoek innovatieve producten/diensten in Zuid-Holland.",moeilijkheid:2,url:"https://www.zuid-holland.nl/online-regelen/subsidies/subsidies/mkb-subsidies/mkb-haalbaarheidsprojecten-mit/",match:a=>a.provincie==="Zuid-Holland"&&a.plannen.includes("innoveren")},
+  {naam:"MIT Zuid-Holland – R&D Samenwerking",categorie:"Innovatie",niveau:"Provinciaal",regio:"Zuid-Holland",bedrag:"€50.000–€350.000 (35%)",bedragMax:350000,uitleg:"R&D-samenwerking min. 2 MKB-bedrijven in Zuid-Holland.",moeilijkheid:4,url:"https://www.zuid-holland.nl/online-regelen/subsidies/subsidies/mkb-subsidies/mkb-samenwerkingsprojecten-mit-research/",match:a=>a.provincie==="Zuid-Holland"&&a.plannen.includes("innoveren")&&a.medewerkers!=="zzp"},
+  {naam:"MKB-Deals Zuid-Holland",categorie:"Economie",niveau:"Provinciaal",regio:"Zuid-Holland",bedrag:"Variabel per deal",bedragMax:50000,uitleg:"Afspraken tussen gemeente en MKB om ondernemersklimaat te versterken.",moeilijkheid:3,url:"https://www.zuid-holland.nl/online-regelen/subsidies/subsidies/mkb-deals-zuid-holland-subsidie/",match:a=>a.provincie==="Zuid-Holland"},
+  {naam:"Toekomstbestendige Bedrijventerreinen ZH",categorie:"Verduurzaming",niveau:"Provinciaal",regio:"Zuid-Holland",bedrag:"Variabel",bedragMax:100000,uitleg:"Verduurzaming van bedrijventerreinen in Zuid-Holland.",moeilijkheid:3,url:"https://www.zuid-holland.nl/",match:a=>a.provincie==="Zuid-Holland"&&a.plannen.includes("verduurzamen")&&a.plannen.includes("investeren")},
+
+  // === PROVINCIAAL UTRECHT ===
+  {naam:"MIT Utrecht – Haalbaarheidsprojecten",categorie:"Innovatie",niveau:"Provinciaal",regio:"Utrecht",bedrag:"Tot €20.000 (40%)",bedragMax:20000,uitleg:"Haalbaarheidsonderzoek innovatie voor MKB in Utrecht.",moeilijkheid:2,url:"https://www.provincie-utrecht.nl/loket/subsidies/economie-en-innovatie-mit-haalbaarheidsprojecten",match:a=>a.provincie==="Utrecht"&&a.plannen.includes("innoveren")},
+  {naam:"MIT Utrecht – R&D Samenwerking",categorie:"Innovatie",niveau:"Provinciaal",regio:"Utrecht",bedrag:"€50.000–€350.000 (35%)",bedragMax:350000,uitleg:"R&D-samenwerking min. 2 MKB-bedrijven in Utrecht.",moeilijkheid:4,url:"https://www.provincie-utrecht.nl/loket/subsidies/economie-en-innovatie-mit-rd-samenwerkingsprojecten",match:a=>a.provincie==="Utrecht"&&a.plannen.includes("innoveren")&&a.medewerkers!=="zzp"},
+  {naam:"Ontzorgingsprogramma MKB Utrecht",categorie:"Verduurzaming",niveau:"Provinciaal",regio:"Utrecht",bedrag:"Gratis advies",bedragMax:3000,uitleg:"Gratis onafhankelijk advies voor verduurzaming van uw bedrijf.",moeilijkheid:1,url:"https://www.provincie-utrecht.nl/actueel/nieuws/ontzorgingsprogramma-helpt-mkbers-met-verduurzamen",match:a=>a.provincie==="Utrecht"&&a.plannen.includes("verduurzamen")},
+
+  // === PROVINCIAAL NOORD-BRABANT ===
+  {naam:"MIT Zuid – Haalbaarheidsprojecten",categorie:"Innovatie",niveau:"Provinciaal",regio:"Noord-Brabant, Limburg, Zeeland",bedrag:"Tot €20.000 (40%)",bedragMax:20000,uitleg:"Haalbaarheidsonderzoek innovatie voor MKB in Zuid-Nederland.",moeilijkheid:2,url:"https://www.stimulus.nl/mit-zuid/",match:a=>["Noord-Brabant","Limburg","Zeeland"].includes(a.provincie)&&a.plannen.includes("innoveren")},
+  {naam:"MIT Zuid – R&D Samenwerking",categorie:"Innovatie",niveau:"Provinciaal",regio:"Noord-Brabant, Limburg, Zeeland",bedrag:"€50.000–€350.000 (35%)",bedragMax:350000,uitleg:"R&D-samenwerking voor innovatie in Zuid-Nederland via Stimulus.",moeilijkheid:4,url:"https://www.stimulus.nl/mit-zuid/",match:a=>["Noord-Brabant","Limburg","Zeeland"].includes(a.provincie)&&a.plannen.includes("innoveren")&&a.medewerkers!=="zzp"},
+  {naam:"Circulaire Economie Noord-Brabant",categorie:"Verduurzaming",niveau:"Provinciaal",regio:"Noord-Brabant",bedrag:"Variabel (tender)",bedragMax:100000,uitleg:"Circulaire samenwerkingsprojecten voor het sluiten van materiaalketens.",moeilijkheid:4,url:"https://subvention.nl/industrie/subsidiekans-energie-circulaire-economie-noord-brabant",match:a=>a.provincie==="Noord-Brabant"&&a.plannen.includes("verduurzamen")},
+  {naam:"Digitaliseringsvoucher Brabant",categorie:"Digitalisering",niveau:"Provinciaal",regio:"Noord-Brabant",bedrag:"Tot €4.000",bedragMax:4000,uitleg:"Voucher voor implementatie van datatechnologie en digitalisering.",moeilijkheid:1,url:"https://digitaliseringwerkt.nl/ons-aanbod/voucher/",match:a=>a.provincie==="Noord-Brabant"&&a.plannen.includes("digitaliseren")},
+  {naam:"Brabant Startup Fonds",categorie:"Financiering",niveau:"Provinciaal",regio:"Noord-Brabant",bedrag:"€50.000–€350.000 (krediet)",bedragMax:350000,uitleg:"Kredietlening voor innovatieve startups in Brabant.",moeilijkheid:3,url:"https://www.braventure.nl/financiering-startups-brabant/bsf/",match:a=>a.provincie==="Noord-Brabant"&&a.plannen.includes("innoveren")&&(a.medewerkers==="zzp"||a.medewerkers==="klein")},
+  {naam:"Innovatieregeling Noordoost-Brabant",categorie:"Innovatie",niveau:"Regionaal",regio:"Noordoost-Brabant",bedrag:"40%, max €45.000",bedragMax:45000,uitleg:"Subsidie voor innovatieve projecten van MKB en startups in NO-Brabant.",moeilijkheid:3,url:"https://www.rnob.nl/nieuws/innovatieregeling-voor-mkb-en-startups-op-1-februari-open",match:a=>a.provincie==="Noord-Brabant"&&a.plannen.includes("innoveren")},
+
+  // === PROVINCIAAL GELDERLAND ===
+  {naam:"MIT Gelderland – Haalbaarheidsprojecten",categorie:"Innovatie",niveau:"Provinciaal",regio:"Gelderland",bedrag:"Tot €20.000 (40%)",bedragMax:20000,uitleg:"Haalbaarheidsonderzoek voor duurzame innovatie in Gelderland.",moeilijkheid:2,url:"https://www.gelderland.nl/subsidies/mit-haalbaarheidsprojecten-mkb",match:a=>a.provincie==="Gelderland"&&a.plannen.includes("innoveren")},
+  {naam:"MIT Gelderland – R&D Samenwerking",categorie:"Innovatie",niveau:"Provinciaal",regio:"Gelderland",bedrag:"€50.000–€350.000 (35%)",bedragMax:350000,uitleg:"R&D-samenwerking min. 2 MKB-bedrijven in Gelderland.",moeilijkheid:4,url:"https://www.gelderland.nl/subsidies/mit-haalbaarheidsprojecten-mkb",match:a=>a.provincie==="Gelderland"&&a.plannen.includes("innoveren")&&a.medewerkers!=="zzp"},
+  {naam:"De Groeiversneller Gelderland",categorie:"Advies",niveau:"Provinciaal",regio:"Gelderland",bedrag:"€1.000–€10.000 (50%)",bedragMax:10000,uitleg:"Groeivoucher voor extern advies bij MKB met groeipotentieel.",moeilijkheid:2,url:"https://www.gelderland.nl/subsidies/groeiversneller",match:a=>a.provincie==="Gelderland"},
+  {naam:"EFRO Oost (Gelderland + Overijssel)",categorie:"Innovatie",niveau:"Europees",regio:"Gelderland, Overijssel",bedrag:"€250.000–€2.000.000",bedragMax:2000000,uitleg:"Europese subsidie voor innovatieve samenwerkingsprojecten in Oost-NL.",moeilijkheid:5,url:"https://www.efro-oost.eu/",match:a=>(a.provincie==="Gelderland"||a.provincie==="Overijssel")&&a.plannen.includes("innoveren")&&a.medewerkers!=="zzp"},
+
+  // === PROVINCIAAL LIMBURG ===
+  {naam:"Limburg Bespaart – Verduurzaming MKB",categorie:"Verduurzaming",niveau:"Provinciaal",regio:"Limburg",bedrag:"Tot €2.800 (90%)",bedragMax:2800,uitleg:"Adviessubsidie voor verduurzaming van kleine ondernemingen en zzp'ers.",moeilijkheid:1,url:"https://www.limburg.nl/@10533/subsidie-verduurzaming-kleine/",match:a=>a.provincie==="Limburg"&&a.plannen.includes("verduurzamen")},
+  {naam:"Toekomstbestendige Economie Limburg",categorie:"Economie",niveau:"Provinciaal",regio:"Limburg",bedrag:"Variabel",bedragMax:50000,uitleg:"Diverse subsidies voor innovatie, verduurzaming en arbeidsmarkt in Limburg.",moeilijkheid:3,url:"https://www.limburg.nl/loket/subsidies/actuele-subsidies/subsidieregelingen-1/",match:a=>a.provincie==="Limburg"&&(a.plannen.includes("innoveren")||a.plannen.includes("verduurzamen"))},
+  {naam:"CrossRoads Vlaanderen-Nederland",categorie:"Samenwerking",niveau:"Europees",regio:"Limburg, Noord-Brabant, Zeeland",bedrag:"50%, max €250.000",bedragMax:250000,uitleg:"Grensoverschrijdende innovatiesamenwerking met Vlaamse bedrijven.",moeilijkheid:3,url:"https://liof.nl/programma/CrossRoads-Vlaanderen-Nederland",match:a=>["Limburg","Noord-Brabant","Zeeland"].includes(a.provincie)&&a.plannen.includes("innoveren")&&a.plannen.includes("exporteren")},
+
+  // === PROVINCIAAL ZEELAND ===
+  {naam:"Verduurzamingsadvies Klein MKB Zeeland",categorie:"Verduurzaming",niveau:"Provinciaal",regio:"Zeeland",bedrag:"Adviessubsidie",bedragMax:3000,uitleg:"Advies over verduurzaming voor MKB met max. 50 medewerkers.",moeilijkheid:1,url:"https://www.zeeland.nl/subsidie-aanvragen/overzicht-subsidieregelingen/verduurzamingsadvies-klein-mkb",match:a=>a.provincie==="Zeeland"&&a.plannen.includes("verduurzamen")},
+  {naam:"Transitiefonds Zeeland",categorie:"Financiering",niveau:"Provinciaal",regio:"Zeeland",bedrag:"Uit fonds van €30 mln",bedragMax:200000,uitleg:"Financiering voor duurzame investeringen door Zeeuwse MKB'ers.",moeilijkheid:3,url:"https://www.zeeland.nl/actueel/eu-30-miljoen-voor-zeeuwse-ondernemers-met-verduurzamingsplannen",match:a=>a.provincie==="Zeeland"&&a.plannen.includes("verduurzamen")&&a.plannen.includes("investeren")},
+  {naam:"OPZuid – Dual Use Innovaties",categorie:"Innovatie",niveau:"Europees",regio:"Zeeland, Noord-Brabant, Limburg",bedrag:"50%, max €1,5 mln",bedragMax:1500000,uitleg:"Europese subsidie voor innovatieve dual-use en verduurzamingsprojecten.",moeilijkheid:5,url:"https://www.impulszeeland.nl/opzuid",match:a=>["Zeeland","Noord-Brabant","Limburg"].includes(a.provincie)&&a.plannen.includes("innoveren")&&a.medewerkers!=="zzp"},
+  {naam:"Impuls Zeeland – Verduurzamingsvoucher",categorie:"Verduurzaming",niveau:"Regionaal",regio:"Zeeland",bedrag:"Voucher",bedragMax:5000,uitleg:"Voucher voor uitvoering van verduurzamingsmaatregelen na advies.",moeilijkheid:1,url:"https://www.impulszeeland.nl/",match:a=>a.provincie==="Zeeland"&&a.plannen.includes("verduurzamen")},
+
+  // === PROVINCIAAL FLEVOLAND ===
+  {naam:"MIT Flevoland – Haalbaarheidsprojecten",categorie:"Innovatie",niveau:"Provinciaal",regio:"Flevoland",bedrag:"Tot €20.000 (40%)",bedragMax:20000,uitleg:"Haalbaarheidsonderzoek innovatie voor MKB in Flevoland.",moeilijkheid:2,url:"https://www.flevoland.nl/loket/loketoverview/mkb-innovatiestimulering-topsectoren-(mit)-flevola",match:a=>a.provincie==="Flevoland"&&a.plannen.includes("innoveren")},
+  {naam:"MIT Flevoland – R&D Samenwerking",categorie:"Innovatie",niveau:"Provinciaal",regio:"Flevoland",bedrag:"€50.000–€350.000 (35%)",bedragMax:350000,uitleg:"R&D-samenwerking min. 2 MKB-bedrijven in Flevoland.",moeilijkheid:4,url:"https://www.flevoland.nl/loket/loketoverview/mkb-innovatiestimulering-topsectoren-(mit)-fle-(1)",match:a=>a.provincie==="Flevoland"&&a.plannen.includes("innoveren")&&a.medewerkers!=="zzp"},
+  {naam:"Oplossingen Netcongestie Flevoland",categorie:"Verduurzaming",niveau:"Provinciaal",regio:"Flevoland",bedrag:"Variabel",bedragMax:50000,uitleg:"Subsidie voor oplossingen bij netcongestie voor Flevolandse ondernemers.",moeilijkheid:3,url:"https://flevoland.nl/wat-doen-we/energie/subsidie-oplossingen-netcongestie",match:a=>a.provincie==="Flevoland"&&a.plannen.includes("verduurzamen")&&a.plannen.includes("investeren")},
+  {naam:"Regio Deal Nieuw Land (Almere/Lelystad)",categorie:"Economie",niveau:"Regionaal",regio:"Flevoland",bedrag:"Variabel (tender)",bedragMax:100000,uitleg:"Subsidie voor innovatieve projecten in Almere en Lelystad.",moeilijkheid:3,url:"https://regiodealnieuwland.nl/",match:a=>a.provincie==="Flevoland"&&(a.plannen.includes("innoveren")||a.plannen.includes("investeren"))},
+  {naam:"Flevoland Leert (scholingssubsidie)",categorie:"Personeel",niveau:"Provinciaal",regio:"Flevoland",bedrag:"Variabel",bedragMax:10000,uitleg:"Subsidie voor scholing en ontwikkeling van werknemers in Flevoland.",moeilijkheid:2,url:"https://www.mkbschakelteam.nl/nieuws/2025/5/30/subsidie-voor-scholing-flevoland-leert-helpt-werkgevers-verder",match:a=>a.provincie==="Flevoland"&&a.plannen.includes("personeel")},
+
+  // === PROVINCIAAL DRENTHE (aanvulling) ===
+  {naam:"MIT Noord-Nederland – Haalbaarheid Drenthe",categorie:"Innovatie",niveau:"Provinciaal",regio:"Drenthe",bedrag:"Tot €20.000 (40%)",bedragMax:20000,uitleg:"Haalbaarheidsonderzoek innovatie specifiek voor MKB in Drenthe.",moeilijkheid:2,url:"https://www.provincie.drenthe.nl/onderwerpen/economie-ondernemen/mkb/",match:a=>a.provincie==="Drenthe"&&a.plannen.includes("innoveren")},
+  {naam:"Vernieuwde Subsidieregeling Ondernemers Drenthe",categorie:"Innovatie",niveau:"Provinciaal",regio:"Drenthe",bedrag:"50% (60% familiebedrijven)",bedragMax:50000,uitleg:"Innovatie- en verduurzamingssubsidie met extra % voor familiebedrijven.",moeilijkheid:2,url:"https://www.provincie.drenthe.nl/actueel/nieuwsberichten/2025/juni/provincie-drenthe-vernieuwt/",match:a=>a.provincie==="Drenthe"&&(a.plannen.includes("innoveren")||a.plannen.includes("verduurzamen"))},
+
+  // === PROVINCIAAL GRONINGEN (aanvulling) ===
+  {naam:"Innovatie Oogst van Groningen",categorie:"Innovatie",niveau:"Provinciaal",regio:"Groningen",bedrag:"Variabel",bedragMax:25000,uitleg:"Verkenning innovatieve ideeën in de Groningse duurzame voedselketen.",moeilijkheid:2,url:"https://www.nationaalprogrammagroningen.nl/subsidies/innovatie-oogst-van-groningen/",match:a=>a.provincie==="Groningen"&&a.plannen.includes("innoveren")&&a.branche==="agrarisch"},
+  {naam:"Validatie Oogst van Groningen",categorie:"Innovatie",niveau:"Provinciaal",regio:"Groningen",bedrag:"Tot €45.000",bedragMax:45000,uitleg:"Testen en valideren van innovatieve oplossingen in voedselketen Groningen.",moeilijkheid:3,url:"https://www.nationaalprogrammagroningen.nl/subsidies/validatie-oogst-van-groningen/",match:a=>a.provincie==="Groningen"&&a.plannen.includes("innoveren")&&a.branche==="agrarisch"&&a.medewerkers!=="zzp"},
+  {naam:"Impulsloket NPG Groningen",categorie:"Economie",niveau:"Provinciaal",regio:"Groningen",bedrag:"Variabel",bedragMax:10000,uitleg:"Kleine investeringssubsidie voor ondernemers met goede ideeën in Groningen.",moeilijkheid:1,url:"https://www.nationaalprogrammagroningen.nl/subsidies/impulsloket/",match:a=>a.provincie==="Groningen"},
+
+  // === PROVINCIAAL FRIESLAND (aanvulling) ===
+  {naam:"Fysieke Investeringen Fryslân (JTF)",categorie:"Verduurzaming",niveau:"Europees",regio:"Friesland",bedrag:"Tot €10.000.000",bedragMax:500000,uitleg:"Subsidie voor fysieke investeringen in innovatieve duurzame projecten.",moeilijkheid:4,url:"https://www.snn.nl/zakelijke-subsidies/fysieke-investeringen-fryslan",match:a=>a.provincie==="Friesland"&&a.plannen.includes("verduurzamen")&&a.plannen.includes("investeren")},
+  {naam:"MIT Noord-Nederland – Haalbaarheid Friesland",categorie:"Innovatie",niveau:"Provinciaal",regio:"Friesland",bedrag:"Tot €20.000",bedragMax:20000,uitleg:"Haalbaarheidsonderzoek innovatie voor MKB in Friesland.",moeilijkheid:2,url:"https://www.fryslan.frl/subsidies",match:a=>a.provincie==="Friesland"&&a.plannen.includes("innoveren")},
+
+  // === PROVINCIAAL OVERIJSSEL (aanvulling) ===
+  {naam:"Stimuleren Energie-innovatie Overijssel",categorie:"Verduurzaming",niveau:"Provinciaal",regio:"Overijssel",bedrag:"Variabel",bedragMax:25000,uitleg:"Subsidie voor het onderbouwen van energie-innovatie ideeën.",moeilijkheid:3,url:"https://regelen.overijssel.nl/Producten_en_diensten/Subsidies/Milieu_en_energie/Stimuleren_energie_innovatie",match:a=>a.provincie==="Overijssel"&&a.plannen.includes("verduurzamen")&&a.plannen.includes("innoveren")},
+
+  // === GEMEENTELIJK (nieuwe steden) ===
+  {naam:"Subsidie Emissievrij Vervoer Amsterdam",categorie:"Verduurzaming",niveau:"Gemeentelijk",regio:"Amsterdam",bedrag:"Variabel",bedragMax:10000,uitleg:"Subsidie voor overstap naar emissievrij vervoer in Amsterdam.",moeilijkheid:2,url:"https://www.amsterdam.nl/subsidies/subsidies-onderwerp/subsidies-duurzaam/",match:a=>a.provincie==="Noord-Holland"&&a.plannen.includes("verduurzamen")},
+  {naam:"Ondernemersinitiatieven Amsterdam",categorie:"Economie",niveau:"Gemeentelijk",regio:"Amsterdam",bedrag:"Tot €20.000",bedragMax:20000,uitleg:"Subsidie voor activiteiten gericht op aantrekkelijk ondernemersgebied.",moeilijkheid:2,url:"https://www.amsterdam.nl/subsidies/subsidieregelingen/subsidie-ondernemersinitiatieven/",match:a=>a.provincie==="Noord-Holland"},
+  {naam:"Subsidie Innovatie Amsterdam",categorie:"Innovatie",niveau:"Gemeentelijk",regio:"Amsterdam",bedrag:"Tot €20.000",bedragMax:20000,uitleg:"Subsidie voor innovatieve ondernemersinitiatieven in Amsterdam.",moeilijkheid:3,url:"https://www.amsterdam.nl/subsidies/subsidieregelingen/",match:a=>a.provincie==="Noord-Holland"&&a.plannen.includes("innoveren")},
+  {naam:"CityLab010 Rotterdam",categorie:"Innovatie",niveau:"Gemeentelijk",regio:"Rotterdam",bedrag:"Tot €100.000+",bedragMax:100000,uitleg:"Subsidie voor innovatieve ideeën met positieve impact op Rotterdam.",moeilijkheid:3,url:"https://www.ondernemen010.nl/actueel/citylab010-start-weer/",match:a=>a.provincie==="Zuid-Holland"&&a.plannen.includes("innoveren")},
+  {naam:"Kansen voor West (Rotterdam)",categorie:"Financiering",niveau:"Gemeentelijk",regio:"Rotterdam / West-Nederland",bedrag:"Variabel",bedragMax:50000,uitleg:"Versterking bedrijfspositie en groei voor MKB in West-Nederland.",moeilijkheid:3,url:"https://www.ondernemen010.nl/subsidies-voor-ondernemers/",match:a=>a.provincie==="Zuid-Holland"},
+  {naam:"MKB-innovaties Blauwe Economie Den Haag",categorie:"Innovatie",niveau:"Gemeentelijk",regio:"Den Haag",bedrag:"Tot €50.000 (50%)",bedragMax:50000,uitleg:"Subsidie voor vernieuwende projecten op zee in regio Den Haag.",moeilijkheid:4,url:"https://www.denhaag.nl/nl/subsidies/subsidie-vernieuwende-projecten-op-zee-aanvragen/",match:a=>a.provincie==="Zuid-Holland"&&a.plannen.includes("innoveren")},
+  {naam:"Toegankelijkheidsaanpassingen MKB Eindhoven",categorie:"Economie",niveau:"Gemeentelijk",regio:"Eindhoven",bedrag:"Tot €40.000",bedragMax:40000,uitleg:"Subsidie voor fysieke, sociale en digitale toegankelijkheidsaanpassingen.",moeilijkheid:2,url:"https://www.ondernemendeindhoven.nl/regel-je-zaken/geldzaken/subsidies/subsidie-voor-toegankelijkheidsaanpassingen-in-het-mkb",match:a=>a.provincie==="Noord-Brabant"},
+  {naam:"Innovatief Ondernemerschap Tilburg",categorie:"Innovatie",niveau:"Gemeentelijk",regio:"Tilburg (binnenstad)",bedrag:"Plafond €48.326",bedragMax:48326,uitleg:"Subsidie voor innovatieve ondernemersinitiatieven in de Tilburgse binnenstad.",moeilijkheid:2,url:"https://lokaleregelgeving.overheid.nl/CVDR727206/",match:a=>a.provincie==="Noord-Brabant"&&a.plannen.includes("innoveren")},
+  {naam:"Subsidie Toegankelijkheid Nijmegen",categorie:"Economie",niveau:"Gemeentelijk",regio:"Nijmegen",bedrag:"Budget €100.000/jaar",bedragMax:25000,uitleg:"Subsidie voor verbetering toegankelijkheid van bedrijfspanden.",moeilijkheid:2,url:"https://www.nijmegen.nl/diensten/subsidies/subsidie-stimulering-toegankelijkheid-2025-2026/",match:a=>a.provincie==="Gelderland"},
+  {naam:"IMPACT024 Nijmegen",categorie:"Innovatie",niveau:"Gemeentelijk",regio:"Nijmegen",bedrag:"Uit budget €150.000",bedragMax:25000,uitleg:"Stimulering ondernemerschap en innovatie in Nijmegen.",moeilijkheid:3,url:"https://nijmegen.bestuurlijkeinformatie.nl/",match:a=>a.provincie==="Gelderland"&&a.plannen.includes("innoveren")},
+  {naam:"Energiebesparing Ondernemers Arnhem",categorie:"Verduurzaming",niveau:"Gemeentelijk",regio:"Arnhem",bedrag:"Variabel",bedragMax:10000,uitleg:"Subsidie voor energiebesparende maatregelen voor ondernemers in Arnhem.",moeilijkheid:2,url:"https://www.arnhem.nl/product/subsidie-energiebesparing-ondernemers-en-maatschappelijke-organisaties/",match:a=>a.provincie==="Gelderland"&&a.plannen.includes("verduurzamen")},
+  {naam:"Innovatiefonds Leeuwarden",categorie:"Innovatie",niveau:"Gemeentelijk",regio:"Leeuwarden",bedrag:"40% van projectkosten",bedragMax:50000,uitleg:"Subsidie voor nieuwe producten/diensten in circulaire economie, watertechnologie en energie.",moeilijkheid:3,url:"https://www.leeuwarden.nl/subsidies/subsidie-innovatiefonds/",match:a=>a.provincie==="Friesland"&&a.plannen.includes("innoveren")},
+  {naam:"Circulair Ondernemerschap Maastricht",categorie:"Verduurzaming",niveau:"Gemeentelijk",regio:"Maastricht",bedrag:"Variabel",bedragMax:25000,uitleg:"Subsidie voor circulaire innovaties: hergebruik, afvalreductie, samenwerking.",moeilijkheid:3,url:"https://www.gemeentemaastricht.nl/stad/actueel/persbericht/maastricht-opent-subsidieregeling-stimuleren-circulair-ondernemerschap",match:a=>a.provincie==="Limburg"&&a.plannen.includes("verduurzamen")},
+  {naam:"Duurzame Mobiliteit MKB Maastricht",categorie:"Verduurzaming",niveau:"Gemeentelijk",regio:"Maastricht",bedrag:"Variabel",bedragMax:15000,uitleg:"Subsidie voor verduurzaming van transport en mobiliteit voor MKB.",moeilijkheid:2,url:"https://subsidies.gemeentemaastricht.nl/subsidie/verduurzaming/duurzame-mobiliteit-midden-en-klein-bedrijf",match:a=>a.provincie==="Limburg"&&a.plannen.includes("verduurzamen")},
+  {naam:"Stimulering Ondernemerschap Centrum Helmond",categorie:"Economie",niveau:"Gemeentelijk",regio:"Helmond",bedrag:"Variabel",bedragMax:15000,uitleg:"Financiële steun voor ondernemers die het stadscentrum verrijken.",moeilijkheid:2,url:"https://www.helmond.nl/1/ondernemen/alle-onderwerpen/subsidies-en-toeslagen/subsidie-stimulering-ondernemerschap-centrum-2025-2027",match:a=>a.provincie==="Noord-Brabant"},
+  {naam:"Innovatie Ontwikkelkansen Helmond",categorie:"Innovatie",niveau:"Gemeentelijk",regio:"Helmond",bedrag:"Variabel",bedragMax:25000,uitleg:"Subsidie voor innovatieve activiteiten aansluitend bij Helmondse ontwikkelkansen.",moeilijkheid:3,url:"https://www.helmond.nl/1/ondernemen/alle-onderwerpen/subsidies-en-toeslagen/subsidie-innovatie-ontwikkelkansen-2025-2026",match:a=>a.provincie==="Noord-Brabant"&&a.plannen.includes("innoveren")},
+  {naam:"Vitale Binnenstad Leiden",categorie:"Economie",niveau:"Gemeentelijk",regio:"Leiden",bedrag:"Variabel",bedragMax:25000,uitleg:"Subsidie voor activiteiten die de Leidse binnenstad vitaler maken.",moeilijkheid:2,url:"https://gemeente.leiden.nl/inwoners-en-ondernemers/subsidies/vitale-binnenstad/subsidie-vitale-binnenstad/",match:a=>a.provincie==="Zuid-Holland"},
+  {naam:"Subsidieregeling Reuring Zaanstad",categorie:"Economie",niveau:"Gemeentelijk",regio:"Zaanstad",bedrag:"Variabel",bedragMax:10000,uitleg:"Subsidie voor initiatieven die levendigheid in winkelgebieden herstellen.",moeilijkheid:2,url:"https://ondernemen.zaanstad.nl/geldzaken/subsidies-en-fondsen",match:a=>a.provincie==="Noord-Holland"},
+  {naam:"Ontwikkelfonds Regio Zwolle",categorie:"Personeel",niveau:"Gemeentelijk",regio:"Regio Zwolle",bedrag:"Tot €20.000/jaar",bedragMax:20000,uitleg:"Subsidie voor scholing en ontwikkeling van personeel in regio Zwolle.",moeilijkheid:2,url:"https://www.upgradejezelfregiozwolle.nl/ontwikkelfonds-regio-zwolle/",match:a=>a.provincie==="Overijssel"&&a.plannen.includes("personeel")},
+  {naam:"Duurzaamheidsactiviteiten 's-Hertogenbosch",categorie:"Verduurzaming",niveau:"Gemeentelijk",regio:"'s-Hertogenbosch",bedrag:"Variabel",bedragMax:15000,uitleg:"Subsidie voor duurzaamheidsactiviteiten door ondernemers en organisaties.",moeilijkheid:2,url:"https://www.s-hertogenbosch.nl/product/subsidies/",match:a=>a.provincie==="Noord-Brabant"&&a.plannen.includes("verduurzamen")},
 ];
 
 function showStep(n) {
@@ -642,7 +737,7 @@ function berekenen() {
             <h3>${s.naam}</h3>
             <div class="uitleg">${s.uitleg}</div>
             <div class="bedrag">💰 ${s.bedrag}</div>
-            <div class="moeilijkheid">${'⭐'.repeat(s.moeilijkheid)} aanvraagcomplexiteit</div>
+            <div class="moeilijkheid"><span style="color:var(--gray-400);font-size:12px;">Aanvraag</span> <span class="complexiteit-badge c${s.moeilijkheid}">${{1:'Zeer eenvoudig',2:'Eenvoudig',3:'Gemiddeld',4:'Complex',5:'Zeer complex'}[s.moeilijkheid]}</span></div>
             <a href="${s.url}" target="_blank" rel="noopener" class="aanvraag-btn">Meer informatie →</a>
         </div>
     `).join('');
