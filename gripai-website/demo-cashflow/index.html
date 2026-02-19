@@ -88,19 +88,29 @@
         .btn-primary { background: var(--blue); color: white; }
 
         .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-        .stat-card { background: var(--white); border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .stat-card.highlight { background: var(--black); color: white; }
-        .stat-label { font-size: 12px; color: var(--gray-dark); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-card.highlight .stat-label { color: rgba(255,255,255,0.6); }
-        .stat-value { font-size: 28px; font-weight: 700; color: var(--black); }
-        .stat-card.highlight .stat-value { color: white; }
+        .stat-card {
+            background: var(--white); border-radius: 16px; padding: 20px 20px 18px;
+            border: 1px solid #eef0f5;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .stat-card-top { display: flex; align-items: center; justify-content: space-between; }
+        .stat-label { font-size: 13px; font-weight: 500; color: var(--gray-dark); }
+        .stat-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .stat-icon svg { width: 16px; height: 16px; }
+        .stat-icon.blue { background: #eff6ff; color: #2563eb; }
+        .stat-icon.green { background: #f0fdf4; color: #16a34a; }
+        .stat-icon.teal { background: #f0fdfa; color: #0d9488; }
+        .stat-icon.orange { background: #fff7ed; color: #ea580c; }
+        .stat-value { font-size: 26px; font-weight: 700; color: var(--black); letter-spacing: -0.5px; line-height: 1; }
         .stat-value.success { color: var(--green); }
         .stat-value.warning { color: var(--orange); }
         .stat-value.danger { color: var(--red); }
-        .stat-sub { font-size: 12px; margin-top: 4px; color: var(--gray-dark); }
-        .stat-card.highlight .stat-sub { color: rgba(255,255,255,0.6); }
-        .stat-sub.positive { color: var(--green); }
-        .stat-sub.negative { color: var(--red); }
+        .stat-sub { font-size: 12px; color: var(--gray-dark); }
+        .stat-sub.positive { color: var(--green); font-weight: 500; }
+        .stat-sub.negative { color: var(--red); font-weight: 500; }
 
         .main-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
         .card {
@@ -317,23 +327,43 @@
 
         <!-- Stats Row -->
         <div class="stats-row">
-            <div class="stat-card highlight">
-                <div class="stat-label">Huidige bankstand</div>
+            <div class="stat-card">
+                <div class="stat-card-top">
+                    <div class="stat-label">Huidige bankstand</div>
+                    <div class="stat-icon blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                    </div>
+                </div>
                 <div class="stat-value">€47.250</div>
                 <div class="stat-sub">Bijgewerkt: vandaag 09:00</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Verwacht eind maand</div>
+                <div class="stat-card-top">
+                    <div class="stat-label">Verwacht eind maand</div>
+                    <div class="stat-icon green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                    </div>
+                </div>
                 <div class="stat-value success" id="stat-eind-maand">€52.800</div>
                 <div class="stat-sub positive" id="stat-eind-maand-sub">+€5.550 t.o.v. nu</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Nog te ontvangen</div>
+                <div class="stat-card-top">
+                    <div class="stat-label">Nog te ontvangen</div>
+                    <div class="stat-icon teal">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                    </div>
+                </div>
                 <div class="stat-value">€38.400</div>
                 <div class="stat-sub">6 openstaande facturen</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Nog te betalen</div>
+                <div class="stat-card-top">
+                    <div class="stat-label">Nog te betalen</div>
+                    <div class="stat-icon orange">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                    </div>
+                </div>
                 <div class="stat-value">€21.650</div>
                 <div class="stat-sub">8 facturen + vaste lasten</div>
             </div>
