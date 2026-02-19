@@ -5,10 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weekrapport Demo — De Keukenloods | klain</title>
     <meta name="description" content="Demo van klain's automatische weekrapportage voor MKB ondernemers.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="64x64" href="../images/favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.png">
     <style>
+        @font-face {
+            font-family: 'DM Sans';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('../fonts/dm-sans-latin.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: normal;
+            font-weight: 400 700;
+            font-display: swap;
+            src: url('../fonts/fraunces-latin.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: italic;
+            font-weight: 400;
+            font-display: swap;
+            src: url('../fonts/fraunces-italic-latin.woff2') format('woff2');
+        }
         :root {
             --black: #0f1117;
             --gray-900: #1a1d27;
@@ -55,8 +75,6 @@
             height: 100%; display: flex; align-items: center; justify-content: space-between;
         }
         .logo {
-            font-family: 'Fraunces', serif;
-            font-size: 26px; font-weight: 700; color: var(--black);
             text-decoration: none;
         }
         .nav-links { display: flex; gap: 32px; list-style: none; }
@@ -238,13 +256,13 @@
 <body>
     <nav>
         <div class="nav-inner">
-            <a href="/" class="logo">klain</a>
+            <a href="/" class="logo"><img src="../images/klain-k-logo.jpg" alt="klain" style="height:32px;width:auto;"></a>
             <ul class="nav-links">
                 <li><a href="index.html#oplossingen">Oplossingen</a></li>
                 <li><a href="index.html#werkwijze">Werkwijze</a></li>
                 <li><a href="index.html#prijzen">Prijzen</a></li>
             </ul>
-            <a href="index.html#contact" class="nav-cta">Contact</a>
+            <a href="/#contact" class="nav-cta">Kennismaking plannen</a>
             <button class="mobile-menu-btn" aria-label="Menu">
                 <span></span><span></span><span></span>
             </button>

@@ -4,19 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Offerte Generator Demo — De Keukenloods | klain</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="64x64" href="../images/favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.png">
     <style>
+        @font-face {
+            font-family: 'DM Sans';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('../fonts/dm-sans-latin.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: normal;
+            font-weight: 400 700;
+            font-display: swap;
+            src: url('../fonts/fraunces-latin.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: italic;
+            font-weight: 400;
+            font-display: swap;
+            src: url('../fonts/fraunces-italic-latin.woff2') format('woff2');
+        }
         :root {
             --black: #0f1117;
+            --gray-700: #3d4152;
+            --gray-500: #6b7084;
             --gray-dark: #6b7084;
+            --gray-200: #d1d5e0;
             --gray-medium: #d1d5e0;
+            --gray-100: #eef0f5;
+            --gray-50: #f7f8fa;
             --gray-light: #f7f8fa;
             --white: #ffffff;
             --blue: #2563eb;
+            --blue-hover: #1d4ed8;
+            --blue-light: #eff6ff;
             --green: #16a34a;
             --orange: #ea580c;
+            --radius: 16px;
+            --radius-sm: 10px;
         }
 
         * {
@@ -47,8 +76,6 @@
             height: 100%; display: flex; align-items: center; justify-content: space-between;
         }
         .nav-logo {
-            font-family: 'Fraunces', serif;
-            font-size: 26px; font-weight: 700; color: var(--black);
             text-decoration: none;
         }
         .nav-cta {
@@ -652,8 +679,8 @@
 <body>
     <nav>
         <div class="nav-inner">
-            <a href="/" class="nav-logo">klain</a>
-            <a href="index.html#contact" class="nav-cta">Contact</a>
+            <a href="/" class="nav-logo"><img src="../images/klain-k-logo.jpg" alt="klain" style="height:32px;width:auto;"></a>
+            <a href="/#contact" class="nav-cta">Kennismaking plannen</a>
         </div>
     </nav>
 

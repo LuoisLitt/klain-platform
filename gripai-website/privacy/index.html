@@ -4,31 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacyverklaring — klain</title>
+    <link rel="icon" type="image/png" sizes="64x64" href="../images/favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.png">
     <style>
         @font-face {
             font-family: 'DM Sans';
             font-style: normal;
             font-weight: 300 700;
             font-display: swap;
-            src: url('fonts/dm-sans-latin.woff2') format('woff2');
+            src: url('../fonts/dm-sans-latin.woff2') format('woff2');
         }
         @font-face {
             font-family: 'Fraunces';
             font-style: normal;
             font-weight: 400 700;
             font-display: swap;
-            src: url('fonts/fraunces-latin.woff2') format('woff2');
+            src: url('../fonts/fraunces-latin.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: italic;
+            font-weight: 400;
+            font-display: swap;
+            src: url('../fonts/fraunces-italic-latin.woff2') format('woff2');
         }
 
         :root {
             --black: #0f1117;
+            --gray-700: #3d4152;
             --gray-500: #6b7084;
             --gray-400: #8e93a6;
+            --gray-200: #d1d5e0;
             --gray-100: #eef0f5;
             --gray-50: #f7f8fa;
             --white: #ffffff;
             --blue: #2563eb;
             --blue-hover: #1d4ed8;
+            --blue-light: #eff6ff;
+            --green: #16a34a;
+            --orange: #ea580c;
+            --radius: 16px;
+            --radius-sm: 10px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -50,8 +66,6 @@
             height: 100%; display: flex; align-items: center; justify-content: space-between;
         }
         .logo {
-            font-family: 'Fraunces', serif;
-            font-size: 26px; font-weight: 700; color: var(--black);
             text-decoration: none;
         }
         .nav-back {
@@ -93,7 +107,7 @@
 <body>
     <nav>
         <div class="nav-inner">
-            <a href="/" class="logo">klain</a>
+            <a href="/" class="logo"><img src="../images/klain-k-logo.jpg" alt="klain" style="height:32px;width:auto;"></a>
             <a href="/" class="nav-back">Terug naar home</a>
         </div>
     </nav>
