@@ -4,10 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cashflow Demo | klain</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'DM Sans';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('fonts/dm-sans-latin.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Fraunces';
+            font-style: normal;
+            font-weight: 400 700;
+            font-display: swap;
+            src: url('fonts/fraunces-latin.woff2') format('woff2');
+        }
+
         :root {
             --black: #0f1117;
             --gray-dark: #6b7084;
@@ -20,17 +32,11 @@
             --red: #dc2626;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Nav */
         nav {
             position: fixed; top: 0; left: 0; right: 0; height: 64px;
             background: rgba(255,255,255,1);
-            backdrop-filter: none;
             z-index: 1000; border-bottom: 1px solid var(--gray-medium);
         }
         .nav-inner {
@@ -40,7 +46,7 @@
         .nav-logo {
             font-family: 'Fraunces', serif;
             font-size: 26px; font-weight: 700; color: var(--black);
-            text-decoration: none;
+            text-decoration: none; display: flex; align-items: center;
         }
         .nav-cta {
             background: var(--blue); color: var(--white); padding: 10px 22px;
@@ -57,644 +63,236 @@
         }
 
         .demo-banner {
-            background: var(--blue);
-            color: white;
-            text-align: center;
-            padding: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            margin-top: 64px;
+            background: var(--blue); color: white; text-align: center;
+            padding: 12px; font-size: 14px; font-weight: 500; margin-top: 64px;
         }
+        .demo-banner a { color: white; margin-left: 12px; text-decoration: underline; }
 
-        .demo-banner a {
-            color: white;
-            margin-left: 12px;
-            text-decoration: underline;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 24px;
-        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
 
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;
         }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .logo-divider {
-            width: 1px;
-            height: 24px;
-            background: var(--gray-medium);
-        }
-
-        .page-title {
-            font-size: 16px;
-            color: var(--gray-dark);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-        }
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .logo { font-size: 20px; font-weight: 700; display: flex; align-items: center; }
+        .logo-divider { width: 1px; height: 24px; background: var(--gray-medium); }
+        .page-title { font-size: 16px; color: var(--gray-dark); }
+        .header-actions { display: flex; gap: 12px; }
 
         .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500;
+            cursor: pointer; transition: all 0.2s; border: none; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
         }
+        .btn-secondary { background: var(--white); color: var(--black); border: 1px solid var(--gray-medium); }
+        .btn-primary { background: var(--blue); color: white; }
 
-        .btn-secondary {
-            background: var(--white);
-            color: var(--black);
-            border: 1px solid var(--gray-medium);
-        }
-
-        .btn-primary {
-            background: var(--blue);
-            color: white;
-        }
-
-        /* Stats Row */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        }
-
-        .stat-card.highlight {
-            background: var(--black);
-            color: white;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--gray-dark);
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-card.highlight .stat-label {
-            color: rgba(255,255,255,0.6);
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--black);
-        }
-
-        .stat-card.highlight .stat-value {
-            color: white;
-        }
-
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: var(--white); border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .stat-card.highlight { background: var(--black); color: white; }
+        .stat-label { font-size: 12px; color: var(--gray-dark); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card.highlight .stat-label { color: rgba(255,255,255,0.6); }
+        .stat-value { font-size: 28px; font-weight: 700; color: var(--black); }
+        .stat-card.highlight .stat-value { color: white; }
         .stat-value.success { color: var(--green); }
         .stat-value.warning { color: var(--orange); }
         .stat-value.danger { color: var(--red); }
-
-        .stat-sub {
-            font-size: 12px;
-            margin-top: 4px;
-            color: var(--gray-dark);
-        }
-
-        .stat-card.highlight .stat-sub {
-            color: rgba(255,255,255,0.6);
-        }
-
+        .stat-sub { font-size: 12px; margin-top: 4px; color: var(--gray-dark); }
+        .stat-card.highlight .stat-sub { color: rgba(255,255,255,0.6); }
         .stat-sub.positive { color: var(--green); }
         .stat-sub.negative { color: var(--red); }
 
-        /* Main Grid */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 24px;
-        }
-
+        .main-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
         .card {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            margin-bottom: 24px;
+            background: var(--white); border-radius: 16px; padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 24px;
         }
-
-        .card:last-child {
-            margin-bottom: 0;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .card-actions {
-            display: flex;
-            gap: 8px;
-        }
-
+        .card:last-child { margin-bottom: 0; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .card-title { font-size: 16px; font-weight: 600; }
+        .card-actions { display: flex; gap: 8px; }
         .btn-small {
-            padding: 6px 12px;
-            font-size: 12px;
-            border-radius: 6px;
-            border: 1px solid var(--gray-medium);
-            background: var(--white);
-            cursor: pointer;
+            padding: 6px 12px; font-size: 12px; border-radius: 6px;
+            border: 1px solid var(--gray-medium); background: var(--white); cursor: pointer;
         }
+        .btn-small.active { background: var(--black); color: white; border-color: var(--black); }
 
-        .btn-small.active {
-            background: var(--black);
-            color: white;
-            border-color: var(--black);
+        /* Scenario Bar */
+        .scenario-bar {
+            background: var(--white); border: 1px solid var(--gray-medium); border-radius: 12px;
+            padding: 16px 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
         }
+        .scenario-label { font-weight: 600; font-size: 14px; color: var(--black); white-space: nowrap; }
+        .scenario-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .scenario-controls label { font-size: 14px; color: var(--gray-dark); }
+        .scenario-controls input[type="range"] { width: 160px; accent-color: var(--blue); }
+        .scenario-options { display: flex; gap: 8px; }
+        .scenario-btn {
+            padding: 6px 14px; border-radius: 8px; border: 1px solid var(--gray-medium);
+            background: var(--white); font-size: 13px; font-weight: 500; cursor: pointer;
+            transition: all 0.15s; color: var(--black);
+        }
+        .scenario-btn.active { background: var(--blue); color: var(--white); border-color: var(--blue); }
+        .scenario-btn:hover:not(.active) { border-color: var(--blue); color: var(--blue); }
 
         /* Cashflow Chart */
-        .chart-container {
-            position: relative;
-            height: 280px;
-            margin-bottom: 16px;
-        }
-
+        .chart-container { position: relative; height: 280px; margin-bottom: 16px; }
         .chart-bars {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            height: 220px;
-            padding: 0 10px;
-            border-bottom: 1px solid var(--gray-light);
-        }
-
-        .chart-week {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-        }
-
-        .chart-bar-group {
-            display: flex;
-            gap: 4px;
-            align-items: flex-end;
-            height: 180px;
-        }
-
-        .chart-bar {
-            width: 24px;
-            border-radius: 4px 4px 0 0;
-            transition: all 0.3s;
-            cursor: pointer;
+            display: flex; align-items: flex-end; justify-content: space-between;
+            height: 220px; padding: 0 10px; border-bottom: 1px solid var(--gray-light);
             position: relative;
         }
-
-        .chart-bar:hover {
-            opacity: 0.8;
+        .chart-week { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; position: relative; z-index: 2; }
+        .chart-bar-group { display: flex; gap: 4px; align-items: flex-end; height: 180px; }
+        .chart-bar {
+            width: 24px; border-radius: 4px 4px 0 0; transition: all 0.3s; cursor: pointer; position: relative;
         }
+        .chart-bar:hover { opacity: 0.8; }
+        .chart-bar.income { background: var(--green); }
+        .chart-bar.expense { background: var(--red); }
+        .chart-label { font-size: 11px; color: var(--gray-dark); text-align: center; }
 
-        .chart-bar.income {
-            background: var(--green);
-        }
+        /* Danger zone backgrounds */
+        .chart-week.zone-warning { background: rgba(234, 88, 12, 0.08); border-radius: 8px; margin: -4px; padding: 4px; }
+        .chart-week.zone-danger { background: rgba(220, 38, 38, 0.12); border-radius: 8px; margin: -4px; padding: 4px; }
 
-        .chart-bar.expense {
-            background: var(--red);
-        }
-
-        .chart-bar.net {
-            background: var(--blue);
-        }
-
-        .chart-label {
-            font-size: 11px;
-            color: var(--gray-dark);
-            text-align: center;
+        /* Cumulative line SVG overlay */
+        .cumulative-line-svg {
+            position: absolute; top: 0; left: 10px; right: 10px; height: 220px;
+            pointer-events: none; z-index: 3;
         }
 
         .chart-legend {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-top: 16px;
+            display: flex; justify-content: center; gap: 24px; margin-top: 16px;
         }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gray-dark); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            color: var(--gray-dark);
-        }
-
-        .legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 3px;
-        }
-
-        /* Balance Line */
-        .balance-forecast {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--gray-light);
-        }
-
+        .balance-forecast { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--gray-light); }
         .balance-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--gray-light);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid var(--gray-light);
         }
+        .balance-row:last-child { border-bottom: none; }
+        .balance-week { font-size: 13px; color: var(--gray-dark); }
+        .balance-amount { font-size: 14px; font-weight: 600; }
+        .balance-amount.danger { color: var(--red); }
+        .balance-amount.warning { color: var(--orange); }
+        .balance-bar { flex: 1; height: 8px; background: var(--gray-light); border-radius: 4px; margin: 0 16px; overflow: hidden; }
+        .balance-fill { height: 100%; border-radius: 4px; background: var(--green); transition: width 0.3s; }
+        .balance-fill.warning { background: var(--orange); }
+        .balance-fill.danger { background: var(--red); }
 
-        .balance-row:last-child {
-            border-bottom: none;
-        }
-
-        .balance-week {
-            font-size: 13px;
-            color: var(--gray-dark);
-        }
-
-        .balance-amount {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .balance-amount.danger {
-            color: var(--red);
-        }
-
-        .balance-bar {
-            flex: 1;
-            height: 8px;
-            background: var(--gray-light);
-            border-radius: 4px;
-            margin: 0 16px;
-            overflow: hidden;
-        }
-
-        .balance-fill {
-            height: 100%;
-            border-radius: 4px;
-            background: var(--green);
-            transition: width 0.3s;
-        }
-
-        .balance-fill.warning {
-            background: var(--orange);
-        }
-
-        .balance-fill.danger {
-            background: var(--red);
-        }
-
-        /* Tables */
-        .table-container {
-            overflow-x: auto;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
+        .table-container { overflow-x: auto; }
+        .table { width: 100%; border-collapse: collapse; }
         .table th {
-            text-align: left;
-            padding: 10px 12px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--gray-dark);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 600;
+            color: var(--gray-dark); text-transform: uppercase; letter-spacing: 0.5px;
             border-bottom: 1px solid var(--gray-light);
         }
+        .table td { padding: 12px; font-size: 13px; border-bottom: 1px solid var(--gray-light); }
+        .table tr:last-child td { border-bottom: none; }
+        .table tr:hover { background: var(--gray-light); }
+        .amount-in { color: var(--green); font-weight: 600; }
+        .amount-out { color: var(--red); font-weight: 600; }
 
-        .table td {
-            padding: 12px;
-            font-size: 13px;
-            border-bottom: 1px solid var(--gray-light);
-        }
+        .status-badge { display: inline-flex; padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+        .status-expected { background: rgba(0,113,227,0.1); color: var(--blue); }
+        .status-late { background: rgba(255,149,0,0.1); color: var(--orange); }
+        .status-due { background: rgba(255,59,48,0.1); color: var(--red); }
+        .status-paid { background: rgba(52,199,89,0.1); color: var(--green); }
 
-        .table tr:last-child td {
-            border-bottom: none;
+        /* Priority Card */
+        .priority-card {
+            background: var(--green); color: white; border-radius: 12px; padding: 16px; margin-bottom: 16px;
         }
-
-        .table tr:hover {
-            background: var(--gray-light);
+        .priority-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.05em; opacity: 0.85; margin-bottom: 6px;
         }
-
-        .amount-in {
-            color: var(--green);
-            font-weight: 600;
-        }
-
-        .amount-out {
-            color: var(--red);
-            font-weight: 600;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: 500;
-        }
-
-        .status-expected {
-            background: rgba(0, 113, 227, 0.1);
-            color: var(--blue);
-        }
-
-        .status-late {
-            background: rgba(255, 149, 0, 0.1);
-            color: var(--orange);
-        }
-
-        .status-due {
-            background: rgba(255, 59, 48, 0.1);
-            color: var(--red);
-        }
-
-        .status-paid {
-            background: rgba(52, 199, 89, 0.1);
-            color: var(--green);
-        }
+        .priority-text { font-size: 14px; font-weight: 500; line-height: 1.5; }
 
         /* Alerts */
         .alert {
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
+            padding: 16px; border-radius: 12px; margin-bottom: 12px;
+            display: flex; gap: 12px; align-items: flex-start;
         }
-
-        .alert:last-child {
-            margin-bottom: 0;
-        }
-
-        .alert-warning {
-            background: rgba(255, 149, 0, 0.1);
-            border: 1px solid rgba(255, 149, 0, 0.2);
-        }
-
-        .alert-danger {
-            background: rgba(255, 59, 48, 0.1);
-            border: 1px solid rgba(255, 59, 48, 0.2);
-        }
-
-        .alert-info {
-            background: rgba(0, 113, 227, 0.1);
-            border: 1px solid rgba(0, 113, 227, 0.2);
-        }
-
+        .alert:last-child { margin-bottom: 0; }
+        .alert-warning { background: rgba(255,149,0,0.1); border: 1px solid rgba(255,149,0,0.2); }
+        .alert-danger { background: rgba(255,59,48,0.1); border: 1px solid rgba(255,59,48,0.2); }
+        .alert-info { background: rgba(0,113,227,0.1); border: 1px solid rgba(0,113,227,0.2); }
+        .alert-success { background: rgba(22,163,74,0.1); border: 1px solid rgba(22,163,74,0.2); }
         .alert-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            flex-shrink: 0;
+            width: 20px; height: 20px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0;
         }
+        .alert-warning .alert-icon { background: var(--orange); color: white; }
+        .alert-danger .alert-icon { background: var(--red); color: white; }
+        .alert-info .alert-icon { background: var(--blue); color: white; }
+        .alert-success .alert-icon { background: var(--green); color: white; }
+        .alert-content { flex: 1; }
+        .alert-title { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
+        .alert-text { font-size: 12px; color: var(--gray-dark); }
 
-        .alert-warning .alert-icon {
-            background: var(--orange);
-            color: white;
-        }
-
-        .alert-danger .alert-icon {
-            background: var(--red);
-            color: white;
-        }
-
-        .alert-info .alert-icon {
-            background: var(--blue);
-            color: white;
-        }
-
-        .alert-content {
-            flex: 1;
-        }
-
-        .alert-title {
-            font-weight: 600;
-            font-size: 13px;
-            margin-bottom: 2px;
-        }
-
-        .alert-text {
-            font-size: 12px;
-            color: var(--gray-dark);
-        }
-
-        /* What-if Card */
-        .whatif-card {
-            background: var(--gray-light);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-
-        .whatif-card:last-child {
-            margin-bottom: 0;
-        }
-
-        .whatif-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .whatif-title {
-            font-weight: 600;
-            font-size: 13px;
-        }
-
+        .whatif-card { background: var(--gray-light); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .whatif-card:last-child { margin-bottom: 0; }
+        .whatif-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .whatif-title { font-weight: 600; font-size: 13px; }
         .whatif-toggle {
-            width: 44px;
-            height: 24px;
-            background: var(--gray-medium);
-            border-radius: 12px;
-            position: relative;
-            cursor: pointer;
-            transition: background 0.2s;
+            width: 44px; height: 24px; background: var(--gray-medium); border-radius: 12px;
+            position: relative; cursor: pointer; transition: background 0.2s;
         }
-
-        .whatif-toggle.active {
-            background: var(--blue);
-        }
-
+        .whatif-toggle.active { background: var(--blue); }
         .whatif-toggle::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: left 0.2s;
+            content: ''; position: absolute; width: 20px; height: 20px; background: white;
+            border-radius: 50%; top: 2px; left: 2px; transition: left 0.2s;
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
+        .whatif-toggle.active::after { left: 22px; }
+        .whatif-impact { font-size: 12px; color: var(--gray-dark); }
+        .whatif-impact strong { color: var(--red); }
+        .whatif-impact strong.positive { color: var(--green); }
 
-        .whatif-toggle.active::after {
-            left: 22px;
-        }
-
-        .whatif-impact {
-            font-size: 12px;
-            color: var(--gray-dark);
-        }
-
-        .whatif-impact strong {
-            color: var(--red);
-        }
-
-        .whatif-impact strong.positive {
-            color: var(--green);
-        }
-
-        /* Runway */
-        .runway-display {
-            text-align: center;
-            padding: 24px;
-        }
-
-        .runway-weeks {
-            font-size: 64px;
-            font-weight: 700;
-            color: var(--green);
-            line-height: 1;
-        }
-
-        .runway-weeks.warning {
-            color: var(--orange);
-        }
-
-        .runway-weeks.danger {
-            color: var(--red);
-        }
-
-        .runway-label {
-            font-size: 14px;
-            color: var(--gray-dark);
-            margin-top: 8px;
-        }
-
+        .runway-display { text-align: center; padding: 24px; }
+        .runway-weeks { font-size: 64px; font-weight: 700; color: var(--green); line-height: 1; }
+        .runway-weeks.warning { color: var(--orange); }
+        .runway-weeks.danger { color: var(--red); }
+        .runway-label { font-size: 14px; color: var(--gray-dark); margin-top: 8px; }
         .runway-detail {
-            font-size: 12px;
-            color: var(--gray-dark);
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid var(--gray-light);
+            font-size: 12px; color: var(--gray-dark); margin-top: 16px;
+            padding-top: 16px; border-top: 1px solid var(--gray-light);
         }
 
-        /* Sidebar AI */
         .ai-badge {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 16px;
-            display: inline-block;
+            color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 16px; display: inline-block;
         }
 
-        /* Footer */
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            color: var(--gray-dark);
-            font-size: 12px;
-        }
+        .footer { text-align: center; margin-top: 40px; padding: 20px; color: var(--gray-dark); font-size: 12px; }
+        .footer a { color: var(--blue); text-decoration: none; }
 
-        .footer a {
-            color: var(--blue);
-            text-decoration: none;
-        }
-
-        /* Responsive */
         @media (max-width: 1200px) {
-            .stats-row {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .main-grid { grid-template-columns: 1fr; }
         }
-
         @media (max-width: 640px) {
-            .container {
-                padding: 20px 16px;
-            }
-            .stats-row {
-                grid-template-columns: 1fr;
-            }
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
-            }
-            .card {
-                padding: 16px;
-            }
-            .chart-bar {
-                width: 16px;
-            }
+            .container { padding: 20px 16px; }
+            .stats-row { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .card { padding: 16px; }
+            .chart-bar { width: 16px; }
+            .scenario-bar { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
     <nav>
         <div class="nav-inner">
-            <a href="index.html" class="nav-logo">klain</a>
+            <a href="index.html" class="nav-logo">
+                <img src="images/klain-k-logo.jpg" alt="klain" style="height:32px; width:auto;">
+            </a>
             <a href="index.html#contact" class="nav-cta">Contact</a>
         </div>
     </nav>
@@ -707,7 +305,7 @@
     <div class="container">
         <div class="header">
             <div class="header-left">
-                <div class="logo">klain</div>
+                <div class="logo"><img src="images/klain-k-logo.jpg" alt="klain" style="height:28px; width:auto;"></div>
                 <div class="logo-divider"></div>
                 <div class="page-title">Cashflow</div>
             </div>
@@ -726,8 +324,8 @@
             </div>
             <div class="stat-card">
                 <div class="stat-label">Verwacht eind maand</div>
-                <div class="stat-value success">€52.800</div>
-                <div class="stat-sub positive">+€5.550 t.o.v. nu</div>
+                <div class="stat-value success" id="stat-eind-maand">€52.800</div>
+                <div class="stat-sub positive" id="stat-eind-maand-sub">+€5.550 t.o.v. nu</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Nog te ontvangen</div>
@@ -742,7 +340,6 @@
         </div>
 
         <div class="main-grid">
-            <!-- Main Content -->
             <div class="main-content">
                 <!-- Cashflow Chart -->
                 <div class="card">
@@ -754,66 +351,27 @@
                             <button class="btn-small">6 maanden</button>
                         </div>
                     </div>
-                    
-                    <div class="chart-container">
-                        <div class="chart-bars">
-                            <div class="chart-week">
-                                <div class="chart-bar-group">
-                                    <div class="chart-bar income" style="height: 120px;" title="Inkomend: €18.500"></div>
-                                    <div class="chart-bar expense" style="height: 80px;" title="Uitgaand: €12.200"></div>
-                                </div>
-                                <div class="chart-label">Week 6<br><small>Nu</small></div>
-                            </div>
-                            <div class="chart-week">
-                                <div class="chart-bar-group">
-                                    <div class="chart-bar income" style="height: 90px;" title="Inkomend: €14.200"></div>
-                                    <div class="chart-bar expense" style="height: 100px;" title="Uitgaand: €15.800"></div>
-                                </div>
-                                <div class="chart-label">Week 7</div>
-                            </div>
-                            <div class="chart-week">
-                                <div class="chart-bar-group">
-                                    <div class="chart-bar income" style="height: 140px;" title="Inkomend: €22.000"></div>
-                                    <div class="chart-bar expense" style="height: 70px;" title="Uitgaand: €10.500"></div>
-                                </div>
-                                <div class="chart-label">Week 8</div>
-                            </div>
-                            <div class="chart-week">
-                                <div class="chart-bar-group">
-                                    <div class="chart-bar income" style="height: 60px;" title="Inkomend: €8.500"></div>
-                                    <div class="chart-bar expense" style="height: 110px;" title="Uitgaand: €16.900"></div>
-                                </div>
-                                <div class="chart-label">Week 9</div>
-                            </div>
-                            <div class="chart-week">
-                                <div class="chart-bar-group">
-                                    <div class="chart-bar income" style="height: 100px;" title="Inkomend: €15.500"></div>
-                                    <div class="chart-bar expense" style="height: 85px;" title="Uitgaand: €13.200"></div>
-                                </div>
-                                <div class="chart-label">Week 10</div>
-                            </div>
-                            <div class="chart-week">
-                                <div class="chart-bar-group">
-                                    <div class="chart-bar income" style="height: 75px;" title="Inkomend: €11.200"></div>
-                                    <div class="chart-bar expense" style="height: 95px;" title="Uitgaand: €14.500"></div>
-                                </div>
-                                <div class="chart-label">Week 11</div>
-                            </div>
-                            <div class="chart-week">
-                                <div class="chart-bar-group">
-                                    <div class="chart-bar income" style="height: 130px;" title="Inkomend: €20.000"></div>
-                                    <div class="chart-bar expense" style="height: 75px;" title="Uitgaand: €11.400"></div>
-                                </div>
-                                <div class="chart-label">Week 12</div>
-                            </div>
-                            <div class="chart-week">
-                                <div class="chart-bar-group">
-                                    <div class="chart-bar income" style="height: 85px;" title="Inkomend: €12.800"></div>
-                                    <div class="chart-bar expense" style="height: 90px;" title="Uitgaand: €13.900"></div>
-                                </div>
-                                <div class="chart-label">Week 13</div>
+
+                    <!-- Scenario Slider -->
+                    <div class="scenario-bar">
+                        <span class="scenario-label">Scenario: Wat als debiteuren later betalen?</span>
+                        <div class="scenario-controls">
+                            <label>Betaalvertraging: <strong id="delay-label">0 dagen</strong></label>
+                            <input type="range" id="delay-slider" min="0" max="60" step="15" value="0">
+                            <div class="scenario-options">
+                                <button class="scenario-btn active" data-delay="0">Normaal</button>
+                                <button class="scenario-btn" data-delay="15">+15 dagen</button>
+                                <button class="scenario-btn" data-delay="30">+30 dagen</button>
+                                <button class="scenario-btn" data-delay="60">+60 dagen</button>
                             </div>
                         </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-bars" id="chart-bars">
+                            <!-- Bars rendered by JS -->
+                        </div>
+                        <svg class="cumulative-line-svg" id="cumulative-svg"></svg>
                     </div>
                     
                     <div class="chart-legend">
@@ -825,35 +383,15 @@
                             <div class="legend-dot" style="background: var(--red);"></div>
                             <span>Uitgaand</span>
                         </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #0ea5e9;"></div>
+                            <span>Cumulatief saldo</span>
+                        </div>
                     </div>
 
-                    <div class="balance-forecast">
+                    <div class="balance-forecast" id="balance-forecast">
                         <div class="card-title" style="margin-bottom: 16px; font-size: 14px;">Verwachte bankstand</div>
-                        <div class="balance-row">
-                            <span class="balance-week">Week 6 (nu)</span>
-                            <div class="balance-bar"><div class="balance-fill" style="width: 65%;"></div></div>
-                            <span class="balance-amount">€47.250</span>
-                        </div>
-                        <div class="balance-row">
-                            <span class="balance-week">Week 7</span>
-                            <div class="balance-bar"><div class="balance-fill" style="width: 60%;"></div></div>
-                            <span class="balance-amount">€45.650</span>
-                        </div>
-                        <div class="balance-row">
-                            <span class="balance-week">Week 8</span>
-                            <div class="balance-bar"><div class="balance-fill" style="width: 75%;"></div></div>
-                            <span class="balance-amount">€57.150</span>
-                        </div>
-                        <div class="balance-row">
-                            <span class="balance-week">Week 9</span>
-                            <div class="balance-bar"><div class="balance-fill warning" style="width: 50%;"></div></div>
-                            <span class="balance-amount">€48.750</span>
-                        </div>
-                        <div class="balance-row">
-                            <span class="balance-week">Week 10</span>
-                            <div class="balance-bar"><div class="balance-fill" style="width: 55%;"></div></div>
-                            <span class="balance-amount">€51.050</span>
-                        </div>
+                        <!-- Rendered by JS -->
                     </div>
                 </div>
 
@@ -874,48 +412,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Bakkerij 't Stoepje</td>
-                                    <td>INV-2025-0003</td>
-                                    <td class="amount-in">€8.650</td>
-                                    <td>3 feb</td>
-                                    <td><span class="status-badge status-expected">~5 feb</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Fam. de Groot</td>
-                                    <td>INV-2025-0008</td>
-                                    <td class="amount-in">€12.400</td>
-                                    <td>8 feb</td>
-                                    <td><span class="status-badge status-expected">~8 feb</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Fam. Jansen</td>
-                                    <td>INV-2025-0012</td>
-                                    <td class="amount-in">€6.780</td>
-                                    <td>15 feb</td>
-                                    <td><span class="status-badge status-paid">Op tijd</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Fam. Pietersen</td>
-                                    <td>INV-2024-0089</td>
-                                    <td class="amount-in">€4.250</td>
-                                    <td>12 dec</td>
-                                    <td><span class="status-badge status-late">Na bellen</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Dhr. Klaassen</td>
-                                    <td>INV-2024-0092</td>
-                                    <td class="amount-in">€2.890</td>
-                                    <td>19 dec</td>
-                                    <td><span class="status-badge status-late">Regeling?</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Mevr. van Dijk</td>
-                                    <td>INV-2025-0015</td>
-                                    <td class="amount-in">€3.430</td>
-                                    <td>20 feb</td>
-                                    <td><span class="status-badge status-paid">Op tijd</span></td>
-                                </tr>
+                                <tr><td>Bakkerij 't Stoepje</td><td>INV-2025-0003</td><td class="amount-in">€8.650</td><td>3 feb</td><td><span class="status-badge status-expected">~5 feb</span></td></tr>
+                                <tr><td>Fam. de Groot</td><td>INV-2025-0008</td><td class="amount-in">€12.400</td><td>8 feb</td><td><span class="status-badge status-expected">~8 feb</span></td></tr>
+                                <tr><td>Fam. Jansen</td><td>INV-2025-0012</td><td class="amount-in">€6.780</td><td>15 feb</td><td><span class="status-badge status-paid">Op tijd</span></td></tr>
+                                <tr><td>Fam. Pietersen</td><td>INV-2024-0089</td><td class="amount-in">€4.250</td><td>12 dec</td><td><span class="status-badge status-late">Na bellen</span></td></tr>
+                                <tr><td>Dhr. Klaassen</td><td>INV-2024-0092</td><td class="amount-in">€2.890</td><td>19 dec</td><td><span class="status-badge status-late">Regeling?</span></td></tr>
+                                <tr><td>Mevr. van Dijk</td><td>INV-2025-0015</td><td class="amount-in">€3.430</td><td>20 feb</td><td><span class="status-badge status-paid">Op tijd</span></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -929,62 +431,17 @@
                     <div class="table-container">
                         <table class="table">
                             <thead>
-                                <tr>
-                                    <th>Omschrijving</th>
-                                    <th>Bedrag</th>
-                                    <th>Vervaldatum</th>
-                                    <th>Type</th>
-                                </tr>
+                                <tr><th>Omschrijving</th><th>Bedrag</th><th>Vervaldatum</th><th>Type</th></tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Salarissen februari</td>
-                                    <td class="amount-out">-€8.200</td>
-                                    <td>25 feb</td>
-                                    <td><span class="status-badge status-due">Vast</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Huur bedrijfspand</td>
-                                    <td class="amount-out">-€2.400</td>
-                                    <td>1 mrt</td>
-                                    <td><span class="status-badge status-due">Vast</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Leverancier Keukens BV</td>
-                                    <td class="amount-out">-€4.850</td>
-                                    <td>10 feb</td>
-                                    <td><span class="status-badge status-expected">Factuur</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Elektra + Gas</td>
-                                    <td class="amount-out">-€680</td>
-                                    <td>15 feb</td>
-                                    <td><span class="status-badge status-due">Vast</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Verzekeringen</td>
-                                    <td class="amount-out">-€520</td>
-                                    <td>1 mrt</td>
-                                    <td><span class="status-badge status-due">Vast</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Boekhouder</td>
-                                    <td class="amount-out">-€350</td>
-                                    <td>28 feb</td>
-                                    <td><span class="status-badge status-due">Vast</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Montage materialen</td>
-                                    <td class="amount-out">-€2.150</td>
-                                    <td>12 feb</td>
-                                    <td><span class="status-badge status-expected">Factuur</span></td>
-                                </tr>
-                                <tr>
-                                    <td>BTW aangifte Q4</td>
-                                    <td class="amount-out">-€2.500</td>
-                                    <td>28 feb</td>
-                                    <td><span class="status-badge status-due">Belasting</span></td>
-                                </tr>
+                                <tr><td>Salarissen februari</td><td class="amount-out">-€8.200</td><td>25 feb</td><td><span class="status-badge status-due">Vast</span></td></tr>
+                                <tr><td>Huur bedrijfspand</td><td class="amount-out">-€2.400</td><td>1 mrt</td><td><span class="status-badge status-due">Vast</span></td></tr>
+                                <tr><td>Leverancier Keukens BV</td><td class="amount-out">-€4.850</td><td>10 feb</td><td><span class="status-badge status-expected">Factuur</span></td></tr>
+                                <tr><td>Elektra + Gas</td><td class="amount-out">-€680</td><td>15 feb</td><td><span class="status-badge status-due">Vast</span></td></tr>
+                                <tr><td>Verzekeringen</td><td class="amount-out">-€520</td><td>1 mrt</td><td><span class="status-badge status-due">Vast</span></td></tr>
+                                <tr><td>Boekhouder</td><td class="amount-out">-€350</td><td>28 feb</td><td><span class="status-badge status-due">Vast</span></td></tr>
+                                <tr><td>Montage materialen</td><td class="amount-out">-€2.150</td><td>12 feb</td><td><span class="status-badge status-expected">Factuur</span></td></tr>
+                                <tr><td>BTW aangifte Q4</td><td class="amount-out">-€2.500</td><td>28 feb</td><td><span class="status-badge status-due">Belasting</span></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -993,55 +450,26 @@
 
             <!-- Sidebar -->
             <div class="sidebar">
-                <!-- Runway -->
                 <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Runway</div>
-                    </div>
+                    <div class="card-header"><div class="card-title">Runway</div></div>
                     <div class="runway-display">
-                        <div class="runway-weeks">12</div>
+                        <div class="runway-weeks" id="runway-weeks">12</div>
                         <div class="runway-label">weken buffer</div>
-                        <div class="runway-detail">
+                        <div class="runway-detail" id="runway-detail">
                             Bij huidige uitgaven kunt u 12 weken door zonder nieuwe inkomsten. Dat is gezond.
                         </div>
                     </div>
                 </div>
 
-                <!-- AI Alerts -->
-                <div class="card">
+                <div class="card" id="ai-signals-card">
                     <span class="ai-badge">AI Signalen</span>
-                    
-                    <div class="alert alert-warning">
-                        <div class="alert-icon">!</div>
-                        <div class="alert-content">
-                            <div class="alert-title">Week 9 wordt krap</div>
-                            <div class="alert-text">BTW + salarissen vallen samen. Zorg dat De Groot (€12.400) voor 20 feb betaalt.</div>
-                        </div>
-                    </div>
-
-                    <div class="alert alert-danger">
-                        <div class="alert-icon">!</div>
-                        <div class="alert-content">
-                            <div class="alert-title">€7.140 onzeker</div>
-                            <div class="alert-text">Pietersen en Klaassen staan >45 dagen open. Bel vandaag of start incasso.</div>
-                        </div>
-                    </div>
-
-                    <div class="alert alert-info">
-                        <div class="alert-icon">i</div>
-                        <div class="alert-content">
-                            <div class="alert-title">Seizoenspatroon</div>
-                            <div class="alert-text">Maart is historisch 20% rustiger. Houd rekening met lagere inkomsten.</div>
-                        </div>
+                    <div id="ai-signals">
+                        <!-- Rendered by JS -->
                     </div>
                 </div>
 
-                <!-- What-if -->
                 <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Wat als...</div>
-                    </div>
-
+                    <div class="card-header"><div class="card-title">Wat als...</div></div>
                     <div class="whatif-card">
                         <div class="whatif-header">
                             <span class="whatif-title">De Groot 2 weken later betaalt?</span>
@@ -1049,7 +477,6 @@
                         </div>
                         <div class="whatif-impact">Week 9 wordt <strong>€4.200 negatief</strong>. Kredietlijn nodig.</div>
                     </div>
-
                     <div class="whatif-card">
                         <div class="whatif-header">
                             <span class="whatif-title">Nieuwe machine (€15.000)?</span>
@@ -1057,7 +484,6 @@
                         </div>
                         <div class="whatif-impact">Runway daalt naar <strong>6 weken</strong>. Liever financieren.</div>
                     </div>
-
                     <div class="whatif-card">
                         <div class="whatif-header">
                             <span class="whatif-title">Grote order binnenhalen (€25k)?</span>
@@ -1073,5 +499,272 @@
             Automatisch gegenereerd door <a href="index.html">klain</a>
         </div>
     </div>
+
+    <script>
+    (function() {
+        // Base data per week (income, expense)
+        const baseData = [
+            { week: 6, label: 'Week 6', sub: 'Nu', income: 18500, expense: 12200 },
+            { week: 7, label: 'Week 7', sub: '', income: 14200, expense: 15800 },
+            { week: 8, label: 'Week 8', sub: '', income: 22000, expense: 10500 },
+            { week: 9, label: 'Week 9', sub: '', income: 8500, expense: 16900 },
+            { week: 10, label: 'Week 10', sub: '', income: 15500, expense: 13200 },
+            { week: 11, label: 'Week 11', sub: '', income: 11200, expense: 14500 },
+            { week: 12, label: 'Week 12', sub: '', income: 20000, expense: 11400 },
+            { week: 13, label: 'Week 13', sub: '', income: 12800, expense: 13900 },
+        ];
+
+        const startBalance = 47250;
+        const maxBarHeight = 180;
+        const maxValue = 25000; // scale reference
+
+        let currentDelay = 0;
+
+        function getDelayedData(delay) {
+            // delay in days → shift income by delay/7 weeks to the right
+            const shiftWeeks = Math.round(delay / 15); // 15d = 1 week shift, 30d = 2, 60d = 4
+            const data = baseData.map((w, i) => {
+                let income = 0;
+                const srcIdx = i - shiftWeeks;
+                if (srcIdx >= 0 && srcIdx < baseData.length) {
+                    income = baseData[srcIdx].income;
+                } else if (srcIdx < 0) {
+                    // Income that was shifted out appears nowhere (delayed)
+                    income = 0;
+                }
+                // For weeks beyond the shift, add back the lost income from earlier weeks
+                return { ...w, income: income, expense: w.expense };
+            });
+            // Add back income that was shifted beyond week 13 is lost (simplification)
+            return data;
+        }
+
+        function computeBalances(data) {
+            let bal = startBalance;
+            return data.map(w => {
+                bal += w.income - w.expense;
+                return bal;
+            });
+        }
+
+        function fmt(n) {
+            return '€' + Math.round(n).toLocaleString('nl-NL');
+        }
+
+        function renderChart(delay) {
+            const data = getDelayedData(delay);
+            const balances = computeBalances(data);
+            const chartBars = document.getElementById('chart-bars');
+            
+            let html = '';
+            data.forEach((w, i) => {
+                const incH = Math.round((w.income / maxValue) * maxBarHeight);
+                const expH = Math.round((w.expense / maxValue) * maxBarHeight);
+                let zoneClass = '';
+                if (balances[i] < 0) zoneClass = 'zone-danger';
+                else if (balances[i] < 10000) zoneClass = 'zone-warning';
+                
+                html += `<div class="chart-week ${zoneClass}">
+                    <div class="chart-bar-group">
+                        <div class="chart-bar income" style="height:${incH}px;" title="Inkomend: ${fmt(w.income)}"></div>
+                        <div class="chart-bar expense" style="height:${expH}px;" title="Uitgaand: ${fmt(w.expense)}"></div>
+                    </div>
+                    <div class="chart-label">${w.label}${w.sub ? '<br><small>' + w.sub + '</small>' : ''}</div>
+                </div>`;
+            });
+            chartBars.innerHTML = html;
+
+            // Cumulative line SVG
+            renderCumulativeLine(balances);
+
+            // Balance forecast
+            renderBalanceForecast(data, balances);
+
+            // AI signals
+            renderAISignals(delay, balances, data);
+
+            // Update runway
+            const avgExpense = data.reduce((s, w) => s + w.expense, 0) / data.length;
+            const lastBal = balances[balances.length - 1];
+            const runway = Math.max(1, Math.round(startBalance / avgExpense));
+            const rEl = document.getElementById('runway-weeks');
+            rEl.textContent = runway;
+            rEl.className = 'runway-weeks' + (runway < 6 ? ' danger' : runway < 10 ? ' warning' : '');
+            document.getElementById('runway-detail').textContent = 
+                `Bij huidige uitgaven kunt u ${runway} weken door zonder nieuwe inkomsten. ${runway >= 10 ? 'Dat is gezond.' : runway >= 6 ? 'Aandacht nodig.' : 'Actie vereist!'}`;
+        }
+
+        function renderCumulativeLine(balances) {
+            const svg = document.getElementById('cumulative-svg');
+            const n = balances.length;
+            if (!n) return;
+            
+            const maxBal = Math.max(...balances, startBalance) * 1.1;
+            const minBal = Math.min(...balances, 0);
+            const range = maxBal - minBal || 1;
+            const svgH = 220;
+            
+            // Calculate points - center of each week column
+            const points = balances.map((b, i) => {
+                const x = ((i + 0.5) / n) * 100; // percentage
+                const y = svgH - ((b - minBal) / range) * (svgH - 20) - 10;
+                return { x: x + '%', xNum: (i + 0.5) / n, y };
+            });
+
+            // Add start balance point
+            const startY = svgH - ((startBalance - minBal) / range) * (svgH - 20) - 10;
+
+            let pathD = `M ${points[0].xNum * 100}% ${points[0].y}`;
+            // Use viewBox-independent approach
+            svg.setAttribute('viewBox', `0 0 100 ${svgH}`);
+            svg.setAttribute('preserveAspectRatio', 'none');
+            
+            const ptsArr = points.map(p => `${p.xNum * 100},${p.y}`);
+            const polyline = ptsArr.join(' ');
+
+            svg.innerHTML = `
+                <polyline points="${polyline}" fill="none" stroke="#0ea5e9" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" style="stroke-width:2.5px"/>
+                ${points.map(p => `<circle cx="${p.xNum * 100}" cy="${p.y}" r="1" fill="#0ea5e9" vector-effect="non-scaling-stroke" style="r:4px"/>`).join('')}
+                <!-- 10k danger line -->
+                <line x1="0" y1="${svgH - ((10000 - minBal) / range) * (svgH - 20) - 10}" x2="100" y2="${svgH - ((10000 - minBal) / range) * (svgH - 20) - 10}" stroke="#ea580c" stroke-dasharray="2,2" stroke-width="0.3" vector-effect="non-scaling-stroke" style="stroke-width:1px" opacity="0.5"/>
+            `;
+        }
+
+        function renderBalanceForecast(data, balances) {
+            const container = document.getElementById('balance-forecast');
+            const maxBal = Math.max(...balances) * 1.2;
+            let html = '<div class="card-title" style="margin-bottom: 16px; font-size: 14px;">Verwachte bankstand</div>';
+            
+            // Show first 5 weeks
+            const show = Math.min(5, data.length);
+            for (let i = 0; i < show; i++) {
+                const bal = balances[i];
+                const pct = Math.max(0, Math.min(100, (bal / maxBal) * 100));
+                let fillClass = '';
+                let amtClass = '';
+                if (bal < 0) { fillClass = 'danger'; amtClass = ' danger'; }
+                else if (bal < 10000) { fillClass = 'warning'; amtClass = ' warning'; }
+                
+                html += `<div class="balance-row">
+                    <span class="balance-week">${data[i].label}${i === 0 ? ' (nu)' : ''}</span>
+                    <div class="balance-bar"><div class="balance-fill ${fillClass}" style="width:${pct}%;"></div></div>
+                    <span class="balance-amount${amtClass}">${fmt(bal)}</span>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function renderAISignals(delay, balances, data) {
+            const container = document.getElementById('ai-signals');
+            let html = '';
+
+            // Priority card
+            if (delay === 0) {
+                html += `<div class="priority-card">
+                    <div class="priority-label">Prioriteit deze week</div>
+                    <div class="priority-text">Zorg dat De Groot (€12.400) betaalt voor vrijdag — dit voorkomt tekort in week 9.</div>
+                </div>`;
+            } else if (delay <= 30) {
+                html += `<div class="priority-card" style="background: var(--orange);">
+                    <div class="priority-label">Prioriteit deze week</div>
+                    <div class="priority-text">Neem vandaag contact op met alle debiteuren — bij ${delay} dagen vertraging dreigt liquiditeitstekort.</div>
+                </div>`;
+            } else {
+                html += `<div class="priority-card" style="background: var(--red);">
+                    <div class="priority-label">Urgent: Actie vereist</div>
+                    <div class="priority-text">Bij ${delay} dagen vertraging is een kredietlijn of noodfinanciering noodzakelijk. Bel direct uw bank.</div>
+                </div>`;
+            }
+
+            // Find worst week
+            let minBal = Infinity, minWeek = 0;
+            balances.forEach((b, i) => { if (b < minBal) { minBal = b; minWeek = i; } });
+
+            // Alert 1: Week 9 krapte
+            const week9bal = balances[3]; // index 3 = week 9
+            if (week9bal < 10000) {
+                html += `<div class="alert alert-warning">
+                    <div class="alert-icon">!</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Week 9 wordt krap${week9bal < 0 ? ' — tekort!' : ''}</div>
+                        <div class="alert-text">Verwacht saldo: ${fmt(week9bal)}. BTW + salarissen vallen samen.${delay > 0 ? ' Door vertraging van ' + delay + ' dagen valt inkomst weg.' : ' Zorg dat De Groot voor 20 feb betaalt.'}</div>
+                    </div>
+                </div>`;
+            }
+
+            // Alert 2: Onzekere post
+            html += `<div class="alert alert-danger">
+                <div class="alert-icon">!</div>
+                <div class="alert-content">
+                    <div class="alert-title">€7.140 onzeker</div>
+                    <div class="alert-text">Pietersen (€4.250) en Klaassen (€2.890) staan >45 dagen open. ${delay > 0 ? 'Extra risico bij vertraging.' : 'Bel vandaag of start incasso.'}</div>
+                </div>
+            </div>`;
+
+            // Alert 3: Grote betaling nadert
+            html += `<div class="alert alert-warning">
+                <div class="alert-icon">!</div>
+                <div class="alert-content">
+                    <div class="alert-title">Grote betaling nadert</div>
+                    <div class="alert-text">Salarissen (€8.200) + BTW (€2.500) op 25-28 feb. Totaal €10.700 in één week.</div>
+                </div>
+            </div>`;
+
+            // Alert 4: Positief signaal (only if some week has good buffer)
+            const bestBal = Math.max(...balances);
+            const bestWeek = balances.indexOf(bestBal);
+            if (bestBal > 20000) {
+                html += `<div class="alert alert-success">
+                    <div class="alert-icon">✓</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Buffer in week ${data[bestWeek].week}</div>
+                        <div class="alert-text">Verwacht saldo ${fmt(bestBal)} — goed moment voor investeringen of extra aflossing.</div>
+                    </div>
+                </div>`;
+            }
+
+            // Alert 5: Seizoenspatroon
+            html += `<div class="alert alert-info">
+                <div class="alert-icon">i</div>
+                <div class="alert-content">
+                    <div class="alert-title">Seizoenspatroon</div>
+                    <div class="alert-text">Maart is historisch 20% rustiger. Houd rekening met lagere inkomsten.</div>
+                </div>
+            </div>`;
+
+            // Alert 6: Negative balance warning
+            if (minBal < 0) {
+                html += `<div class="alert alert-danger">
+                    <div class="alert-icon">!</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Rood staan in week ${data[minWeek].week}</div>
+                        <div class="alert-text">Verwacht tekort: ${fmt(Math.abs(minBal))}. Overweeg factoring of een kredietlijn.</div>
+                    </div>
+                </div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Slider + buttons
+        const slider = document.getElementById('delay-slider');
+        const delayLabel = document.getElementById('delay-label');
+        const buttons = document.querySelectorAll('.scenario-btn');
+
+        function setDelay(val) {
+            currentDelay = val;
+            slider.value = val;
+            delayLabel.textContent = val + ' dagen';
+            buttons.forEach(b => b.classList.toggle('active', parseInt(b.dataset.delay) === val));
+            renderChart(val);
+        }
+
+        slider.addEventListener('input', () => setDelay(parseInt(slider.value)));
+        buttons.forEach(b => b.addEventListener('click', () => setDelay(parseInt(b.dataset.delay))));
+
+        // Initial render
+        setDelay(0);
+    })();
+    </script>
 </body>
 </html>
