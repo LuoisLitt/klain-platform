@@ -473,23 +473,23 @@
                     <div class="whatif-card">
                         <div class="whatif-header">
                             <span class="whatif-title">De Groot 2 weken later betaalt?</span>
-                            <div class="whatif-toggle" onclick="this.classList.toggle('active')"></div>
+                            <div class="whatif-toggle" id="toggle-degroot" onclick="this.classList.toggle('active'); applyWhatIf()"></div>
                         </div>
                         <div class="whatif-impact">Week 9 wordt <strong>€4.200 negatief</strong>. Kredietlijn nodig.</div>
                     </div>
                     <div class="whatif-card">
                         <div class="whatif-header">
                             <span class="whatif-title">Nieuwe machine (€15.000)?</span>
-                            <div class="whatif-toggle" onclick="this.classList.toggle('active')"></div>
+                            <div class="whatif-toggle" id="toggle-machine" onclick="this.classList.toggle('active'); applyWhatIf()"></div>
                         </div>
-                        <div class="whatif-impact">Runway daalt naar <strong>6 weken</strong>. Liever financieren.</div>
+                        <div class="whatif-impact">Runway daalt. Liever financieren.</div>
                     </div>
                     <div class="whatif-card">
                         <div class="whatif-header">
                             <span class="whatif-title">Grote order binnenhalen (€25k)?</span>
-                            <div class="whatif-toggle" onclick="this.classList.toggle('active')"></div>
+                            <div class="whatif-toggle" id="toggle-order" onclick="this.classList.toggle('active'); applyWhatIf()"></div>
                         </div>
-                        <div class="whatif-impact">Runway stijgt naar <strong class="positive">18 weken</strong>. Ruimte voor groei.</div>
+                        <div class="whatif-impact">Extra buffer. Ruimte voor groei.</div>
                     </div>
                 </div>
             </div>
@@ -519,6 +519,35 @@
         const maxValue = 25000; // scale reference
 
         let currentDelay = 0;
+
+        function applyWhatIf() {
+            // Lees toggle-states en pas baseData tijdelijk aan
+            const deGroot = document.getElementById('toggle-degroot')?.classList.contains('active');
+            const machine = document.getElementById('toggle-machine')?.classList.contains('active');
+            const order = document.getElementById('toggle-order')?.classList.contains('active');
+
+            // Reset naar originele waarden
+            baseData[0] = { week: 6, label: 'Week 6', sub: 'Nu', income: 18500, expense: 12200 };
+            baseData[1] = { week: 7, label: 'Week 7', sub: '', income: 14200, expense: 15800 };
+            baseData[2] = { week: 8, label: 'Week 8', sub: '', income: 22000, expense: 10500 };
+            baseData[3] = { week: 9, label: 'Week 9', sub: '', income: 8500, expense: 16900 };
+
+            // De Groot betaalt 2 weken later → €12.400 uit week 7 naar week 9
+            if (deGroot) {
+                baseData[1] = { ...baseData[1], income: baseData[1].income - 12400 };
+                baseData[3] = { ...baseData[3], income: baseData[3].income + 12400 };
+            }
+            // Nieuwe machine → €15.000 extra uitgave in week 8
+            if (machine) {
+                baseData[2] = { ...baseData[2], expense: baseData[2].expense + 15000 };
+            }
+            // Grote order → €25.000 extra inkomsten in week 7
+            if (order) {
+                baseData[1] = { ...baseData[1], income: baseData[1].income + 25000 };
+            }
+
+            renderChart(currentDelay);
+        }
 
         function getDelayedData(delay) {
             // delay in days → shift income by delay/7 weeks to the right
@@ -583,15 +612,29 @@
             // AI signals
             renderAISignals(delay, balances, data);
 
-            // Update runway
-            const avgExpense = data.reduce((s, w) => s + w.expense, 0) / data.length;
-            const lastBal = balances[balances.length - 1];
-            const runway = Math.max(1, Math.round(startBalance / avgExpense));
+            // Update runway — bereken weken tot saldo nul bereikt
+            const minBal = Math.min(...balances);
+            let runway;
+            if (minBal >= 0) {
+                // Saldo raakt nooit nul in de forecast — extrapoleer op basis van trend
+                const avgNet = data.reduce((s, w) => s + w.income - w.expense, 0) / data.length;
+                if (avgNet >= 0) {
+                    runway = 52; // groeiend saldo → geen probleem
+                } else {
+                    runway = Math.max(1, Math.round(balances[balances.length - 1] / Math.abs(avgNet)));
+                }
+            } else {
+                // Vind eerste week waar saldo negatief wordt
+                const zeroWeek = balances.findIndex(b => b < 0);
+                runway = zeroWeek >= 0 ? zeroWeek : balances.length;
+            }
             const rEl = document.getElementById('runway-weeks');
-            rEl.textContent = runway;
+            rEl.textContent = runway >= 52 ? '52+' : runway;
             rEl.className = 'runway-weeks' + (runway < 6 ? ' danger' : runway < 10 ? ' warning' : '');
-            document.getElementById('runway-detail').textContent = 
-                `Bij huidige uitgaven kunt u ${runway} weken door zonder nieuwe inkomsten. ${runway >= 10 ? 'Dat is gezond.' : runway >= 6 ? 'Aandacht nodig.' : 'Actie vereist!'}`;
+            document.getElementById('runway-detail').textContent =
+                runway >= 52
+                    ? 'Saldo groeit — geen cashflow-risico zichtbaar.'
+                    : `Saldo wordt negatief in week ${runway}. ${runway >= 10 ? 'Situatie gezond.' : runway >= 6 ? 'Aandacht nodig.' : 'Actie vereist!'}`;
         }
 
         function renderCumulativeLine(balances) {
