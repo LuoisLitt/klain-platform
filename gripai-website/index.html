@@ -4,42 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>klain | AI-automatisering voor MKB</title>
-    <meta name="description" content="AI-consultancy voor MKB-ondernemers in Drenthe. Ik analyseer uw processen en automatiseer wat tijd kost. Vaste projectprijs, persoonlijk contact, geen technische kennis nodig.">
-    <meta property="og:title" content="klain | AI-automatisering voor MKB">
-    <meta property="og:description" content="Automatische weekrapportages, slimme offertes en AI-workflows voor MKB ondernemers. Minder gedoe, meer grip.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://klain.nl">
-    <meta property="og:locale" content="nl_NL">
-    <link rel="canonical" href="https://klain.nl">
-    <link rel="icon" type="image/png" sizes="64x64" href="images/favicon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <style>
-        @font-face {
-            font-family: 'DM Sans';
-            font-style: normal;
-            font-weight: 300 700;
-            font-display: swap;
-            src: url('fonts/dm-sans-latin.woff2') format('woff2');
-            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-        }
-        @font-face {
-            font-family: 'Fraunces';
-            font-style: normal;
-            font-weight: 400 700;
-            font-display: swap;
-            src: url('fonts/fraunces-latin.woff2') format('woff2');
-            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-        }
-        @font-face {
-            font-family: 'Fraunces';
-            font-style: italic;
-            font-weight: 400;
-            font-display: swap;
-            src: url('fonts/fraunces-italic-latin.woff2') format('woff2');
-            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-        }
-    </style>
+    <meta name="description" content="Automatische weekrapportages, slimme offertes en AI-workflows voor MKB ondernemers. Minder gedoe, meer grip.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
     <style>
         :root {
             --black: #0f1117;
@@ -448,7 +416,6 @@
             border-radius: var(--radius-lg);
             padding: 40px;
             position: relative; transition: all 0.3s;
-            display: flex; flex-direction: column;
         }
         .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.08); }
         .pricing-card.featured {
@@ -468,7 +435,7 @@
         }
         .pricing-period { font-size: 14px; color: var(--gray-400); margin-bottom: 24px; }
         .pricing-desc { font-size: 14px; color: var(--gray-500); margin-bottom: 28px; line-height: 1.6; }
-        .pricing-features { list-style: none; margin-bottom: 32px; flex: 1; }
+        .pricing-features { list-style: none; margin-bottom: 32px; }
         .pricing-features li {
             display: flex; align-items: flex-start; gap: 10px;
             padding: 8px 0; font-size: 14px; color: var(--gray-700);
@@ -551,7 +518,7 @@
             gap: 48px; margin-bottom: 48px;
         }
         .footer-brand .logo {
-            font-size: 22px; display: inline-block; margin-bottom: 12px; color: var(--black);
+            font-size: 22px; display: inline-block; margin-bottom: 12px; color: var(--white);
         }
         .footer-brand p { font-size: 14px; color: var(--gray-500); line-height: 1.6; max-width: 280px; }
         .footer-col h4 {
@@ -597,16 +564,6 @@
             .footer-grid { grid-template-columns: 1fr; gap: 32px; }
             section { padding: 64px 16px; }
         }
-
-        /* ─── SKIP LINK ─── */
-        .skip-link {
-            position: absolute; top: -100%; left: 50%; transform: translateX(-50%);
-            background: var(--blue); color: var(--white);
-            padding: 12px 24px; border-radius: 0 0 8px 8px;
-            font-size: 14px; font-weight: 600; text-decoration: none;
-            z-index: 10000; transition: top 0.2s;
-        }
-        .skip-link:focus { top: 0; }
 
         /* ─── ANIMATIONS ─── */
         @keyframes fadeUp {
@@ -679,15 +636,12 @@
             .about-stats { flex-direction: column; gap: 16px; }
         }
     </style>
-    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
-    <a href="#main" class="skip-link">Naar hoofdinhoud</a>
-
     <!-- Navigation -->
     <nav>
         <div class="nav-inner">
-            <a href="#" class="logo"><img src="images/klain-k-logo.jpg" alt="klain" style="height: 36px; width: auto;"></a>
+            <a href="#" class="logo"><img src="images/klain-logo.jpg" alt="klain" style="height: 50px; width: auto;"></a>
             <ul class="nav-links">
                 <li><a href="#oplossingen">Oplossingen</a></li>
                 <li><a href="#werkwijze">Werkwijze</a></li>
@@ -695,7 +649,7 @@
                 <li><a href="#over">Over</a></li>
             </ul>
             <a href="#contact" class="nav-cta">Gratis kennismaking →</a>
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu" aria-expanded="false" id="mobileMenuBtn">
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">
                 <span></span><span></span><span></span>
             </button>
         </div>
@@ -707,19 +661,19 @@
         <a href="#prijzen" onclick="toggleMobileMenu()">Prijzen</a>
         <a href="#over" onclick="toggleMobileMenu()">Over Ernst</a>
         <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
-        <a href="#contact" onclick="toggleMobileMenu()" style="background:var(--blue);color:var(--white);text-align:center;border-radius:var(--radius-sm);padding:14px;margin-top:8px;border:none;">Gratis kennismaking</a>
     </div>
 
     <!-- Hero -->
-    <section class="hero" id="main">
+    <section class="hero">
         <div class="hero-badge fade-up">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            AI-automatisering voor MKB in Drenthe en omgeving
+            Voor MKB-ondernemers in Drenthe en omstreken
         </div>
         <h1 class="fade-up d1">AI-automatisering die u <em>grip</em> geeft op uw zaak</h1>
-        <p class="fade-up d2">Ik doorloop uw processen, identificeer wat geautomatiseerd kan worden, en bouw het. Pragmatisch, lokaal en zonder technisch gedoe.</p>
+        <p class="fade-up d2">Elke maandag 2 uur in Excel? Een grote order, maar geen idee of uw cashflow het aankan? klain automatiseert uw bedrijfsinzichten zodat u tijd heeft voor wat ertoe doet.</p>
         <div class="hero-buttons fade-up d3">
-            <a href="#contact" class="btn-primary">Plan een gratis kennismaking <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            <a href="#contact" class="btn-primary">Plan een kennismaking <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            <a href="#demo" class="btn-secondary">Bekijk hoe het werkt</a>
         </div>
     </section>
 
@@ -729,19 +683,19 @@
         <div class="trust-pills">
             <span class="trust-pill">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
-                Persoonlijk advies
+                Boekhoudkoppeling
             </span>
             <span class="trust-pill">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
-                Vaste projectprijs
+                Claude AI-analyse
+            </span>
+            <span class="trust-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+                Automatisch per e-mail
             </span>
             <span class="trust-pill">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
                 Geen technische kennis nodig
-            </span>
-            <span class="trust-pill">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
-                Lokaal in Drenthe
             </span>
         </div>
     </div>
@@ -821,8 +775,8 @@
         <div class="container">
             <div class="section-header">
                 <div class="section-label">Waarom klain</div>
-                <h2 class="section-heading">Voorbeelden van wat ik voor u kan automatiseren:</h2>
-                <p class="section-subheading">Van weekrapportages tot offertes en cashflow — bekijk de demo's hieronder.</p>
+                <h2 class="section-heading">Alles wat u nodig heeft voor grip op uw bedrijf</h2>
+                <p class="section-subheading">Eén platform dat uw boekhouding uitleest, analyseert en omzet naar heldere inzichten en acties.</p>
             </div>
 
             <div class="why-grid">
@@ -866,7 +820,7 @@
                         <div class="section-label">Inzicht</div>
                         <h3>Automatische weekrapportages</h3>
                         <p>Elke maandag ontvangt u een compleet overzicht van uw bedrijfscijfers. Omzet, pipeline, debiteuren en planning — met intelligente analyse door AI. Geen Excel meer nodig.</p>
-                        <a href="/demo" class="card-link">Bekijk voorbeeld <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                        <a href="demo" class="card-link">Bekijk voorbeeld <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
                     </div>
                 </div>
 
@@ -900,7 +854,7 @@
                         <div class="section-label">Automatisering</div>
                         <h3>Offerte Generator</h3>
                         <p>Professionele offertes in minuten. AI berekent materiaalkosten, stelt upsells voor en genereert een complete offerte die u direct kunt versturen naar uw klant.</p>
-                        <a href="/demo-offerte" class="card-link">Probeer de demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                        <a href="demo-offerte" class="card-link">Probeer de demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
                     </div>
                 </div>
 
@@ -944,7 +898,41 @@
                         <div class="section-label">Financieel</div>
                         <h3>Cashflow Forecast</h3>
                         <p>Altijd weten of uw cashflow het aankan. Scenario's doorrekenen bij grote orders, seizoensschommelingen of investeringen. Nooit meer verrast worden.</p>
-                        <a href="/demo-cashflow" class="card-link">Bekijk forecast demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                        <a href="demo-cashflow" class="card-link">Bekijk forecast demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="why-card">
+                    <div class="why-card-image" style="background: linear-gradient(135deg, #f0fdf4, #dcfce7);">
+                        <div class="mock">
+                            <div class="mock-topbar">
+                                <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+                            </div>
+                            <div class="mock-body">
+                                <div style="font-size:11px; font-weight:600; color:var(--gray-500); margin-bottom:12px;">Factuur #2024-008</div>
+                                <div style="display:flex; flex-direction:column; gap:6px;">
+                                    <div style="display:flex; justify-content:space-between; font-size:10px; color:#374151; background:#f9fafb; padding:5px 8px; border-radius:4px;">
+                                        <span>Advies &amp; analyse</span><span style="font-weight:600;">8u × €85</span>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; font-size:10px; color:#374151; background:#f9fafb; padding:5px 8px; border-radius:4px;">
+                                        <span>Implementatie</span><span style="font-weight:600;">12u × €85</span>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; font-size:10px; color:#374151; background:#f9fafb; padding:5px 8px; border-radius:4px;">
+                                        <span>Reiskosten</span><span style="font-weight:600;">€45</span>
+                                    </div>
+                                </div>
+                                <div style="margin-top:10px; padding-top:8px; border-top:1px solid #e5e7eb; display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:#16a34a;">
+                                    <span>Totaal incl. BTW</span><span>€2.086,95</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="why-card-content">
+                        <div class="section-label">Facturatie</div>
+                        <h3>Urenregistratie &amp; Factuur</h3>
+                        <p>Uren invoeren, factuur genereren, PDF downloaden. Geen abonnement, geen inloggen. Uw uren erin, uw factuur eruit.</p>
+                        <a href="demo-uren" class="card-link">Probeer de demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
                     </div>
                 </div>
             </div>
@@ -956,39 +944,45 @@
         <div class="container">
             <div class="section-header">
                 <div class="section-label">Mogelijkheden</div>
-                <h2 class="section-heading">Wat ik voor u kan automatiseren</h2>
-                <p class="section-subheading">Voorbeelden van processen die klain-klanten wekelijks uren besparen.</p>
+                <h2 class="section-heading">Gebouwd voor MKB-ondernemers</h2>
+                <p class="section-subheading">Alle functionaliteit om uw bedrijf slimmer en efficiënter te laten draaien.</p>
             </div>
             <div class="solutions-grid">
                 <div class="solution-card">
                     <div class="solution-accent blue"></div>
-                    <h3>Weekrapportages</h3>
-                    <p>Elke maandag automatisch een compleet overzicht van omzet, pipeline en debiteuren. Geen Excel meer, geen handwerk.</p>
+                    <h3>Boekhoudkoppeling</h3>
+                    <p>Directe verbinding met uw boekhouding. Alle data wordt automatisch opgehaald en verwerkt — veilig en betrouwbaar.</p>
                 </div>
                 <div class="solution-card">
                     <div class="solution-accent green"></div>
-                    <h3>Offerte Generator</h3>
-                    <p>Professionele offertes in minuten. AI berekent kosten, stelt opties voor en genereert een complete offerte klaar om te versturen.</p>
+                    <h3>AI-Analyse</h3>
+                    <p>Claude AI analyseert uw cijfers en geeft bruikbare inzichten. Trends, risico's en kansen die u anders zou missen.</p>
                 </div>
                 <div class="solution-card">
                     <div class="solution-accent orange"></div>
-                    <h3>Cashflow Forecast</h3>
-                    <p>Altijd weten of uw cashflow het aankan bij grote orders of investeringen. Scenario's doorrekenen zonder spreadsheets.</p>
+                    <h3>E-mail Rapportage</h3>
+                    <p>Elke maandag in uw inbox. Geen inloggen, geen portals. Gewoon een helder overzicht waar u direct mee verder kunt.</p>
                 </div>
                 <div class="solution-card">
                     <div class="solution-accent blue"></div>
                     <h3>Debiteurenbeheer</h3>
-                    <p>Automatisch overzicht van openstaande facturen met slimme herinneringen. Sneller betaald, minder achteraanbellen.</p>
+                    <p>Overzicht van openstaande facturen met automatische herinneringen. Sneller betaald krijgen, minder gedoe.</p>
                 </div>
                 <div class="solution-card">
                     <div class="solution-accent green"></div>
-                    <h3>Orderverwerking</h3>
-                    <p>Van binnenkomende order tot verzending automatisch verwerkt. Minder handmatig invoeren, minder fouten.</p>
+                    <h3>Live Dashboarding</h3>
+                    <p>Real-time inzicht in orders, voorraad en verzendingen via een overzichtelijk live dashboard.</p>
                 </div>
                 <div class="solution-card">
                     <div class="solution-accent orange"></div>
-                    <h3>Elk ander proces</h3>
-                    <p>Heeft u een specifiek proces dat u veel tijd kost? Tijdens de AI Scan kijken we samen wat er mogelijk is.</p>
+                    <h3>Veilig & Privé</h3>
+                    <p>Uw data wordt nergens opgeslagen of gedeeld. Verwerking via beveiligde API's met versleutelde verbindingen.</p>
+                </div>
+                <div class="solution-card">
+                    <div class="solution-accent blue"></div>
+                    <h3>Urenregistratie & Facturatie</h3>
+                    <p>Uren invoeren, klant selecteren en direct een professionele factuur als PDF downloaden. Geen abonnement, geen account nodig.</p>
+                    <a href="demo-uren" style="display:inline-block; margin-top:12px; font-size:13px; font-weight:500; color:#2563eb; text-decoration:none;">Probeer de demo →</a>
                 </div>
             </div>
         </div>
@@ -1000,53 +994,53 @@
             <div class="section-header">
                 <div class="section-label">Vergelijking</div>
                 <h2 class="section-heading">Waarom klain anders is</h2>
-                <p class="section-subheading">Vergelijk klain met zelf uitzoeken of een groot IT-bureau inschakelen.</p>
+                <p class="section-subheading">Vergelijk klain met de traditionele aanpak en algemene boekhoudsoftware.</p>
             </div>
             <table class="compare-table">
                 <thead>
                     <tr>
                         <th>Functie</th>
                         <th class="highlight">klain</th>
-                        <th>Zelf doen</th>
-                        <th>Groot IT-bureau</th>
+                        <th>Zelf in Excel</th>
+                        <th>Boekhouder</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Procesanalyse op maat</td>
-                        <td class="highlight-col"><span class="check">✓</span> Persoonlijk gesprek</td>
-                        <td><span class="cross">✗</span> Tijdrovend</td>
-                        <td><span class="cross">✗</span> Generiek advies</td>
+                        <td>Automatische weekrapportages</td>
+                        <td class="highlight-col"><span class="check">✓</span> Elke maandag</td>
+                        <td><span class="cross">✗</span> Handwerk</td>
+                        <td><span class="cross">✗</span> Maandelijks</td>
                     </tr>
                     <tr>
-                        <td>Implementatietijd</td>
-                        <td class="highlight-col"><span class="check">✓</span> 2-3 weken</td>
-                        <td><span class="cross">✗</span> Maanden</td>
-                        <td><span class="cross">✗</span> Lang traject</td>
+                        <td>AI-analyse & advies</td>
+                        <td class="highlight-col"><span class="check">✓</span> Claude AI</td>
+                        <td><span class="cross">✗</span> Nee</td>
+                        <td><span class="cross">✗</span> Beperkt</td>
                     </tr>
                     <tr>
-                        <td>Vaste projectprijs</td>
+                        <td>Offerte generatie</td>
+                        <td class="highlight-col"><span class="check">✓</span> In minuten</td>
+                        <td><span class="cross">✗</span> Uren werk</td>
+                        <td><span class="cross">✗</span> Niet beschikbaar</td>
+                    </tr>
+                    <tr>
+                        <td>Cashflow forecast</td>
+                        <td class="highlight-col"><span class="check">✓</span> Real-time</td>
+                        <td><span class="cross">✗</span> Complex</td>
+                        <td><span class="cross">✗</span> Op aanvraag</td>
+                    </tr>
+                    <tr>
+                        <td>Tijdsinvestering per week</td>
+                        <td class="highlight-col"><span class="check">✓</span> 0 minuten</td>
+                        <td>2+ uur</td>
+                        <td>30+ minuten</td>
+                    </tr>
+                    <tr>
+                        <td>Persoonlijk contact</td>
                         <td class="highlight-col"><span class="check">✓</span> Altijd</td>
                         <td>n.v.t.</td>
-                        <td><span class="cross">✗</span> Hoog uurtarief</td>
-                    </tr>
-                    <tr>
-                        <td>Technische kennis nodig</td>
-                        <td class="highlight-col"><span class="check">✓</span> Geen</td>
-                        <td><span class="cross">✗</span> Veel</td>
-                        <td>Gedeeltelijk</td>
-                    </tr>
-                    <tr>
-                        <td>Tijdsbesparing per week</td>
-                        <td class="highlight-col"><span class="check">✓</span> 2-5 uur</td>
-                        <td><span class="cross">✗</span> Geen</td>
-                        <td>Beperkt</td>
-                    </tr>
-                    <tr>
-                        <td>Lokaal & persoonlijk contact</td>
-                        <td class="highlight-col"><span class="check">✓</span> Altijd</td>
-                        <td>n.v.t.</td>
-                        <td><span class="cross">✗</span> Zelden</td>
+                        <td>Op afspraak</td>
                     </tr>
                 </tbody>
             </table>
@@ -1064,18 +1058,18 @@
             <div class="steps-grid">
                 <div class="step-card">
                     <div class="step-number">1</div>
-                    <h3>AI Scan</h3>
-                    <p>Ik analyseer uw processen en lever een concreet rapport met uw automatiserings-kansen en ROI. Inclusief intake gesprek van 1,5 uur.</p>
+                    <h3>Kennismaking</h3>
+                    <p>Ik bespreek uw situatie en welke inzichten u het meest helpen. Vrijblijvend en in gewone taal.</p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">2</div>
-                    <h3>Implementatie</h3>
-                    <p>We kiezen samen de prioriteiten. Ik bouw de automatisering terwijl u gewoon doorwerkt.</p>
+                    <h3>Koppeling</h3>
+                    <p>U verleent klain toegang tot uw boekhouding. Dat kost hooguit een kwartiertje en ik begeleid u erbij.</p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">3</div>
-                    <h3>Resultaat</h3>
-                    <p>U bespaart uren per week en heeft grip op uw bedrijf. Ik blijf beschikbaar voor vragen.</p>
+                    <h3>Aan de slag</h3>
+                    <p>U ontvangt wekelijks uw rapportage, maakt offertes in minuten en heeft grip op uw debiteuren.</p>
                 </div>
             </div>
         </div>
@@ -1088,65 +1082,49 @@
         <div class="container">
             <div class="section-header">
                 <div class="section-label">Prijzen</div>
-                <h2 class="section-heading">Helder en eerlijk geprijsd</h2>
-                <p class="section-subheading">Elk pakket is eenmalig. Geen abonnementen, geen verborgen kosten.</p>
+                <h2 class="section-heading">Vaste projectprijzen, geen verrassingen</h2>
+                <p class="section-subheading">Geen abonnement, geen uurtarief. U weet vooraf wat het kost en wat u krijgt.</p>
             </div>
             <div class="pricing-grid">
                 <div class="pricing-card">
                     <div class="pricing-name">AI Scan</div>
                     <div class="pricing-price">€349</div>
-                    <div class="pricing-period">eenmalig — Uw kansen in kaart</div>
-                    <div class="pricing-desc">Ik analyseer uw processen en lever een concreet rapport met uw automatiserings-kansen en ROI. Inclusief intake gesprek van 1,5 uur.</div>
+                    <div class="pricing-period">eenmalig</div>
+                    <div class="pricing-desc">Uw automatiserings-kansen in kaart. De meeste ondernemers beginnen hier.</div>
                     <ul class="pricing-features">
-                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Intake gesprek van 1,5 uur</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Intakegesprek van 1,5 uur</li>
                         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Analyse van uw werkprocessen</li>
-                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Schriftelijk rapport met kansen</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Schriftelijk rapport met top 3 kansen</li>
                         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> ROI-berekening per kans</li>
                     </ul>
-                    <a href="/ai-scan" class="btn-secondary">Gratis AI Scan →</a>
+                    <a href="#contact" class="btn-secondary">Plan een AI Scan</a>
                 </div>
                 <div class="pricing-card featured">
                     <div class="pricing-badge">Populair</div>
                     <div class="pricing-name">Quick Win</div>
                     <div class="pricing-price">€1.499</div>
-                    <div class="pricing-period">eenmalig — Eén proces geautomatiseerd</div>
-                    <div class="pricing-desc">We kiezen samen het proces dat het meest tijd kost. Ik bouw de automatisering, lever het op en ondersteun u de eerste maand.</div>
+                    <div class="pricing-period">eenmalig</div>
+                    <div class="pricing-desc">Eén proces geautomatiseerd in 2 tot 3 weken. Direct resultaat.</div>
                     <ul class="pricing-features">
-                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Alles uit AI Scan</li>
-                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Volledige implementatie</li>
-                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Weekrapportage, offerte, cashflow of een willekeurig ander proces</li>
-                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> 1 maand support inbegrepen</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Eén proces volledig geautomatiseerd</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Weekrapportage, offerte of cashflow</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Oplevering binnen 2-3 weken</li>
                     </ul>
-                    <a href="#contact" class="btn-primary">Start met Quick Win</a>
+                    <a href="#contact" class="btn-primary">Plan kennismaking</a>
                 </div>
                 <div class="pricing-card">
                     <div class="pricing-name">AI Traject</div>
                     <div class="pricing-price">€4.999</div>
-                    <div class="pricing-period">vanaf, eenmalig — Meerdere processen tegelijk</div>
-                    <div class="pricing-desc">Voor ondernemers die serieus willen automatiseren. Drie tot vijf processen in twee tot drie maanden, inclusief training en doorlopende ondersteuning.</div>
+                    <div class="pricing-period">eenmalig, vanaf</div>
+                    <div class="pricing-desc">Meerdere processen, structurele tijdsbesparing, klaar voor de toekomst.</div>
                     <ul class="pricing-features">
-                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Alles uit Quick Win</li>
-                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> 3-5 processen geautomatiseerd</li>
-                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> 3 maanden support inbegrepen</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> 3 tot 5 processen geautomatiseerd</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Looptijd 2 tot 3 maanden</li>
                         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Training voor uw team</li>
-                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg> Maandelijkse optimalisatie</li>
                     </ul>
                     <a href="#contact" class="btn-secondary">Neem contact op</a>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Subsidiecheck Banner -->
-    <section style="background: var(--blue-light); border-top: 1px solid var(--blue-muted); border-bottom: 1px solid var(--blue-muted); padding: 48px 24px; text-align: center;">
-        <div class="container" style="max-width: 680px;">
-            <div style="display:inline-flex; align-items:center; gap:8px; background:var(--blue); color:#fff; padding:6px 16px; border-radius:100px; font-size:13px; font-weight:600; margin-bottom:20px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                Gratis tool
-            </div>
-            <h2 style="font-family:'Fraunces',serif; font-size:clamp(24px,4vw,36px); font-weight:700; color:var(--black); margin-bottom:12px; letter-spacing:-0.5px;">Welke subsidies loopt u mis?</h2>
-            <p style="color:var(--gray-500); font-size:17px; margin-bottom:28px; line-height:1.6;">138 regelingen, landelijke dekking. Vul 7 vragen in en zie direct welke subsidies voor uw bedrijf van toepassing zijn.</p>
-            <a href="/subsidiecheck" class="btn-primary" style="display:inline-flex; align-items:center; gap:8px; background:var(--blue); color:#fff; padding:14px 32px; border-radius:var(--radius-sm); font-size:16px; font-weight:600; text-decoration:none;">Doe de gratis subsidiecheck <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div>
     </section>
 
@@ -1159,60 +1137,39 @@
             </div>
             <div class="faq-grid">
                 <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-1">
-                        Wat doet klain precies?
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Wat is klain precies?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     </button>
-                    <div class="faq-answer" id="faq-1" role="region"><div class="faq-answer-inner">klain helpt MKB-ondernemers tijdrovende processen automatiseren met AI. Ik kom langs, breng in kaart wat uw meeste tijd kost, en bouw de automatisering. Denk aan weekrapportages, offertes, cashflow-inzichten of andere terugkerende taken. Geen technische kennis nodig aan uw kant.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">klain is een AI-platform dat speciaal is gebouwd voor MKB-ondernemers. Het koppelt met uw boekhoudsoftware en levert automatisch weekrapportages, cashflow forecasts en slimme offertes. Alles zonder technische kennis.</div></div>
                 </div>
                 <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-2">
+                    <button class="faq-question" onclick="toggleFaq(this)">
                         Hoe veilig is mijn data?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     </button>
-                    <div class="faq-answer" id="faq-2" role="region"><div class="faq-answer-inner">Uw data wordt versleuteld verwerkt via beveiligde API-verbindingen. klain slaat geen financiële gegevens permanent op. De verwerking gebeurt via officiële boekhoud-API's en Anthropic's Claude AI, beiden met enterprise-grade beveiliging.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">Uw data wordt versleuteld verwerkt via beveiligde API-verbindingen. klain slaat geen financiële gegevens permanent op. De verwerking gebeurt via officiële boekhoud-API's en Anthropic's Claude AI, beiden met enterprise-grade beveiliging.</div></div>
                 </div>
                 <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-3">
-                        Hoe snel zie ik resultaat?
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Moet ik iets installeren?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     </button>
-                    <div class="faq-answer" id="faq-3" role="region"><div class="faq-answer-inner">Na de AI Scan (€349) heeft u binnen een week een concreet rapport met uw automatiserings-kansen. Bij een Quick Win levert u het eerste geautomatiseerde proces op in 2 tot 3 weken. U hoeft daar zelf niets voor te doen — ik regel het.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">Nee, helemaal niets. U hoeft alleen eenmalig klain toegang te geven tot uw boekhouding. Dat duurt een kwartiertje en ik help u erbij. Daarna ontvangt u alles per e-mail.</div></div>
                 </div>
                 <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-4">
+                    <button class="faq-question" onclick="toggleFaq(this)">
                         Kan ik het eerst uitproberen?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     </button>
-                    <div class="faq-answer" id="faq-4" role="region"><div class="faq-answer-inner">Ja, de eerste kennismaking is gratis en vrijblijvend. Ik bespreek uw situatie en laat zien hoe klain er voor uw bedrijf uit zou zien. Geen verplichtingen.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">Ja, de eerste kennismaking is gratis en vrijblijvend. Ik bespreek uw situatie en laat zien hoe klain er voor uw bedrijf uit zou zien. Geen verplichtingen.</div></div>
                 </div>
                 <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-5">
-                        Welke processen kunt u automatiseren?
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Werkt klain ook met andere boekhoudpakketten?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
                     </button>
-                    <div class="faq-answer" id="faq-5" role="region"><div class="faq-answer-inner">Veel voorkomende voorbeelden zijn weekrapportages, offertes, cashflow-overzichten, debiteurenbeheer en orderverwerking. Maar in principe elk proces dat u nu handmatig herhaalt. Tijdens de AI Scan kijken we samen wat bij u de meeste tijd scheelt.</div></div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-6">
-                        Wat kost een AI Scan?
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-                    </button>
-                    <div class="faq-answer" id="faq-6" role="region"><div class="faq-answer-inner">€349 eenmalig. Inclusief intake gesprek en schriftelijk rapport.</div></div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-7">
-                        Hoelang duurt een Quick Win?
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-                    </button>
-                    <div class="faq-answer" id="faq-7" role="region"><div class="faq-answer-inner">Gemiddeld 2 tot 3 weken van intake tot oplevering.</div></div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-8">
-                        Zit ik ergens aan vast?
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-                    </button>
-                    <div class="faq-answer" id="faq-8" role="region"><div class="faq-answer-inner">Nee. Elk pakket is eenmalig. U besluit zelf of u verdergaat.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">klain ondersteunt koppelingen met de meest gebruikte boekhoudpakketten zoals Moneybird, Exact Online, e-Boekhouden en Twinfield. Neem contact op als u een ander pakket gebruikt.</div></div>
                 </div>
             </div>
         </div>
@@ -1245,17 +1202,15 @@
     <!-- CTA -->
     <section class="cta-section" id="contact">
         <h2>Klaar om grip te krijgen op uw bedrijf?</h2>
-        <p>Meeste klanten beginnen met een AI Scan (€349). Daarna beslissen we samen wat de volgende stap is.</p>
-        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;">
-            <a href="mailto:ernst@klain.nl" class="btn-primary">Mail ernst@klain.nl</a>
-        </div>
+        <p>Plan een gratis kennismaking en ontdek wat klain voor u kan betekenen. Geen verplichtingen, wel inzichten.</p>
+        <a href="mailto:ernst@klain.nl" class="btn-primary">Plan een kennismaking →</a>
     </section>
 
     <!-- Footer -->
     <footer>
         <div class="footer-grid">
             <div class="footer-brand">
-                <a href="#" class="logo"><img src="images/klain-k-logo.jpg" alt="klain" style="height: 36px; width: auto;"></a>
+                <a href="#" class="logo"><img src="images/klain-logo.jpg" alt="klain" style="height: 46px; width: auto;"></a>
                 <p>AI-automatisering voor MKB ondernemers. Minder gedoe, meer grip op uw zaak.</p>
             </div>
             <div class="footer-col">
@@ -1263,15 +1218,15 @@
                 <a href="#oplossingen">Weekrapportages</a>
                 <a href="#oplossingen">Offerte Generator</a>
                 <a href="#oplossingen">Cashflow Forecast</a>
-                <a href="/demo-debiteuren">Debiteurenbeheer</a>
                 <a href="#vergelijking">Vergelijking</a>
             </div>
             <div class="footer-col">
                 <h4>Demo's</h4>
-                <a href="/demo">Weekrapport</a>
-                <a href="/demo-offerte">Offerte Keuken</a>
-                <a href="/demo-offerte-bouw">Offerte Bouw</a>
-                <a href="/demo-cashflow">Cashflow</a>
+                <a href="demo">Weekrapport</a>
+                <a href="demo-offerte">Offerte Keuken</a>
+                <a href="demo-offerte-bouw">Offerte Bouw</a>
+                <a href="demo-cashflow">Cashflow</a>
+                <a href="demo-uren">Urenregistratie</a>
             </div>
             <div class="footer-col">
                 <h4>Contact</h4>
@@ -1282,38 +1237,20 @@
         </div>
         <div class="footer-bottom">
             <p>© 2026 klain</p>
-            <a href="/privacy">Privacy</a>
+            <a href="#">Privacy</a>
         </div>
     </footer>
 
     <script>
         function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            const btn = document.getElementById('mobileMenuBtn');
-            const isOpen = menu.classList.toggle('active');
-            btn.setAttribute('aria-expanded', isOpen);
+            document.getElementById('mobileMenu').classList.toggle('active');
         }
-
-        document.addEventListener('click', function(e) {
-            const menu = document.getElementById('mobileMenu');
-            const btn = document.getElementById('mobileMenuBtn');
-            if (menu.classList.contains('active') && !menu.contains(e.target) && !btn.contains(e.target)) {
-                menu.classList.remove('active');
-                btn.setAttribute('aria-expanded', 'false');
-            }
-        });
 
         function toggleFaq(btn) {
             const item = btn.parentElement;
             const wasOpen = item.classList.contains('open');
-            document.querySelectorAll('.faq-item').forEach(i => {
-                i.classList.remove('open');
-                i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
-            });
-            if (!wasOpen) {
-                item.classList.add('open');
-                btn.setAttribute('aria-expanded', 'true');
-            }
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+            if (!wasOpen) item.classList.add('open');
         }
 
         // Intersection Observer for scroll animations
