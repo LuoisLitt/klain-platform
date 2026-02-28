@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subsidiecheck | klain — Welke subsidies loopt u mis?</title>
+    <meta name="description" content="Ontdek in 2 minuten welke subsidies beschikbaar zijn voor uw bedrijf. Gratis subsidiecheck voor MKB-ondernemers.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0f1117;
+            --gray-900: #1a1d27;
+            --gray-700: #3d4152;
+            --gray-500: #6b7084;
+            --gray-400: #8e93a6;
+            --gray-200: #d1d5e0;
+            --gray-100: #eef0f5;
+            --gray-50: #f7f8fa;
+            --white: #ffffff;
+            --blue: #2563eb;
+            --blue-hover: #1d4ed8;
+            --blue-light: #eff6ff;
+            --blue-muted: #dbeafe;
+            --green: #16a34a;
+            --green-light: #f0fdf4;
+            --orange: #ea580c;
+            --orange-light: #fff7ed;
+            --red: #dc2626;
+            --red-light: #fef2f2;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-lg: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--black);
+            line-height: 1.6;
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 64px; background: rgba(255,255,255,1);
+            z-index: 1000; border-bottom: 1px solid var(--gray-100);
+        }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            height: 100%; display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo { text-decoration: none; }
+        .nav-cta {
+            background: var(--blue); color: var(--white); padding: 10px 22px;
+            border-radius: var(--radius-sm); text-decoration: none; font-size: 14px;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .nav-cta:hover { background: var(--blue-hover); transform: translateY(-1px); }
+
+        /* HERO */
+        .hero {
+            padding: 140px 24px 60px; text-align: center;
+            background: var(--white); position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(37,99,235,0.06), transparent);
+            pointer-events: none;
+        }
+        .hero h1 {
+            font-family: 'Fraunces', serif; font-size: clamp(32px, 5vw, 52px);
+            font-weight: 700; letter-spacing: -1px; line-height: 1.15;
+            margin-bottom: 20px; position: relative;
+        }
+        .hero p {
+            font-size: 18px; color: var(--gray-500); max-width: 600px;
+            margin: 0 auto 40px; position: relative;
+        }
+
+        /* STEPS FLOW */
+        .steps-flow {
+            display: flex; justify-content: center; gap: 48px;
+            margin-bottom: 20px; position: relative; flex-wrap: wrap;
+        }
+        .step-flow-item {
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+        }
+        .step-flow-num {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--blue-light); color: var(--blue);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 16px;
+        }
+        .step-flow-text { font-size: 14px; color: var(--gray-500); font-weight: 500; }
+
+        /* FORM SECTION */
+        .form-section {
+            padding: 40px 24px 80px;
+        }
+        .form-container {
+            max-width: 640px; margin: 0 auto;
+            background: var(--white); border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg); padding: 40px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        }
+
+        /* PROGRESS BAR */
+        .progress-bar-wrap {
+            background: var(--gray-100); border-radius: 100px;
+            height: 8px; margin-bottom: 32px; overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%; background: var(--blue); border-radius: 100px;
+            transition: width 0.4s ease; width: 0%;
+        }
+        .progress-label {
+            font-size: 13px; color: var(--gray-500); margin-bottom: 8px; font-weight: 500;
+        }
+
+        /* QUESTION STEPS */
+        .question-step { display: none; animation: fadeIn 0.3s ease; }
+        .question-step.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .question-step h3 {
+            font-size: 20px; font-weight: 600; margin-bottom: 20px; line-height: 1.4;
+        }
+        .question-step .q-number {
+            font-size: 13px; color: var(--blue); font-weight: 600; margin-bottom: 8px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        /* OPTIONS */
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option-btn {
+            display: block; width: 100%; text-align: left;
+            padding: 14px 20px; border: 1.5px solid var(--gray-200);
+            border-radius: var(--radius-sm); background: var(--white);
+            font-size: 15px; font-family: inherit; cursor: pointer;
+            transition: all 0.15s; color: var(--black);
+        }
+        .option-btn:hover { border-color: var(--blue); background: var(--blue-light); }
+        .option-btn.selected { border-color: var(--blue); background: var(--blue-light); color: var(--blue); font-weight: 500; }
+
+        /* MULTI SELECT */
+        .multi-hint { font-size: 13px; color: var(--gray-400); margin-bottom: 12px; }
+        .multi-next {
+            margin-top: 16px; background: var(--blue); color: var(--white);
+            border: none; padding: 12px 28px; border-radius: var(--radius-sm);
+            font-size: 15px; font-weight: 500; cursor: pointer; font-family: inherit;
+            transition: all 0.2s;
+        }
+        .multi-next:hover { background: var(--blue-hover); }
+        .multi-next:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* RESULTS */
+        .results-section {
+            padding: 0 24px 80px; display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .results-section.visible { display: block; }
+        .results-container { max-width: 900px; margin: 0 auto; }
+        .results-header {
+            text-align: center; margin-bottom: 40px;
+        }
+        .results-header h2 {
+            font-family: 'Fraunces', serif; font-size: 32px; font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .results-header p { color: var(--gray-500); font-size: 16px; }
+        .results-count {
+            display: inline-block; background: var(--blue-light); color: var(--blue);
+            padding: 6px 16px; border-radius: 100px; font-size: 14px; font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* SUBSIDY CARD */
+        .subsidy-card {
+            background: var(--white); border: 1px solid var(--gray-200);
+            border-radius: var(--radius); padding: 28px; margin-bottom: 16px;
+            transition: box-shadow 0.2s;
+        }
+        .subsidy-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+        .subsidy-card-top {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            gap: 16px; margin-bottom: 12px; flex-wrap: wrap;
+        }
+        .subsidy-name { font-size: 18px; font-weight: 600; line-height: 1.3; }
+        .subsidy-amount {
+            background: var(--blue-light); color: var(--blue); padding: 4px 12px;
+            border-radius: 100px; font-size: 13px; font-weight: 600; white-space: nowrap;
+        }
+        .subsidy-desc { color: var(--gray-500); font-size: 14px; margin-bottom: 12px; line-height: 1.5; }
+        .subsidy-meta {
+            display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px;
+        }
+        .subsidy-badge {
+            padding: 3px 10px; border-radius: 100px; font-size: 12px; font-weight: 600;
+        }
+        .badge-easy { background: var(--green-light); color: var(--green); }
+        .badge-medium { background: var(--orange-light); color: var(--orange); }
+        .badge-hard { background: var(--red-light); color: var(--red); }
+        .subsidy-target { font-size: 13px; color: var(--gray-400); }
+        .subsidy-link {
+            color: var(--blue); text-decoration: none; font-size: 14px; font-weight: 500;
+        }
+        .subsidy-link:hover { text-decoration: underline; }
+        .subsidy-match {
+            font-size: 12px; color: var(--gray-400); margin-top: 8px;
+        }
+
+        /* CTA BOTTOM */
+        .cta-section {
+            background: var(--black); color: var(--white); text-align: center;
+            padding: 80px 24px; border-radius: 0;
+        }
+        .cta-section h2 {
+            font-family: 'Fraunces', serif; font-size: 32px; font-weight: 700; margin-bottom: 16px;
+        }
+        .cta-section p { color: var(--gray-400); max-width: 500px; margin: 0 auto 32px; }
+        .btn-primary {
+            display: inline-block; background: var(--blue); color: var(--white);
+            padding: 14px 32px; border-radius: var(--radius-sm); text-decoration: none;
+            font-size: 16px; font-weight: 500; transition: all 0.2s;
+        }
+        .btn-primary:hover { background: var(--blue-hover); transform: translateY(-1px); }
+
+        /* NO RESULTS */
+        .no-results {
+            text-align: center; padding: 40px; color: var(--gray-500);
+        }
+        .no-results h3 { color: var(--black); margin-bottom: 8px; }
+
+        /* FOOTER */
+        footer {
+            background: var(--gray-50); padding: 64px 24px 32px;
+        }
+        .footer-grid {
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+        }
+        .footer-brand p { color: var(--gray-500); font-size: 14px; margin-top: 12px; }
+        .footer-col h4 { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+        .footer-col a {
+            display: block; color: var(--gray-500); text-decoration: none;
+            font-size: 14px; margin-bottom: 8px;
+        }
+        .footer-col a:hover { color: var(--black); }
+        .footer-bottom {
+            max-width: 1200px; margin: 48px auto 0; padding-top: 24px;
+            border-top: 1px solid var(--gray-200);
+            display: flex; justify-content: space-between;
+            font-size: 13px; color: var(--gray-400);
+        }
+        .footer-bottom a { color: var(--gray-400); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+            .form-container { padding: 24px; }
+            .steps-flow { gap: 24px; }
+            .subsidy-card-top { flex-direction: column; }
+        }
+        @media (max-width: 480px) {
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <a href="/" class="logo"><img src="images/klain-logo.jpg" alt="klain" height="36"></a>
+        <a href="https://klain.nl/#contact" class="nav-cta">Plan een kennismaking</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <h1>Welke subsidies loopt u mis?</h1>
+    <p>Beantwoord 7 korte vragen en ontdek direct welke subsidies en regelingen beschikbaar zijn voor uw bedrijf. Geheel vrijblijvend.</p>
+    <div class="steps-flow">
+        <div class="step-flow-item">
+            <div class="step-flow-num">1</div>
+            <div class="step-flow-text">Beantwoord 7 vragen</div>
+        </div>
+        <div class="step-flow-item">
+            <div class="step-flow-num">2</div>
+            <div class="step-flow-text">Wij matchen automatisch</div>
+        </div>
+        <div class="step-flow-item">
+            <div class="step-flow-num">3</div>
+            <div class="step-flow-text">Bekijk uw resultaten</div>
+        </div>
+    </div>
+</section>
+
+<!-- FORM -->
+<section class="form-section" id="subsidiecheck">
+    <div class="form-container">
+        <div class="progress-label">Vraag <span id="currentStep">1</span> van 7</div>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+        <!-- Q1 -->
+        <div class="question-step active" data-step="1">
+            <div class="q-number">Vraag 1 van 7</div>
+            <h3>In welke provincie is uw bedrijf gevestigd?</h3>
+            <div class="options">
+                <button class="option-btn" data-q="provincie" data-v="Drenthe">Drenthe</button>
+                <button class="option-btn" data-q="provincie" data-v="Groningen">Groningen</button>
+                <button class="option-btn" data-q="provincie" data-v="Friesland">Friesland</button>
+                <button class="option-btn" data-q="provincie" data-v="Overijssel">Overijssel</button>
+                <button class="option-btn" data-q="provincie" data-v="Overig">Overig</button>
+            </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question-step" data-step="2">
+            <div class="q-number">Vraag 2 van 7</div>
+            <h3>Hoeveel medewerkers heeft uw bedrijf?</h3>
+            <div class="options">
+                <button class="option-btn" data-q="medewerkers" data-v="<10">Minder dan 10</button>
+                <button class="option-btn" data-q="medewerkers" data-v="10-50">10 tot 50</button>
+                <button class="option-btn" data-q="medewerkers" data-v="50-250">50 tot 250</button>
+                <button class="option-btn" data-q="medewerkers" data-v=">250">Meer dan 250</button>
+            </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question-step" data-step="3">
+            <div class="q-number">Vraag 3 van 7</div>
+            <h3>Wat is uw jaarlijkse omzet?</h3>
+            <div class="options">
+                <button class="option-btn" data-q="omzet" data-v="<500k">Minder dan &euro;500.000</button>
+                <button class="option-btn" data-q="omzet" data-v="500k-2M">&euro;500.000 &ndash; &euro;2 miljoen</button>
+                <button class="option-btn" data-q="omzet" data-v="2M-10M">&euro;2 miljoen &ndash; &euro;10 miljoen</button>
+                <button class="option-btn" data-q="omzet" data-v=">10M">Meer dan &euro;10 miljoen</button>
+            </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question-step" data-step="4">
+            <div class="q-number">Vraag 4 van 7</div>
+            <h3>In welke sector bent u actief?</h3>
+            <div class="options">
+                <button class="option-btn" data-q="sector" data-v="Bouw">Bouw</button>
+                <button class="option-btn" data-q="sector" data-v="Techniek & Industrie">Techniek &amp; Industrie</button>
+                <button class="option-btn" data-q="sector" data-v="Zakelijke dienstverlening">Zakelijke dienstverlening</button>
+                <button class="option-btn" data-q="sector" data-v="Handel">Handel</button>
+                <button class="option-btn" data-q="sector" data-v="Zorg">Zorg</button>
+                <button class="option-btn" data-q="sector" data-v="Agrarisch">Agrarisch</button>
+                <button class="option-btn" data-q="sector" data-v="IT & Digitaal">IT &amp; Digitaal</button>
+                <button class="option-btn" data-q="sector" data-v="Overig">Overig</button>
+            </div>
+        </div>
+
+        <!-- Q5 (multi) -->
+        <div class="question-step" data-step="5">
+            <div class="q-number">Vraag 5 van 7</div>
+            <h3>Wat is uw focus de komende 12 maanden?</h3>
+            <div class="multi-hint">U kunt meerdere opties selecteren</div>
+            <div class="options" id="focusOptions">
+                <button class="option-btn" data-q="focus" data-v="Innovatie">Innovatie</button>
+                <button class="option-btn" data-q="focus" data-v="Digitalisering">Digitalisering</button>
+                <button class="option-btn" data-q="focus" data-v="Duurzaamheid">Duurzaamheid</button>
+                <button class="option-btn" data-q="focus" data-v="Personeel & training">Personeel &amp; training</button>
+                <button class="option-btn" data-q="focus" data-v="Internationalisering">Internationalisering</button>
+                <button class="option-btn" data-q="focus" data-v="Financiering">Financiering</button>
+                <button class="option-btn" data-q="focus" data-v="Geen specifiek">Geen specifiek</button>
+            </div>
+            <button class="multi-next" id="focusNext" disabled>Volgende</button>
+        </div>
+
+        <!-- Q6 -->
+        <div class="question-step" data-step="6">
+            <div class="q-number">Vraag 6 van 7</div>
+            <h3>Investeert u in nieuwe machines, software of installaties?</h3>
+            <div class="options">
+                <button class="option-btn" data-q="investering" data-v="Ja">Ja</button>
+                <button class="option-btn" data-q="investering" data-v="Nee">Nee</button>
+                <button class="option-btn" data-q="investering" data-v="Mogelijk">Mogelijk</button>
+            </div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="question-step" data-step="7">
+            <div class="q-number">Vraag 7 van 7</div>
+            <h3>Heeft u personeel in dienst?</h3>
+            <div class="options">
+                <button class="option-btn" data-q="personeel" data-v="Ja">Ja</button>
+                <button class="option-btn" data-q="personeel" data-v="Nee">Nee</button>
+                <button class="option-btn" data-q="personeel" data-v="ZZP">ZZP</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- RESULTS -->
+<section class="results-section" id="results">
+    <div class="results-container">
+        <div class="results-header">
+            <div class="results-count" id="resultsCount"></div>
+            <h2>Uw subsidieresultaten</h2>
+            <p>Op basis van uw antwoorden komen de volgende subsidies en regelingen in aanmerking.</p>
+        </div>
+        <div id="resultsGrid"></div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="ctaBottom" style="display:none;">
+    <h2>Wilt u weten hoe u deze subsidies aanvraagt?</h2>
+    <p>Ik help u verder. Plan een gratis kennismaking en we bespreken welke subsidies het meest kansrijk zijn voor uw situatie.</p>
+    <a href="https://klain.nl/#contact" class="btn-primary">Plan een gratis kennismaking</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <a href="/" class="logo"><img src="images/klain-logo.jpg" alt="klain" style="height: 46px; width: auto;"></a>
+            <p>AI-automatisering voor MKB ondernemers. Minder gedoe, meer grip op uw zaak.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Product</h4>
+            <a href="/#oplossingen">Weekrapportages</a>
+            <a href="/#oplossingen">Offerte Generator</a>
+            <a href="/#oplossingen">Cashflow Forecast</a>
+            <a href="subsidiecheck">Subsidiecheck</a>
+        </div>
+        <div class="footer-col">
+            <h4>Demo's</h4>
+            <a href="demo">Weekrapport</a>
+            <a href="demo-offerte">Offerte Keuken</a>
+            <a href="demo-offerte-bouw">Offerte Bouw</a>
+            <a href="demo-cashflow">Cashflow</a>
+        </div>
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <a href="mailto:ernst@klain.nl">ernst@klain.nl</a>
+            <a href="/#prijzen">Prijzen</a>
+            <a href="/#werkwijze">Werkwijze</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 klain</p>
+        <a href="#">Privacy</a>
+    </div>
+</footer>
+
+<script>
+// Subsidie database
+const subsidies = [
+    // NATIONAAL
+    { id:1, naam:"WBSO", bedrag:"36% loonkosten (budget \u20AC1,8 mrd)", beschrijving:"Verlaging loonkosten voor technisch onderzoek en ontwikkeling. Breed toepasbaar voor elk innoverend bedrijf.", doelgroep:"Alle bedrijven die R&D uitvoeren", complexiteit:"Gemiddeld", url:"https://www.rvo.nl/subsidies-financiering/wbso", provincies:["alle"], sectoren:["alle"], focus:["Innovatie"], medewerkers:["alle"], investering:["alle"], personeel:["Ja","ZZP"] },
+    { id:2, naam:"Innovatiebox", bedrag:"9% VPB-tarief op innovatiewinsten", beschrijving:"Verlaagd vennootschapsbelastingtarief op winst uit WBSO-ondersteunde innovaties.", doelgroep:"Bedrijven met WBSO en innovatiewinst", complexiteit:"Complex", url:"https://www.belastingdienst.nl/wps/wcm/connect/nl/innovatiebox/", provincies:["alle"], sectoren:["alle"], focus:["Innovatie"], medewerkers:["alle"], investering:["alle"], personeel:["Ja"] },
+    { id:3, naam:"MIA (Milieu-investeringsaftrek)", bedrag:"27-45% extra aftrek", beschrijving:"Extra aftrekpost op milieu-investeringen bovenop normale afschrijving.", doelgroep:"Ondernemers met milieuvriendelijke investeringen", complexiteit:"Gemiddeld", url:"https://www.rvo.nl/subsidies-financiering/mia-vamil/ondernemers", provincies:["alle"], sectoren:["alle"], focus:["Duurzaamheid"], medewerkers:["alle"], investering:["Ja","Mogelijk"], personeel:["alle"] },
+    { id:4, naam:"Vamil", bedrag:"75% willekeurig afschrijven", beschrijving:"Zelf bepalen wanneer u afschrijft op milieu-investeringen voor liquiditeitsvoordeel.", doelgroep:"Ondernemers met milieu-investeringen", complexiteit:"Gemiddeld", url:"https://www.rvo.nl/subsidies-financiering/mia-vamil/ondernemers", provincies:["alle"], sectoren:["alle"], focus:["Duurzaamheid"], medewerkers:["alle"], investering:["Ja","Mogelijk"], personeel:["alle"] },
+    { id:5, naam:"EIA (Energie-investeringsaftrek)", bedrag:"45,5% aftrek", beschrijving:"Extra aftrekpost op energiebesparende investeringen. Minimaal \u20AC2.500.", doelgroep:"Ondernemers met energiebesparende investeringen", complexiteit:"Gemiddeld", url:"https://www.rvo.nl/subsidies-financiering/eia", provincies:["alle"], sectoren:["alle"], focus:["Duurzaamheid"], medewerkers:["alle"], investering:["Ja","Mogelijk"], personeel:["alle"] },
+    { id:6, naam:"ISDE", bedrag:"Tot 30% van investering", beschrijving:"Subsidie voor warmtepompen, zonneboilers, isolatie en ventilatie voor bedrijfspanden.", doelgroep:"Zakelijke gebruikers (incl. MKB)", complexiteit:"Laagdrempelig", url:"https://www.rvo.nl/subsidies-financiering/isde/zakelijke-gebruikers", provincies:["alle"], sectoren:["Bouw","Techniek & Industrie","Handel","Zakelijke dienstverlening","Zorg","Agrarisch","IT & Digitaal","Overig"], focus:["Duurzaamheid"], medewerkers:["alle"], investering:["Ja","Mogelijk"], personeel:["alle"] },
+    { id:7, naam:"BMKB (Borgstelling MKB-kredieten)", bedrag:"75% borgstelling", beschrijving:"De overheid staat borg voor maximaal 75% van uw lening bij onvoldoende onderpand.", doelgroep:"MKB (<250 werknemers), incl. starters", complexiteit:"Gemiddeld", url:"https://www.rvo.nl/subsidies-financiering/bmkb", provincies:["alle"], sectoren:["alle"], focus:["Financiering"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+    { id:8, naam:"Innovatiekrediet", bedrag:"Max. \u20AC10 miljoen", beschrijving:"Lening voor de ontwikkeling van technisch risicovolle innovatieve producten of processen.", doelgroep:"Innovatieve bedrijven met technisch risico", complexiteit:"Complex", url:"https://www.rvo.nl/subsidies-financiering/innovatiekrediet", provincies:["alle"], sectoren:["alle"], focus:["Innovatie"], medewerkers:["alle"], investering:["Ja"], personeel:["Ja"] },
+    { id:9, naam:"VFF (Vroegefasefinanciering)", bedrag:"Max. \u20AC450.000", beschrijving:"Krediet om de haalbaarheid van een innovatief idee te onderzoeken (proof of concept).", doelgroep:"Starters en innovatieve MKB'ers", complexiteit:"Complex", url:"https://www.rvo.nl/subsidies-financiering/vff", provincies:["alle"], sectoren:["alle"], focus:["Innovatie","Financiering"], medewerkers:["<10","10-50"], investering:["alle"], personeel:["alle"] },
+    { id:10, naam:"SLIM-regeling", bedrag:"Max. \u20AC24.999", beschrijving:"Subsidie voor initiatieven gericht op leren en ontwikkelen van werknemers.", doelgroep:"MKB-ondernemingen", complexiteit:"Gemiddeld", url:"https://www.rvo.nl/subsidies-financiering/slim", provincies:["alle"], sectoren:["alle"], focus:["Personeel & training"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["Ja"] },
+    { id:11, naam:"Subsidieregeling Praktijkleren", bedrag:"Max. \u20AC2.700 per plek", beschrijving:"Vergoeding voor het begeleiden van leerlingen en studenten op de werkvloer.", doelgroep:"Werkgevers met leerwerkplekken", complexiteit:"Laagdrempelig", url:"https://www.rvo.nl/subsidies-financiering/praktijkleren", provincies:["alle"], sectoren:["alle"], focus:["Personeel & training"], medewerkers:["alle"], investering:["alle"], personeel:["Ja"] },
+    { id:12, naam:"MIT-Haalbaarheidsprojecten", bedrag:"Max. \u20AC20.000", beschrijving:"Subsidie voor haalbaarheidsonderzoek van innovatieve producten, processen of diensten.", doelgroep:"MKB-ondernemers met innovatief idee", complexiteit:"Gemiddeld", url:"https://www.rvo.nl/subsidies-financiering/mit", provincies:["Drenthe","Groningen","Friesland","Overijssel"], sectoren:["alle"], focus:["Innovatie"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+    { id:13, naam:"MIT R&D-samenwerkingsprojecten", bedrag:"Max. \u20AC350.000", beschrijving:"Subsidie voor R&D-samenwerking tussen minimaal 2 MKB-bedrijven.", doelgroep:"Samenwerkende MKB'ers", complexiteit:"Complex", url:"https://www.rvo.nl/subsidies-financiering/mit", provincies:["Drenthe","Groningen","Friesland","Overijssel"], sectoren:["alle"], focus:["Innovatie"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["Ja"] },
+    { id:14, naam:"DEI+ (Demonstratie Energie- en Klimaatinnovatie)", bedrag:"25-45% van kosten", beschrijving:"Subsidie voor pilot of demonstratie van CO\u2082-reducerende energietechnologie.", doelgroep:"Bedrijven met klimaatinnovaties", complexiteit:"Complex", url:"https://www.rvo.nl/subsidies-financiering/dei", provincies:["alle"], sectoren:["Techniek & Industrie","Bouw"], focus:["Innovatie","Duurzaamheid"], medewerkers:["alle"], investering:["Ja"], personeel:["Ja"] },
+    { id:15, naam:"Regeling Groenprojecten", bedrag:"Lage rente via groenfonds", beschrijving:"Financiering tegen gunstige rente via een groenverklaring bij de bank.", doelgroep:"Ondernemers met duurzame projecten", complexiteit:"Complex", url:"https://www.rvo.nl/subsidies-financiering/regeling-groenprojecten", provincies:["alle"], sectoren:["alle"], focus:["Duurzaamheid","Financiering"], medewerkers:["alle"], investering:["Ja","Mogelijk"], personeel:["alle"] },
+
+    // REGIONAAL NOORD-NEDERLAND (SNN)
+    { id:23, naam:"VIA Drenthe-Frysl\u00e2n 2025-2026 (EFRO)", bedrag:"Max. \u20AC100.000", beschrijving:"Subsidie voor onderzoeks- of ontwikkelingsproject voor een nieuw product, dienst of proc\u00e9d\u00e9.", doelgroep:"MKB in Drenthe of Friesland", complexiteit:"Complex", url:"https://www.snn.nl/via-drenthefryslan", provincies:["Drenthe","Friesland"], sectoren:["alle"], focus:["Innovatie"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+    { id:24, naam:"VIA Groningen 2025-2026 (JTF)", bedrag:"Max. \u20AC100.000", beschrijving:"Subsidie voor innovatieve projecten van MKB-ondernemers in Groningen.", doelgroep:"MKB in Groningen", complexiteit:"Complex", url:"https://www.snn.nl/zakelijke-subsidies/subsidie-groningen-2025-2026-jtf", provincies:["Groningen"], sectoren:["alle"], focus:["Innovatie"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+    { id:25, naam:"MKB Digitalisering & Robotisering 2.0 (JTF)", bedrag:"50% van kosten", beschrijving:"Subsidie voor digitaliseringsadvies en investering in hard- en software.", doelgroep:"MKB in Groningen", complexiteit:"Gemiddeld", url:"https://www.snn.nl/zakelijke-subsidies/subsidie-mkb-digitalisering-en-robotisering-20-jtf", provincies:["Groningen"], sectoren:["Techniek & Industrie","Bouw","Handel","IT & Digitaal","Overig"], focus:["Digitalisering"], medewerkers:["<10","10-50","50-250"], investering:["Ja","Mogelijk"], personeel:["alle"] },
+    { id:26, naam:"MKB Personeel & Scholing (JTF)", bedrag:"50% van kosten", beschrijving:"Subsidie voor strategisch personeelsadvies, bijscholing en werving.", doelgroep:"MKB in Groningen", complexiteit:"Gemiddeld", url:"https://www.snn.nl/zakelijke-subsidies/subsidie-mkb-personeel-en-scholing-jtf", provincies:["Groningen"], sectoren:["alle"], focus:["Personeel & training"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["Ja"] },
+    { id:27, naam:"MKB Haalbaarheidsvoucher (EFRO)", bedrag:"Voucher", beschrijving:"Voucher voor haalbaarheidsonderzoek bij een noordelijke proeftuin.", doelgroep:"MKB in Noord-Nederland", complexiteit:"Gemiddeld", url:"https://www.snn.nl/zakelijke-subsidies/mkb-haalbaarheidsvoucher-efro", provincies:["Drenthe","Groningen","Friesland"], sectoren:["alle"], focus:["Innovatie"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+    { id:31, naam:"Subsidie Energiebesparing Drents MKB", bedrag:"Variabel", beschrijving:"Subsidie voor energiebesparende maatregelen voor Drentse MKB-ondernemers.", doelgroep:"MKB in Drenthe", complexiteit:"Gemiddeld", url:"https://www.snn.nl/zakelijke-subsidies/subsidie-energiebesparing-drents-mkb", provincies:["Drenthe"], sectoren:["alle"], focus:["Duurzaamheid"], medewerkers:["<10","10-50","50-250"], investering:["Ja","Mogelijk"], personeel:["alle"] },
+    { id:32, naam:"Digitaliseringsvoucher Drenthe", bedrag:"Voucher", beschrijving:"Voucher voor digitalisering van bedrijfsprocessen voor Drentse ondernemers.", doelgroep:"MKB in Drenthe", complexiteit:"Laagdrempelig", url:"https://www.snn.nl/zakelijke-subsidies/digitaliseringsvoucher-drenthe-2023", provincies:["Drenthe"], sectoren:["alle"], focus:["Digitalisering"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+    { id:34, naam:"Adviesvoucherregeling Frysl\u00e2n 2025-2027", bedrag:"Voucher voor advies", beschrijving:"Voucher voor deskundig advies over innovatie en verduurzaming voor Friese ondernemers.", doelgroep:"MKB in Friesland", complexiteit:"Laagdrempelig", url:"https://www.snn.nl/zakelijke-subsidies/adviesvoucherregeling-fryslan-2025-2027", provincies:["Friesland"], sectoren:["alle"], focus:["Innovatie","Duurzaamheid"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+
+    // PROVINCIAAL DRENTHE
+    { id:35, naam:"Advies Voucher MKB Drenthe", bedrag:"Max. \u20AC3.000", beschrijving:"Tot 50% van advieskosten vergoed. Familiebedrijven tot 60%. Zeer laagdrempelig.", doelgroep:"MKB in Drenthe", complexiteit:"Laagdrempelig", url:"https://www.provincie.drenthe.nl/loket/producten-diensten/subsidie-advies-voucher-mkb/", provincies:["Drenthe"], sectoren:["alle"], focus:["Innovatie","Digitalisering","Duurzaamheid","Personeel & training","Internationalisering","Financiering"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+    { id:37, naam:"Subsidie Internationaal Ondernemen Drenthe 2.0", bedrag:"Variabel", beschrijving:"Subsidie voor internationaliseringsactiviteiten van Drentse MKB-ondernemers.", doelgroep:"MKB in Drenthe", complexiteit:"Gemiddeld", url:"https://gemeente.emmen.nl/subsidies-voor-ondernemers", provincies:["Drenthe"], sectoren:["alle"], focus:["Internationalisering"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+
+    // PROVINCIAAL GRONINGEN
+    { id:41, naam:"Innovatief & Duurzaam MKB-5 Groningen", bedrag:"Variabel", beschrijving:"Subsidie voor innovatie en verduurzaming van bedrijfsvoering in Groningen.", doelgroep:"MKB in Groningen", complexiteit:"Gemiddeld", url:"https://www.provinciegroningen.nl/subsidies/werken-en-ondernemen/innovatief-en-duurzaam-mkb-5/", provincies:["Groningen"], sectoren:["alle"], focus:["Innovatie","Duurzaamheid"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+    { id:42, naam:"Investeringsregeling MKB Groningen", bedrag:"Max. \u20AC50.000 (80%)", beschrijving:"Tot 80% subsidie op investeringen voor kleine ondernemers in het Groningse aardbevingsgebied.", doelgroep:"Kleine ondernemers in aardbevingsgebied", complexiteit:"Gemiddeld", url:"https://www.provinciegroningen.nl/subsidies/werken-en-ondernemen/investeringsregeling-van-het-mkb-programma/", provincies:["Groningen"], sectoren:["alle"], focus:["Financiering","Innovatie","Duurzaamheid"], medewerkers:["<10","10-50"], investering:["Ja","Mogelijk"], personeel:["alle"] },
+    { id:43, naam:"Verduurzamingsadvies MKB Groningen", bedrag:"Max. \u20AC2.500", beschrijving:"Advies bij verduurzaming van panden en bedrijfsprocessen.", doelgroep:"MKB in Groningen", complexiteit:"Laagdrempelig", url:"https://www.provinciegroningen.nl/subsidies/werken-en-ondernemen/verduurzaming-mkb/", provincies:["Groningen"], sectoren:["alle"], focus:["Duurzaamheid"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+    { id:44, naam:"Groninger Ondernemersregeling (vouchers)", bedrag:"Max. \u20AC5.000 (50%)", beschrijving:"Advieskosten via erkend ondernemersprogramma vergoed.", doelgroep:"MKB in Groningen", complexiteit:"Laagdrempelig", url:"https://www.provinciegroningen.nl/subsidies/werken-en-ondernemen/groninger-ondernemersregeling-vouchers/", provincies:["Groningen"], sectoren:["alle"], focus:["Innovatie","Digitalisering","Duurzaamheid","Personeel & training","Financiering"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+
+    // PROVINCIAAL FRIESLAND
+    { id:47, naam:"MKB-voucherregeling Frysl\u00e2n", bedrag:"\u20AC2 mln totaalbudget", beschrijving:"Vouchers voor innovatieve, digitale en duurzame projecten voor Friese MKB'ers.", doelgroep:"MKB in Friesland", complexiteit:"Laagdrempelig", url:"https://www.fryslan.frl/mkb-voucherregeling", provincies:["Friesland"], sectoren:["alle"], focus:["Innovatie","Digitalisering","Duurzaamheid"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+
+    // PROVINCIAAL OVERIJSSEL
+    { id:51, naam:"Digitale en Circulaire Industrie Overijssel", bedrag:"Variabel", beschrijving:"Subsidie voor digitalisering en circulair ondernemen in de industrie.", doelgroep:"Industri\u00eble MKB'ers in Overijssel", complexiteit:"Gemiddeld", url:"https://regelen.overijssel.nl/Producten_en_diensten/Subsidies/Werken_en_ondernemen/industrie", provincies:["Overijssel"], sectoren:["Techniek & Industrie","Bouw"], focus:["Digitalisering","Duurzaamheid"], medewerkers:["<10","10-50","50-250"], investering:["Ja","Mogelijk"], personeel:["alle"] },
+    { id:52, naam:"MIT-Haalbaarheidsprojecten Overijssel", bedrag:"Max. \u20AC20.000", beschrijving:"Haalbaarheidsonderzoek voor innovatie binnen Topsectoren, specifiek voor Overijssel.", doelgroep:"MKB in Overijssel", complexiteit:"Gemiddeld", url:"https://regelen.overijssel.nl/Producten_en_diensten/Subsidies/Werken_en_ondernemen/MIT_Haalbaarheidsprojecten", provincies:["Overijssel"], sectoren:["alle"], focus:["Innovatie"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+    { id:56, naam:"Energie-innovatie Overijssel", bedrag:"Variabel", beschrijving:"Subsidie voor het uitwerken van een energie-innovatie idee.", doelgroep:"MKB in Overijssel", complexiteit:"Complex", url:"https://www.nieuweenergieoverijssel.nl/organisatie/subsidie/", provincies:["Overijssel"], sectoren:["Techniek & Industrie","Bouw","IT & Digitaal"], focus:["Innovatie","Duurzaamheid"], medewerkers:["alle"], investering:["Ja","Mogelijk"], personeel:["alle"] },
+
+    // EUROPEES (relevant)
+    { id:70, naam:"EUIPO MKB-Fonds (IE-bescherming)", bedrag:"Vouchers voor IE-kosten", beschrijving:"Vouchers voor bescherming van merken, octrooien en modellen.", doelgroep:"MKB in de EU", complexiteit:"Gemiddeld", url:"https://www.euipo.europa.eu/nl/sme-corner/sme-fund", provincies:["alle"], sectoren:["alle"], focus:["Innovatie"], medewerkers:["<10","10-50","50-250"], investering:["alle"], personeel:["alle"] },
+];
+
+// State
+const answers = {};
+let currentStep = 1;
+
+function matchesArr(subsidieArr, value) {
+    if (!subsidieArr || subsidieArr.includes("alle")) return true;
+    if (Array.isArray(value)) return value.some(v => subsidieArr.includes(v));
+    return subsidieArr.includes(value);
+}
+
+function scoreSubsidie(s) {
+    let score = 0;
+    // Provincie
+    if (matchesArr(s.provincies, answers.provincie)) score++;
+    // Sector
+    if (matchesArr(s.sectoren, answers.sector)) score++;
+    // Medewerkers
+    if (matchesArr(s.medewerkers, answers.medewerkers)) score++;
+    // Focus
+    if (matchesArr(s.focus, answers.focus)) score++;
+    // Investering
+    if (matchesArr(s.investering, answers.investering)) score++;
+    // Personeel
+    if (matchesArr(s.personeel, answers.personeel)) score++;
+    return score;
+}
+
+function complexityBadge(c) {
+    if (c === "Laagdrempelig") return '<span class="subsidy-badge badge-easy">Laagdrempelig</span>';
+    if (c === "Gemiddeld") return '<span class="subsidy-badge badge-medium">Gemiddeld</span>';
+    return '<span class="subsidy-badge badge-hard">Complex</span>';
+}
+
+function showResults() {
+    const scored = subsidies.map(s => ({ ...s, score: scoreSubsidie(s) }))
+        .filter(s => s.score >= 2)
+        .sort((a, b) => b.score - a.score);
+
+    const grid = document.getElementById('resultsGrid');
+    const section = document.getElementById('results');
+    const cta = document.getElementById('ctaBottom');
+    const countEl = document.getElementById('resultsCount');
+
+    if (scored.length === 0) {
+        countEl.textContent = '0 resultaten';
+        grid.innerHTML = '<div class="no-results"><h3>Geen directe matches gevonden</h3><p>Op basis van uw antwoorden zijn er geen subsidies met voldoende overlap gevonden. Neem contact op voor een persoonlijk advies.</p></div>';
+    } else {
+        countEl.textContent = scored.length + ' subsidie' + (scored.length !== 1 ? 's' : '') + ' gevonden';
+        grid.innerHTML = scored.map(s => `
+            <div class="subsidy-card">
+                <div class="subsidy-card-top">
+                    <div class="subsidy-name">${s.naam}</div>
+                    <div class="subsidy-amount">${s.bedrag}</div>
+                </div>
+                <div class="subsidy-desc">${s.beschrijving}</div>
+                <div class="subsidy-meta">
+                    ${complexityBadge(s.complexiteit)}
+                    <span class="subsidy-target">${s.doelgroep}</span>
+                </div>
+                <a href="${s.url}" target="_blank" rel="noopener" class="subsidy-link">Meer informatie &rarr;</a>
+            </div>
+        `).join('');
+    }
+
+    section.classList.add('visible');
+    cta.style.display = 'block';
+    document.getElementById('subsidiecheck').style.display = 'none';
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function goToStep(step) {
+    currentStep = step;
+    document.querySelectorAll('.question-step').forEach(el => el.classList.remove('active'));
+    const target = document.querySelector(`.question-step[data-step="${step}"]`);
+    if (target) target.classList.add('active');
+    document.getElementById('currentStep').textContent = step;
+    document.getElementById('progressBar').style.width = ((step - 1) / 7 * 100) + '%';
+}
+
+function nextStep() {
+    if (currentStep < 7) {
+        goToStep(currentStep + 1);
+    } else {
+        document.getElementById('progressBar').style.width = '100%';
+        setTimeout(showResults, 300);
+    }
+}
+
+// Single-select buttons
+document.querySelectorAll('.question-step:not([data-step="5"]) .option-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const q = this.dataset.q;
+        const v = this.dataset.v;
+        answers[q] = v;
+        this.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+        setTimeout(nextStep, 250);
+    });
+});
+
+// Multi-select (Q5)
+const focusSelected = new Set();
+document.querySelectorAll('#focusOptions .option-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const v = this.dataset.v;
+        if (v === "Geen specifiek") {
+            focusSelected.clear();
+            document.querySelectorAll('#focusOptions .option-btn').forEach(b => b.classList.remove('selected'));
+            focusSelected.add(v);
+            this.classList.add('selected');
+        } else {
+            const noSpec = document.querySelector('#focusOptions .option-btn[data-v="Geen specifiek"]');
+            if (noSpec) noSpec.classList.remove('selected');
+            focusSelected.delete("Geen specifiek");
+            if (focusSelected.has(v)) {
+                focusSelected.delete(v);
+                this.classList.remove('selected');
+            } else {
+                focusSelected.add(v);
+                this.classList.add('selected');
+            }
+        }
+        answers.focus = Array.from(focusSelected);
+        document.getElementById('focusNext').disabled = focusSelected.size === 0;
+    });
+});
+
+document.getElementById('focusNext').addEventListener('click', function() {
+    if (focusSelected.size > 0) nextStep();
+});
+
+// Init
+goToStep(1);
+</script>
+
+</body>
+</html>
