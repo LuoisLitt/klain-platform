@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /demo-dura-login/
+Disallow: /demo-dura-dashboard/
+Disallow: /demo-dura-warehouse/
+
+Sitemap: https://klain.nl/sitemap.xml
