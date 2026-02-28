@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina niet gevonden | klain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0f1117;
+            --gray-500: #6b7084;
+            --gray-100: #eef0f5;
+            --white: #ffffff;
+            --blue: #2563eb;
+            --blue-hover: #1d4ed8;
+            --radius-sm: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            color: var(--black);
+            background: var(--white);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+        }
+        .container { max-width: 480px; }
+        .code {
+            font-family: 'Fraunces', serif;
+            font-size: 120px;
+            font-weight: 700;
+            color: var(--gray-100);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        p {
+            color: var(--gray-500);
+            font-size: 16px;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            background: var(--blue);
+            color: var(--white);
+            padding: 12px 28px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn:hover { background: var(--blue-hover); transform: translateY(-1px); }
+        .links {
+            margin-top: 24px;
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .links a {
+            color: var(--gray-500);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        .links a:hover { color: var(--blue); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="code">404</div>
+        <h1>Pagina niet gevonden</h1>
+        <p>Deze pagina bestaat niet of is verplaatst. Geen zorgen — hieronder vindt u de weg terug.</p>
+        <a href="/" class="btn">Terug naar home</a>
+        <div class="links">
+            <a href="/demo">Demo's</a>
+            <a href="/subsidiecheck">Subsidiecheck</a>
+            <a href="/ai-scan">AI Scan</a>
+        </div>
+    </div>
+</body>
+</html>

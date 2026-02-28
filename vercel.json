@@ -6,6 +6,8 @@
       "destination": "/gripai-website/$1"
     }
   ],
+  "redirects": [],
+  "trailingSlash": false,
   "headers": [
     {
       "source": "/(.*)\\.html",
