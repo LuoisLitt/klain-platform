@@ -611,9 +611,14 @@ function complexityBadge(c) {
 }
 
 function showResults() {
+    const complexOrder = { "Laagdrempelig": 0, "Gemiddeld": 1, "Complex": 2 };
     const scored = subsidies.map(s => ({ ...s, score: scoreSubsidie(s) }))
         .filter(s => s.score >= 2)
-        .sort((a, b) => b.score - a.score);
+        .sort((a, b) => {
+            const cDiff = (complexOrder[a.complexiteit] ?? 1) - (complexOrder[b.complexiteit] ?? 1);
+            if (cDiff !== 0) return cDiff;
+            return b.score - a.score;
+        });
 
     const grid = document.getElementById('resultsGrid');
     const section = document.getElementById('results');
