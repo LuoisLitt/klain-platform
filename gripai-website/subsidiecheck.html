@@ -525,18 +525,14 @@ function matchesArr(subsidieArr, value) {
 }
 
 function scoreSubsidie(s) {
-    let score = 0;
-    // Provincie
-    if (matchesArr(s.provincies, answers.provincie)) score++;
-    // Sector
+    // Provincie is verplicht — geen match = meteen uitsluiten
+    if (!matchesArr(s.provincies, answers.provincie)) return 0;
+
+    let score = 1; // provincie matched
     if (matchesArr(s.sectoren, answers.sector)) score++;
-    // Medewerkers
     if (matchesArr(s.medewerkers, answers.medewerkers)) score++;
-    // Focus
     if (matchesArr(s.focus, answers.focus)) score++;
-    // Investering
     if (matchesArr(s.investering, answers.investering)) score++;
-    // Personeel
     if (matchesArr(s.personeel, answers.personeel)) score++;
     return score;
 }
