@@ -169,6 +169,9 @@
             .kpi-grid { grid-template-columns: 1fr; }
             .kpi-grid-4 { grid-template-columns: 1fr 1fr; }
         }
+        .upload-spinner { width: 36px; height: 36px; border: 3px solid var(--blue-muted); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #upload-zone-card:hover { border-color: var(--blue) !important; background: var(--blue-light) !important; }
     </style>
 </head>
 <body>
@@ -373,6 +376,28 @@
                 </div>
             </div>
 
+
+            <!-- Upload zone -->
+            <div class="card" id="upload-zone-card" style="border: 2px dashed var(--gray-200); background: var(--white); text-align: center; padding: 32px; cursor: pointer; transition: all .2s;" onclick="document.getElementById('ink-file-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--blue)';this.style.background='var(--blue-light)'" ondragleave="this.style.borderColor='var(--gray-200)';this.style.background='var(--white)'" ondrop="event.preventDefault();this.style.borderColor='var(--gray-200)';this.style.background='var(--white)';simulateUpload(event.dataTransfer.files[0])">
+                <div id="upload-default-state">
+                    <div style="font-size: 32px; margin-bottom: 12px;">📄</div>
+                    <h2 style="margin-bottom: 8px;">Factuur uploaden</h2>
+                    <p style="color: var(--blue); font-weight: 500; margin-bottom: 4px;">Klik om PDF of foto te uploaden</p>
+                    <p style="color: var(--gray-400); font-size: 13px; margin-bottom: 12px;">of sleep hier naartoe</p>
+                    <p style="color: var(--gray-400); font-size: 12px;">Ondersteund: PDF, JPG, PNG</p>
+                </div>
+                <div id="upload-loading-state" style="display:none">
+                    <div class="upload-spinner"></div>
+                    <p style="color: var(--blue); font-weight: 500; margin-top: 16px;">Klain leest uw factuur uit...</p>
+                </div>
+                <input type="file" id="ink-file-input" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="simulateUpload(this.files[0])">
+            </div>
+            <p style="font-size: 13px; color: var(--gray-400); text-align: center; margin-top: -12px; margin-bottom: 20px;">Klain koppelt dit aan uw BTW-aangifte. Nooit meer handmatig overtypen.</p>
+
+            <div id="upload-success-banner" style="display:none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 16px;">
+                <p style="color: #16a34a; font-weight: 500; font-size: 14px;">✓ Klain heeft uw factuur uitgelezen. Controleer de gegevens en klik op Toevoegen.</p>
+                <p style="color: var(--gray-400); font-size: 12px; margin-top: 4px;">In de volledige versie leest Klain echte facturen automatisch uit via AI.</p>
+            </div>
             <div class="card">
                 <h2>Inkoopfactuur toevoegen</h2>
                 <div class="form-grid">
@@ -958,6 +983,45 @@ function renderInkoop(){
     }).join('')+'</tbody></table>';
 }
 
+
+function simulateUpload(file) {
+    if (!file) return;
+    // Prevent card click from triggering during loading
+    var card = document.getElementById('upload-zone-card');
+    card.style.pointerEvents = 'none';
+    document.getElementById('upload-default-state').style.display = 'none';
+    document.getElementById('upload-loading-state').style.display = 'block';
+    document.getElementById('upload-success-banner').style.display = 'none';
+
+    var leveranciers = [
+        { naam: 'Kantoorartikelen Smit', omschr: 'Kantoorbenodigdheden' },
+        { naam: 'Office Depot', omschr: 'Printpapier en toners' },
+        { naam: 'Telecom Noord', omschr: 'Telefoonabonnement' },
+        { naam: 'Lease Auto BV', omschr: 'Leasekosten bedrijfsauto' },
+        { naam: 'Drukkerij Jansen', omschr: 'Drukwerk visitekaartjes' }
+    ];
+
+    setTimeout(function() {
+        var pick = leveranciers[Math.floor(Math.random() * leveranciers.length)];
+        var bedrag = (Math.floor(Math.random() * 91) + 10) * 5; // 50-500 in steps of 5
+
+        document.getElementById('ink-leverancier').value = pick.naam;
+        document.getElementById('ink-datum').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('ink-omschr').value = pick.omschr;
+        document.getElementById('ink-excl').value = bedrag;
+        document.getElementById('ink-btw-tarief').value = '21';
+        calcInkoop();
+
+        // Reset upload zone
+        document.getElementById('upload-default-state').style.display = 'block';
+        document.getElementById('upload-loading-state').style.display = 'none';
+        card.style.pointerEvents = 'auto';
+        document.getElementById('ink-file-input').value = '';
+
+        // Show success banner
+        document.getElementById('upload-success-banner').style.display = 'block';
+    }, 2000);
+}
 initData();
 loadProfiel();
 renderKlanten();
