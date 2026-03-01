@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://klain.nl/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://klain.nl/demo</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://klain.nl/ai-scan</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://klain.nl/subsidiecheck</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://klain.nl/demo</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://klain.nl/demo-offerte</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://klain.nl/demo-offerte-bouw</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://klain.nl/demo-cashflow</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://klain.nl/demo-debiteuren</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://klain.nl/demo-uren</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://klain.nl/subsidiecheck</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://klain.nl/ai-scan</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://klain.nl/privacy</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
 </urlset>
