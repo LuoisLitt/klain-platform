@@ -206,6 +206,10 @@
             <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
             Facturen
         </a>
+        <a href="#" data-section="inkoop">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
+            Inkoop
+        </a>
         <a href="#" data-section="btw">
             <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z"/></svg>
             BTW Aangifte
@@ -348,6 +352,55 @@
             </div>
         </div>
 
+
+        <!-- INKOOP -->
+        <div class="section" id="sec-inkoop">
+            <h1>Inkoop</h1>
+            <p class="subtitle">Beheer uw inkoopfacturen en voorbelasting</p>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-value" id="kpi-inkoop-excl">&euro;0,00</div>
+                    <div class="kpi-label">Totaal inkopen excl. BTW (deze maand)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" id="kpi-inkoop-btw">&euro;0,00</div>
+                    <div class="kpi-label">Totale voorbelasting (deze maand)</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" id="kpi-inkoop-aantal">0</div>
+                    <div class="kpi-label">Aantal inkoopfacturen</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Inkoopfactuur toevoegen</h2>
+                <div class="form-grid">
+                    <div><label>Leverancier</label><input id="ink-leverancier" placeholder="Naam leverancier"></div>
+                    <div><label>Datum</label><input id="ink-datum" type="date"></div>
+                    <div><label>Omschrijving</label><input id="ink-omschr" placeholder="Omschrijving inkoop"></div>
+                    <div><label>Bedrag excl. BTW (&euro;)</label><input id="ink-excl" type="number" min="0" step="0.01" value="0" oninput="calcInkoop()"></div>
+                    <div><label>BTW-tarief</label>
+                        <select id="ink-btw-tarief" onchange="calcInkoop()">
+                            <option value="21" selected>21%</option>
+                            <option value="9">9%</option>
+                            <option value="0">0% (vrijgesteld)</option>
+                        </select>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                        <div><label>BTW-bedrag</label><input id="ink-btw" type="text" readonly style="background:var(--gray-50)" value="&euro;0,00"></div>
+                        <div><label>Totaal incl. BTW</label><input id="ink-totaal" type="text" readonly style="background:var(--gray-50)" value="&euro;0,00"></div>
+                    </div>
+                </div>
+                <div class="btn-row"><button class="btn btn-primary" onclick="addInkoop()">Toevoegen</button></div>
+            </div>
+
+            <div class="card">
+                <h2>Inkoopoverzicht</h2>
+                <div id="inkoop-list"></div>
+            </div>
+        </div>
+
         <!-- BTW AANGIFTE -->
         <div class="section" id="sec-btw">
             <h1>BTW Aangifte</h1>
@@ -390,7 +443,8 @@
 
             <div class="card" style="margin-bottom:20px">
                 <label>BTW op uw inkopen dit kwartaal (voorbelasting)</label>
-                <input id="btw-voorbelasting-input" type="number" min="0" step="0.01" value="0" placeholder="0,00" style="max-width:240px;margin-top:6px" oninput="updateBTW()">
+                <input id="btw-voorbelasting-input" type="text" readonly style="max-width:240px;margin-top:6px;background:var(--gray-50)">
+                <p id="btw-voorbelasting-note" style="font-size:12px;color:var(--gray-400);margin-top:6px"></p>
             </div>
 
             <div class="card">
@@ -482,6 +536,13 @@ function initData(){
     ]);
     SS('nextFacNr',1004);
     SS('nextId',100);
+    // Demo inkoopfacturen
+    SS('inkoop',[
+        {id:200,leverancier:'Kantoorartikelen Smit',datum:'2026-01-15',omschr:'Kantoorbenodigdheden',excl:150,btwTarief:21,btw:31.50,totaal:181.50},
+        {id:201,leverancier:'Telecom Noord',datum:'2026-02-01',omschr:'Telefoonabonnement Q1',excl:45,btwTarief:21,btw:9.45,totaal:54.45},
+        {id:202,leverancier:'Lease Auto BV',datum:'2026-03-01',omschr:'Leasekosten maart',excl:320,btwTarief:21,btw:67.20,totaal:387.20}
+    ]);
+
     SS('init_v3',true);
 }
 
@@ -501,6 +562,7 @@ document.querySelectorAll('.sidebar a[data-section]').forEach(function(a){
         if(a.dataset.section==='facturen'){renderFacturen();loadOpenUren();}
         if(a.dataset.section==='klanten') renderKlanten();
         if(a.dataset.section==='profiel') loadProfiel();
+        if(a.dataset.section==='inkoop'){renderInkoop();}
         if(a.dataset.section==='btw'){setDefaultKwartaal();updateBTW();}
     });
 });
@@ -692,7 +754,22 @@ function updateBTW(){
 
     var omzetExcl=qFacturen.reduce(function(s,f){return s+f.subtotaal},0);
     var btwOntvangen=qFacturen.reduce(function(s,f){return s+f.btw},0);
-    var voorbelasting=parseFloat(document.getElementById('btw-voorbelasting-input').value)||0;
+    // Auto-calculate voorbelasting from inkoop
+    var inkopen=LS('inkoop')||[];
+    var qInkopen=inkopen.filter(function(i){
+        var d=new Date(i.datum);
+        return d.getFullYear()===year && months.indexOf(d.getMonth())!==-1;
+    });
+    var voorbelasting=qInkopen.reduce(function(s,i){return s+i.btw},0);
+    document.getElementById('btw-voorbelasting-input').value='\u20AC'+fmt(voorbelasting);
+    var noteEl=document.getElementById('btw-voorbelasting-note');
+    if(qInkopen.length>0){
+        noteEl.textContent='Berekend op basis van uw inkoopfacturen dit kwartaal ('+qInkopen.length+' facturen)';
+        noteEl.style.color='var(--gray-400)';
+    } else {
+        noteEl.innerHTML='Geen inkoopfacturen ingevoerd \u2014 <a href="#" onclick="document.querySelector(\'[data-section=inkoop]\').click();return false" style="color:var(--blue)">voeg ze toe onder Inkoop</a>';
+        noteEl.style.color='var(--gray-400)';
+    }
     var teBetalen=btwOntvangen-voorbelasting;
 
     document.getElementById('btw-omzet').textContent='\u20AC'+fmt(omzetExcl);
@@ -812,6 +889,75 @@ function downloadJaaroverzichtPDF(){
     toast('Jaaroverzicht gedownload \u2713');
 }
 
+
+// ============ INKOOP ============
+
+function calcInkoop(){
+    var excl=parseFloat(document.getElementById('ink-excl').value)||0;
+    var tarief=parseInt(document.getElementById('ink-btw-tarief').value);
+    var btw=excl*(tarief/100);
+    document.getElementById('ink-btw').value='\u20AC'+fmt(btw);
+    document.getElementById('ink-totaal').value='\u20AC'+fmt(excl+btw);
+}
+
+function addInkoop(){
+    var leverancier=document.getElementById('ink-leverancier').value.trim();
+    if(!leverancier) return toast('Vul een leverancier in');
+    var excl=parseFloat(document.getElementById('ink-excl').value)||0;
+    if(excl<=0) return toast('Vul een bedrag in');
+    var tarief=parseInt(document.getElementById('ink-btw-tarief').value);
+    var btw=excl*(tarief/100);
+    var inkopen=LS('inkoop')||[];
+    inkopen.push({
+        id:nid(),
+        leverancier:leverancier,
+        datum:document.getElementById('ink-datum').value||new Date().toISOString().slice(0,10),
+        omschr:document.getElementById('ink-omschr').value||'',
+        excl:excl,
+        btwTarief:tarief,
+        btw:Math.round(btw*100)/100,
+        totaal:Math.round((excl+btw)*100)/100
+    });
+    SS('inkoop',inkopen);
+    document.getElementById('ink-leverancier').value='';
+    document.getElementById('ink-omschr').value='';
+    document.getElementById('ink-excl').value='0';
+    calcInkoop();
+    renderInkoop();
+    toast('Inkoopfactuur toegevoegd \u2713');
+}
+
+function deleteInkoop(id){
+    var inkopen=LS('inkoop')||[];
+    inkopen=inkopen.filter(function(i){return i.id!==id});
+    SS('inkoop',inkopen);
+    renderInkoop();
+}
+
+function renderInkoop(){
+    var inkopen=LS('inkoop')||[];
+    var now=new Date();
+    var thisMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+    var maandInkopen=inkopen.filter(function(i){return i.datum.startsWith(thisMonth)});
+    var totExcl=maandInkopen.reduce(function(s,i){return s+i.excl},0);
+    var totBtw=maandInkopen.reduce(function(s,i){return s+i.btw},0);
+
+    document.getElementById('kpi-inkoop-excl').textContent='\u20AC'+fmt(totExcl);
+    document.getElementById('kpi-inkoop-btw').textContent='\u20AC'+fmt(totBtw);
+    document.getElementById('kpi-inkoop-aantal').textContent=String(inkopen.length);
+
+    document.getElementById('ink-datum').value=new Date().toISOString().slice(0,10);
+
+    var el=document.getElementById('inkoop-list');
+    if(!inkopen.length){
+        el.innerHTML='<div class="empty-state"><p>Nog geen inkoopfacturen</p></div>';
+        return;
+    }
+    el.innerHTML='<table><thead><tr><th>Datum</th><th>Leverancier</th><th>Omschrijving</th><th>Excl. BTW</th><th>BTW</th><th>Totaal</th><th></th></tr></thead><tbody>'+inkopen.map(function(i){
+        return '<tr><td>'+i.datum+'</td><td>'+i.leverancier+'</td><td>'+i.omschr+'</td><td>\u20AC'+fmt(i.excl)+'</td><td>\u20AC'+fmt(i.btw)+'</td><td>\u20AC'+fmt(i.totaal)+'</td><td><button class="delete-btn" onclick="deleteInkoop('+i.id+')">&#10005;</button></td></tr>';
+    }).join('')+'</tbody></table>';
+}
+
 initData();
 loadProfiel();
 renderKlanten();
@@ -819,6 +965,7 @@ populateKlantSelects();
 renderUren();
 renderFacturen();
 updateDashboard();
+renderInkoop();
 document.getElementById('ur-datum').value=new Date().toISOString().slice(0,10);
 </script>
 <div style="background: var(--blue, #2563eb); padding: 48px 24px; text-align: center; margin-top: 60px;">
