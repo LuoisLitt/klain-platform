@@ -553,9 +553,9 @@ const LS=k=>JSON.parse(localStorage.getItem('klain_'+k)||'null');
 const SS=(k,v)=>localStorage.setItem('klain_'+k,JSON.stringify(v));
 
 function initData(){
-    if(LS('init_v3')) return;
+    if(LS('init_v4')) return;
     // Clear old data
-    ['init','init_v2','facturen','uren','klanten','profiel','nextFacNr','nextId'].forEach(function(k){localStorage.removeItem('klain_'+k)});
+    ['init','init_v2','init_v3','facturen','uren','klanten','profiel','nextFacNr','nextId'].forEach(function(k){localStorage.removeItem('klain_'+k)});
 
     SS('profiel',{naam:'Klussenbedrijf Harms',kvk:'12345678',btw:'NL001234567B01',adres:'Hoofdstraat 14, 7901 AA Hoogeveen',iban:'NL91RABO0123456789'});
     SS('klanten',[
@@ -597,7 +597,7 @@ function initData(){
         {id:202,leverancier:'Lease Auto BV',datum:'2026-03-01',omschr:'Leasekosten maart',excl:320,btwTarief:21,btw:67.20,totaal:387.20}
     ]);
 
-    SS('init_v3',true);
+    SS('init_v4',true);
 }
 
 function nid(){var i=(LS('nextId')||100)+1;SS('nextId',i);return i;}
