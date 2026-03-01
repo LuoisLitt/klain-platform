@@ -63,29 +63,10 @@
         }
         
         /* Nav */
-        nav {
-            position: fixed; top: 0; left: 0; right: 0; height: 64px;
-            background: rgba(255,255,255,1);
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-            z-index: 1000; border-bottom: 1px solid var(--gray-100);
-        }
-        .nav-inner {
-            max-width: 1200px; margin: 0 auto; padding: 0 24px;
-            height: 100%; display: flex; align-items: center; justify-content: space-between;
-        }
-        .logo {
-            text-decoration: none;
-        }
-        .nav-links { display: flex; gap: 32px; list-style: none; }
-        .nav-links a { color: var(--gray-700); text-decoration: none; font-size: 14px; font-weight: 500; }
-        .nav-links a:hover { color: var(--black); }
-        .nav-cta {
-            background: var(--blue); color: var(--white); padding: 10px 22px;
-            border-radius: var(--radius-sm); text-decoration: none; font-size: 14px; font-weight: 500;
-        }
-        .mobile-menu-btn { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 8px; }
-        .mobile-menu-btn span { width: 22px; height: 2px; background: var(--black); border-radius: 2px; }
+        .top-nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: rgba(255,255,255,1); border-bottom: 1px solid #eef0f5; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+        .top-nav .logo img { height: 36px; }
+        .back-link { color: #6b7084; text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
+        .back-link:hover { color: #0f1117; }
 
         /* Header */
         .demo-header {
@@ -234,8 +215,8 @@
 
         /* Responsive */
         @media (max-width: 968px) {
-            .nav-links, .nav-cta { display: none; }
-            .mobile-menu-btn { display: flex; }
+            
+            
             .grid-4, .grid-2 { grid-template-columns: 1fr 1fr; }
             .demo-header .container { flex-direction: column; gap: 16px; }
         }
@@ -254,20 +235,12 @@
     </style>
 </head>
 <body>
-    <nav>
-        <div class="nav-inner">
-            <a href="/" class="logo"><img src="../images/klain-k-logo.jpg" alt="klain" style="height:32px;width:auto;"></a>
-            <ul class="nav-links">
-                <li><a href="index.html#oplossingen">Oplossingen</a></li>
-                <li><a href="index.html#werkwijze">Werkwijze</a></li>
-                <li><a href="index.html#prijzen">Prijzen</a></li>
-            </ul>
-            <a href="/#contact" class="nav-cta">Kennismaking plannen</a>
-            <button class="mobile-menu-btn" aria-label="Menu">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </nav>
+    <nav class="top-nav">
+    <a href="/" class="logo">
+        <img src="../images/klain-logo.jpg" alt="klain" style="height:36px;">
+    </a>
+    <a href="https://klain.nl" class="back-link">← Terug naar klain.nl</a>
+</nav>
 
     <div class="demo-header">
         <div class="container">

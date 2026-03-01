@@ -64,43 +64,15 @@
         }
 
         /* Nav */
-        nav {
-            position: fixed; top: 0; left: 0; right: 0; height: 64px;
-            background: rgba(255,255,255,1);
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-            z-index: 1000; border-bottom: 1px solid var(--gray-medium);
-        }
-        .nav-inner {
-            max-width: 1400px; margin: 0 auto; padding: 0 24px;
-            height: 100%; display: flex; align-items: center; justify-content: space-between;
-        }
-        .nav-logo {
-            text-decoration: none;
-        }
-        .nav-cta {
-            background: var(--blue); color: var(--white); padding: 10px 22px;
-            border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 500;
-        }
+        .top-nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: rgba(255,255,255,1); border-bottom: 1px solid #eef0f5; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+        .top-nav .logo img { height: 36px; }
+        .back-link { color: #6b7084; text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
+        .back-link:hover { color: #0f1117; }
 
-        .demo-banner {
-            background: var(--blue);
-            color: white;
-            text-align: center;
-            padding: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            margin-top: 64px;
-        }
-
-        .demo-banner a {
-            color: white;
-            margin-left: 12px;
-            text-decoration: underline;
-        }
+        
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 40px 24px;
         }
@@ -559,18 +531,7 @@
                 padding: 12px;
             }
 
-            .demo-banner {
-                font-size: 13px;
-                padding: 10px 16px;
-                margin-bottom: 16px;
-                border-radius: 6px;
-            }
-
-            .demo-banner a {
-                display: block;
-                margin-left: 0;
-                margin-top: 8px;
-            }
+            
 
             .header {
                 padding: 16px;
@@ -677,17 +638,12 @@
     </style>
 </head>
 <body>
-    <nav>
-        <div class="nav-inner">
-            <a href="/" class="nav-logo"><img src="../images/klain-k-logo.jpg" alt="klain" style="height:32px;width:auto;"></a>
-            <a href="/#contact" class="nav-cta">Kennismaking plannen</a>
-        </div>
-    </nav>
-
-    <div class="demo-banner">
-        Dit is een demonstratie van klain's offerte automatisering
-        <a href="/">Terug naar klain</a>
-    </div>
+    <nav class="top-nav">
+    <a href="/" class="logo">
+        <img src="../images/klain-logo.jpg" alt="klain" style="height:36px;">
+    </a>
+    <a href="https://klain.nl" class="back-link">← Terug naar klain.nl</a>
+</nav>
 
     <div class="container">
         <div class="header">
