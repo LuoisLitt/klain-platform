@@ -757,6 +757,163 @@
 
 
 
+    <!-- ROI Calculator -->
+    <style>
+        .calc-card {
+            background: var(--white); border-radius: 16px; padding: 48px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06); border: 1px solid var(--gray-200);
+            max-width: 720px; margin: 0 auto;
+        }
+        .calc-field { margin-bottom: 32px; }
+        .calc-field label {
+            display: block; font-size: 15px; font-weight: 600;
+            color: var(--gray-900); margin-bottom: 10px;
+        }
+        .calc-field select, .calc-field input[type="number"] {
+            width: 100%; padding: 12px 16px; border: 1px solid var(--gray-200);
+            border-radius: 10px; font-size: 15px; color: var(--gray-900);
+            background: var(--white); appearance: auto;
+        }
+        .calc-field select:focus, .calc-field input:focus {
+            outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        .calc-slider-wrap { position: relative; }
+        .calc-slider-val {
+            display: inline-block; font-size: 32px; font-weight: 800;
+            color: var(--blue); margin-bottom: 8px;
+        }
+        .calc-slider {
+            width: 100%; height: 8px; -webkit-appearance: none; appearance: none;
+            background: var(--gray-200); border-radius: 4px; outline: none; cursor: pointer;
+        }
+        .calc-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%;
+            background: var(--blue); cursor: pointer; box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+        }
+        .calc-slider::-moz-range-thumb {
+            width: 28px; height: 28px; border-radius: 50%; border: none;
+            background: var(--blue); cursor: pointer;
+        }
+        .calc-results {
+            background: var(--gray-50); border-radius: 12px; padding: 32px;
+            margin-top: 8px; text-align: center;
+        }
+        .calc-results-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+            margin-bottom: 24px;
+        }
+        .calc-stat-value {
+            font-size: 28px; font-weight: 800; color: var(--gray-900);
+            transition: all 0.3s ease;
+        }
+        .calc-stat-label { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
+        .calc-payback {
+            font-size: 20px; font-weight: 700; color: var(--gray-900);
+            padding: 20px; background: var(--white); border-radius: 12px;
+            border: 2px solid var(--gray-200); margin-bottom: 24px;
+        }
+        .calc-payback strong {
+            display: block; font-size: 40px; color: var(--blue); margin: 8px 0;
+        }
+        .calc-cta {
+            display: inline-block; padding: 14px 28px; border-radius: 10px;
+            font-size: 16px; font-weight: 600; text-decoration: none;
+            color: var(--white); transition: all 0.2s ease;
+        }
+        .calc-cta:hover { transform: translateY(-2px); }
+        .calc-cta.green { background: var(--green); }
+        .calc-cta.blue { background: var(--blue); }
+        .calc-cta.gray { background: var(--gray-500); }
+        @media (max-width: 640px) {
+            .calc-card { padding: 24px; }
+            .calc-results-grid { grid-template-columns: 1fr; gap: 16px; }
+            .calc-payback strong { font-size: 32px; }
+        }
+    </style>
+    <section style="background: var(--gray-50); padding: 100px 24px;" id="calculator">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Rekenmachine</div>
+                <h2 class="section-heading">Wat kost uw administratie u nu?</h2>
+                <p class="section-subheading">Schuif de slider en zie wat automatisering oplevert.</p>
+            </div>
+            <div class="calc-card">
+                <div class="calc-field">
+                    <label>Welk proces kost u het meeste tijd?</label>
+                    <select id="calcProcess">
+                        <option>Weekrapportage</option>
+                        <option>Offertes opstellen</option>
+                        <option>Debiteuren opvolgen</option>
+                        <option>Facturen verwerken</option>
+                        <option>Cashflow bijhouden</option>
+                        <option>Iets anders</option>
+                    </select>
+                </div>
+                <div class="calc-field">
+                    <label>Hoeveel uur per week bent u hier mee bezig?</label>
+                    <div class="calc-slider-wrap">
+                        <span class="calc-slider-val" id="calcHoursVal">5 uur</span>
+                        <input type="range" class="calc-slider" id="calcHours" min="1" max="20" value="5">
+                    </div>
+                </div>
+                <div class="calc-field">
+                    <label>Wat is uw uurtarief of waarde van uw tijd? (€/uur)</label>
+                    <input type="number" id="calcRate" value="75" min="10" max="500">
+                </div>
+                <div class="calc-results" id="calcResults">
+                    <div class="calc-results-grid">
+                        <div>
+                            <div class="calc-stat-value" id="calcWeekly">€375</div>
+                            <div class="calc-stat-label">Kosten per week</div>
+                        </div>
+                        <div>
+                            <div class="calc-stat-value" id="calcYearly">€19.500</div>
+                            <div class="calc-stat-label">Kosten per jaar</div>
+                        </div>
+                    </div>
+                    <div class="calc-payback">
+                        U verdient de Quick Win terug in
+                        <strong id="calcPayback">4 weken</strong>
+                    </div>
+                    <a href="#contact" class="calc-cta green" id="calcCta">Dit is een no-brainer. Plan een AI Scan →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+    (function(){
+        var hours=document.getElementById('calcHours'),
+            hoursVal=document.getElementById('calcHoursVal'),
+            rate=document.getElementById('calcRate'),
+            weekly=document.getElementById('calcWeekly'),
+            yearly=document.getElementById('calcYearly'),
+            payback=document.getElementById('calcPayback'),
+            cta=document.getElementById('calcCta');
+        function fmt(n){return '\u20ac'+n.toLocaleString('nl-NL')}
+        function update(){
+            var h=parseInt(hours.value),r=parseInt(rate.value)||75;
+            hoursVal.textContent=h+' uur';
+            var w=h*r, y=w*52, pb=Math.ceil(1499/w);
+            weekly.textContent=fmt(w);
+            yearly.textContent=fmt(y);
+            payback.textContent=pb+' weken';
+            if(pb<8){
+                cta.className='calc-cta green';
+                cta.textContent='Dit is een no-brainer. Plan een AI Scan \u2192';
+            }else if(pb<=16){
+                cta.className='calc-cta blue';
+                cta.textContent='Goede investering. Plan een AI Scan \u2192';
+            }else{
+                cta.className='calc-cta gray';
+                cta.textContent='Bel me vrijblijvend, dan kijken we samen wat past. \u2192';
+            }
+        }
+        hours.addEventListener('input',update);
+        rate.addEventListener('input',update);
+        update();
+    })();
+    </script>
+
     <!-- Pricing -->
     <section class="pricing-section" id="prijzen">
         <div class="container">
