@@ -249,14 +249,6 @@
         <div class="section" id="sec-profiel">
             <h1>Bedrijfsprofiel</h1>
             <p class="subtitle">Jouw bedrijfsgegevens voor op de factuur</p>
-            <div class="card" style="margin-bottom:20px;">
-                <h2 style="margin-bottom:12px;">&#128269; Bedrijf opzoeken via KVK</h2>
-                <div style="display:flex;gap:8px;align-items:flex-end;">
-                    <div style="flex:1;"><label>KVK-nummer</label><input id="kvk-search-input" placeholder="12345678" maxlength="8" style="width:100%;"></div>
-                    <button class="btn btn-primary" onclick="kvkZoekProfiel()">Opzoeken</button>
-                </div>
-                <div id="kvk-profiel-result" style="margin-top:10px;font-size:13px;color:var(--gray-600);"></div>
-            </div>
             <div class="card">
                 <div class="form-grid">
                     <div><label>Bedrijfsnaam</label><input id="pf-naam" placeholder="Bijv. Klussenbedrijf Harms"></div>
@@ -275,14 +267,6 @@
         <div class="section" id="sec-klanten">
             <h1>Klanten</h1>
             <p class="subtitle">Beheer je klantenbestand</p>
-            <div class="card" style="margin-bottom:20px;">
-                <h2 style="margin-bottom:12px;">&#128269; Klant opzoeken via KVK</h2>
-                <div style="display:flex;gap:8px;align-items:flex-end;">
-                    <div style="flex:1;"><label>Bedrijfsnaam of KVK</label><input id="kvk-klant-input" placeholder="Bijv. bakkerij of 12345678"></div>
-                    <button class="btn btn-primary" onclick="kvkZoekKlant()">Zoeken</button>
-                </div>
-                <div id="kvk-klant-results" style="margin-top:10px;"></div>
-            </div>
             <div class="card">
                 <h2>Klant toevoegen</h2>
                 <div class="form-grid">
@@ -310,20 +294,6 @@
                     <a href="https://klain.nl/#contact">Hoe werkt dat? &rarr;</a>
                     <button class="close-banner" onclick="document.getElementById('uren-banner').classList.remove('visible')">&times;</button>
                 </div>
-            </div>
-            <div class="card" style="margin-bottom:20px;background:var(--blue-light);border:1px solid #bfdbfe;">
-                <h2 style="margin-bottom:16px;">&#9200; Uren timer</h2>
-                <div id="timer-display" style="font-family:'Fraunces',serif;font-size:48px;letter-spacing:-2px;color:var(--black);margin-bottom:16px;">00:00:00</div>
-                <div class="form-grid" style="margin-bottom:12px;">
-                    <div><label>Klant</label><select id="timer-klant"></select></div>
-                    <div><label>Omschrijving</label><input id="timer-omschr" placeholder="Werkzaamheden"></div>
-                </div>
-                <div style="display:flex;gap:8px;">
-                    <button class="btn btn-primary" id="timer-start-btn" onclick="timerStart()">&#9654; Start</button>
-                    <button class="btn btn-secondary" id="timer-stop-btn" onclick="timerStop()" disabled>&#9646;&#9646; Stop</button>
-                    <button class="btn btn-primary" id="timer-reg-btn" onclick="timerRegister()" disabled style="background:#16a34a;">&#10003; Registreer</button>
-                </div>
-                <div id="timer-result" style="margin-top:12px;font-size:14px;color:var(--gray-600);"></div>
             </div>
             <div class="card">
                 <h2>Uren invoeren</h2>
@@ -613,7 +583,7 @@ document.querySelectorAll('.sidebar a[data-section]').forEach(function(a){
         document.querySelector('.sidebar').classList.remove('open');
         if(a.dataset.section==='dashboard') updateDashboard();
         if(a.dataset.section==='uren'||a.dataset.section==='facturen') populateKlantSelects();
-        if(a.dataset.section==='uren'){renderUren();populateTimerKlant();}
+        if(a.dataset.section==='uren') renderUren();
         if(a.dataset.section==='facturen'){renderFacturen();loadOpenUren();}
         if(a.dataset.section==='klanten') renderKlanten();
         if(a.dataset.section==='profiel') loadProfiel();
@@ -745,7 +715,7 @@ function renderFacturen(){
         var isOverdue=f.status==='Verzonden'&&new Date(f.vervalDatum)<now;
         var statusCell='<span class="badge '+bc(f.status)+'">'+f.status+'</span>';
         if(isOverdue) statusCell+=' <span class="badge badge-late">Te laat</span>';
-        var verzonden=f.status==='Verzonden';var verstuurBtn=verzonden?'<button class="btn btn-secondary" style="background:#dcfce7;color:#16a34a;border-color:#bbf7d0;cursor:default;font-size:12px;" disabled>&#10003; Verzonden</button>':'<button class="btn btn-secondary" style="font-size:12px;" onclick="verstuurFactuur('+f.id+')">&#9993; Verstuur</button>';var actionsCell='<select style="font-size:12px;padding:4px 8px;border:1px solid var(--gray-200);border-radius:6px;cursor:pointer" onchange="updateFactuurStatus('+f.id+',this.value)"><option'+(f.status==='Concept'?' selected':'')+'>Concept</option><option'+(f.status==='Verzonden'?' selected':'')+'>Verzonden</option><option'+(f.status==='Betaald'?' selected':'')+'>Betaald</option></select> '+verstuurBtn;
+        var actionsCell='<select style="font-size:12px;padding:4px 8px;border:1px solid var(--gray-200);border-radius:6px;cursor:pointer" onchange="updateFactuurStatus('+f.id+',this.value)"><option'+(f.status==='Concept'?' selected':'')+'>Concept</option><option'+(f.status==='Verzonden'?' selected':'')+'>Verzonden</option><option'+(f.status==='Betaald'?' selected':'')+'>Betaald</option></select>';
         if(isOverdue) actionsCell+='<button class="btn-reminder" onclick="showReminder('+f.id+')">Herinnering sturen</button>';
         return '<tr><td>'+f.nummer+'</td><td>'+f.klantNaam+'</td><td>'+f.datum+'</td><td>\u20AC'+fmt(f.subtotaal)+'</td><td>\u20AC'+fmt(f.btw)+'</td><td>\u20AC'+fmt(f.totaal)+'</td><td>'+statusCell+'</td><td>'+actionsCell+'</td></tr>';
     }).join('')+'</tbody></table>';
@@ -1052,157 +1022,6 @@ function simulateUpload(file) {
         document.getElementById('upload-success-banner').style.display = 'block';
     }, 2000);
 }
-
-// ============ TIMER ============
-var timerInterval = null;
-var timerSeconds = 0;
-var timerRunning = false;
-
-function timerPad(n) { return n < 10 ? '0' + n : '' + n; }
-
-function timerTick() {
-    timerSeconds++;
-    var h = Math.floor(timerSeconds / 3600);
-    var m = Math.floor((timerSeconds % 3600) / 60);
-    var s = timerSeconds % 60;
-    document.getElementById('timer-display').textContent = timerPad(h) + ':' + timerPad(m) + ':' + timerPad(s);
-}
-
-function timerStart() {
-    if (timerRunning) return;
-    timerRunning = true;
-    timerInterval = setInterval(timerTick, 1000);
-    document.getElementById('timer-start-btn').disabled = true;
-    document.getElementById('timer-stop-btn').disabled = false;
-    document.getElementById('timer-result').textContent = '';
-}
-
-function timerStop() {
-    if (!timerRunning) return;
-    timerRunning = false;
-    clearInterval(timerInterval);
-    var uren = Math.round(timerSeconds / 900) / 4;
-    if (uren < 0.25) uren = 0.25;
-    document.getElementById('timer-stop-btn').disabled = true;
-    document.getElementById('timer-reg-btn').disabled = false;
-    document.getElementById('timer-result').textContent = 'Geregistreerd: ' + uren + ' uur';
-}
-
-function timerRegister() {
-    var klantId = parseInt(document.getElementById('timer-klant').value);
-    var omschr = document.getElementById('timer-omschr').value || 'Werkzaamheden';
-    var uren = Math.round(timerSeconds / 900) / 4;
-    if (uren < 0.25) uren = 0.25;
-    var klanten = LS('klanten') || [];
-    var klant = klanten.find(function(k) { return k.id === klantId; });
-    var tarief = klant ? (klant.tarief || 75) : 75;
-    var urenList = LS('uren') || [];
-    var vandaag = new Date().toISOString().slice(0, 10);
-    urenList.push({ id: nid(), klantId: klantId, datum: vandaag, omschr: omschr, uren: uren, tarief: tarief });
-    SS('uren', urenList);
-    timerSeconds = 0;
-    timerRunning = false;
-    clearInterval(timerInterval);
-    document.getElementById('timer-display').textContent = '00:00:00';
-    document.getElementById('timer-start-btn').disabled = false;
-    document.getElementById('timer-stop-btn').disabled = true;
-    document.getElementById('timer-reg-btn').disabled = true;
-    document.getElementById('timer-result').textContent = '';
-    renderUren();
-    toast('Uren geregistreerd: ' + uren + 'u');
-}
-
-function populateTimerKlant() {
-    var sel = document.getElementById('timer-klant');
-    if (!sel) return;
-    var klanten = LS('klanten') || [];
-    sel.innerHTML = klanten.map(function(k) { return '<option value="' + k.id + '">' + k.naam + '</option>'; }).join('');
-}
-
-// ============ VERSTUUR FACTUUR ============
-function verstuurFactuur(id) {
-    var facturen = LS('facturen') || [];
-    var f = facturen.find(function(x) { return x.id === id; });
-    if (!f) return;
-    var btn = document.querySelector('[onclick="verstuurFactuur(' + id + ')"]');
-    if (btn) { btn.disabled = true; btn.textContent = 'Versturen...'; }
-    setTimeout(function() {
-        f.status = 'Verzonden';
-        SS('facturen', facturen);
-        var klanten = LS('klanten') || [];
-        var klant = klanten.find(function(k) { return k.id === f.klantId; });
-        var naam = klant ? klant.naam : 'klant';
-        renderFacturen();
-        toast('Factuur verzonden naar ' + naam);
-    }, 1500);
-}
-
-// ============ KVK OPZOEKEN ============
-var kvkDatabase = [
-    { kvk: '12345678', naam: 'Klussenbedrijf Harms', btw: 'NL001234567B01', adres: 'Industrieweg 12, 7901 AB Hoogeveen', iban: 'NL91RABO0123456789' },
-    { kvk: '87654321', naam: 'Bakkerij De Korst', btw: 'NL009876543B01', adres: 'Hoofdstraat 5, 9401 AA Assen', iban: 'NL02ABNA0456789012' },
-    { kvk: '11223344', naam: 'Transport Dijkstra', btw: 'NL001122334B01', adres: 'Havenweg 8, 9700 AB Groningen', iban: 'NL68INGB0567891234' }
-];
-
-function kvkZoekProfiel() {
-    var kvk = document.getElementById('kvk-search-input').value.trim();
-    var result = document.getElementById('kvk-profiel-result');
-    result.textContent = 'Opzoeken...';
-    setTimeout(function() {
-        var match = kvkDatabase.find(function(b) { return b.kvk === kvk; });
-        if (!match) {
-            match = { kvk: kvk, naam: 'Bedrijf ' + kvk.slice(0,4), btw: 'NL00' + kvk + 'B01', adres: 'Straat 1, 1234 AB Stad', iban: 'NL91RABO0' + kvk };
-        }
-        document.getElementById('pf-naam').value = match.naam;
-        document.getElementById('pf-kvk').value = match.kvk;
-        document.getElementById('pf-btw').value = match.btw;
-        document.getElementById('pf-adres').value = match.adres;
-        document.getElementById('pf-iban').value = match.iban;
-        result.innerHTML = '<span style="color:#16a34a;">&#10003; Gevonden: ' + match.naam + '</span>';
-    }, 1000);
-}
-
-var kvkKlantenDb = [
-    { kvk: '22334455', naam: 'Bakkerij De Korst', adres: 'Hoofdstraat 5, 9401 AA Assen', email: 'info@dekorst.nl' },
-    { kvk: '33445566', naam: 'Bakker Advies BV', adres: 'Kantorenpark 12, 7909 AA Hoogeveen', email: 'contact@bakkeradvies.nl' },
-    { kvk: '44556677', naam: 'Garage Jansen', adres: 'Werkplaatsweg 3, 7811 AB Emmen', email: 'info@garagejansen.nl' },
-    { kvk: '55667788', naam: 'Supermarkt De Boer', adres: 'Marktplein 1, 7901 AB Hoogeveen', email: 'info@deboer.nl' },
-    { kvk: '66778899', naam: 'Kapsalon Stijl', adres: 'Dorpsstraat 15, 9481 AA Vries', email: 'info@kapsalonstijl.nl' },
-    { kvk: '77889900', naam: 'Transport Dijkstra', adres: 'Havenweg 8, 9700 AB Groningen', email: 'dijkstra@transport.nl' },
-    { kvk: '88990011', naam: 'Smederij Noord', adres: 'Industriestraat 22, 9403 AA Assen', email: 'info@smederijoord.nl' }
-];
-
-function kvkZoekKlant() {
-    var q = document.getElementById('kvk-klant-input').value.toLowerCase().trim();
-    var container = document.getElementById('kvk-klant-results');
-    container.innerHTML = '<div style="color:var(--gray-600);font-size:13px;">Zoeken...</div>';
-    setTimeout(function() {
-        var results = kvkKlantenDb.filter(function(b) {
-            return b.naam.toLowerCase().indexOf(q) > -1 || b.kvk.indexOf(q) > -1;
-        });
-        if (results.length === 0) {
-            container.innerHTML = '<div style="color:var(--gray-500);font-size:13px;">Geen resultaten gevonden.</div>';
-            return;
-        }
-        var html = results.map(function(b) {
-            return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-100);">' +
-                '<div><strong style="font-size:14px;">' + b.naam + '</strong><br><span style="font-size:12px;color:var(--gray-500);">' + b.adres + '</span></div>' +
-                '<button class="btn btn-secondary" style="font-size:12px;" onclick="kvkKlantToevoegen(\'' + b.kvk + '\')">Toevoegen</button>' +
-                '</div>';
-        }).join('');
-        container.innerHTML = html;
-    }, 800);
-}
-
-function kvkKlantToevoegen(kvk) {
-    var b = kvkKlantenDb.find(function(x) { return x.kvk === kvk; });
-    if (!b) return;
-    document.getElementById('kl-naam').value = b.naam;
-    document.getElementById('kl-email').value = b.email;
-    document.getElementById('kl-adres').value = b.adres;
-    document.getElementById('kvk-klant-results').innerHTML = '<div style="color:#16a34a;font-size:13px;">&#10003; ' + b.naam + ' ingevuld \u2014 klik Toevoegen om op te slaan.</div>';
-}
-
 initData();
 loadProfiel();
 renderKlanten();
