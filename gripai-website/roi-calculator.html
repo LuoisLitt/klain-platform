@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROI Calculator | klain — Bereken je besparing</title>
+    <meta name="description" content="Bereken hoeveel tijd en geld je bespaart met AI-automatisering van klain. Vul je gegevens in en zie direct je ROI.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0f1117;
+            --gray-900: #1a1d27;
+            --gray-700: #3d4152;
+            --gray-500: #6b7084;
+            --gray-400: #8e93a6;
+            --gray-200: #d1d5e0;
+            --gray-100: #eef0f5;
+            --gray-50: #f7f8fa;
+            --white: #ffffff;
+            --blue: #2563eb;
+            --blue-hover: #1d4ed8;
+            --blue-light: #eff6ff;
+            --blue-muted: #dbeafe;
+            --green: #16a34a;
+            --green-light: #f0fdf4;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-lg: 24px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--black); line-height: 1.6; background: var(--white);
+            -webkit-font-smoothing: antialiased;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* Nav */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; height: 64px;
+            background: rgba(255,255,255,1); z-index: 1000;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            height: 100%; display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700; color: var(--black); text-decoration: none; }
+        .nav-cta {
+            background: var(--blue); color: var(--white); padding: 10px 22px;
+            border-radius: var(--radius-sm); text-decoration: none; font-size: 14px;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .nav-cta:hover { background: var(--blue-hover); }
+
+        /* Page */
+        .page-header {
+            padding: 120px 24px 48px; text-align: center;
+            background: var(--white); position: relative;
+        }
+        .page-header::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(37,99,235,0.06), transparent);
+            pointer-events: none;
+        }
+        .page-header h1 {
+            font-family: 'Fraunces', serif; font-size: clamp(32px, 5vw, 48px);
+            font-weight: 700; letter-spacing: -1px; margin-bottom: 16px;
+        }
+        .page-header h1 em { font-style: italic; color: var(--blue); }
+        .page-header p { font-size: 18px; color: var(--gray-500); max-width: 560px; margin: 0 auto; }
+
+        /* Calculator */
+        .calc-wrapper {
+            max-width: 720px; margin: 0 auto 80px; padding: 0 24px;
+        }
+        .calc-card {
+            background: var(--white); border: 1px solid var(--gray-100);
+            border-radius: var(--radius-lg); padding: 40px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        }
+        .calc-field { margin-bottom: 28px; }
+        .calc-field label {
+            display: block; font-size: 14px; font-weight: 600; color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+        .calc-field .hint { font-size: 13px; color: var(--gray-400); margin-bottom: 8px; }
+        .calc-field input[type="range"] {
+            width: 100%; accent-color: var(--blue); cursor: pointer;
+        }
+        .calc-field .range-row {
+            display: flex; justify-content: space-between; align-items: center; gap: 16px;
+        }
+        .calc-field .range-value {
+            font-size: 28px; font-weight: 700; color: var(--blue);
+            font-family: 'Fraunces', serif; min-width: 80px; text-align: right;
+        }
+        .calc-field .range-labels {
+            display: flex; justify-content: space-between;
+            font-size: 12px; color: var(--gray-400); margin-top: 4px;
+        }
+
+        .divider { height: 1px; background: var(--gray-100); margin: 32px 0; }
+
+        /* Results */
+        .results { display: none; }
+        .results.visible { display: block; }
+        .results h2 {
+            font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700;
+            margin-bottom: 24px; text-align: center;
+        }
+        .result-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;
+        }
+        .result-card {
+            background: var(--gray-50); border-radius: var(--radius); padding: 24px;
+            text-align: center; border: 1px solid var(--gray-100);
+        }
+        .result-card.highlight {
+            background: var(--blue-light); border-color: var(--blue-muted);
+        }
+        .result-card .number {
+            font-family: 'Fraunces', serif; font-size: 36px; font-weight: 700;
+            color: var(--blue); margin-bottom: 4px;
+        }
+        .result-card.highlight .number { color: var(--green); }
+        .result-card .label { font-size: 14px; color: var(--gray-500); font-weight: 500; }
+
+        .result-summary {
+            background: var(--green-light); border-radius: var(--radius);
+            padding: 20px 24px; text-align: center; font-size: 16px;
+            color: var(--gray-700); border: 1px solid #bbf7d0; margin-bottom: 24px;
+        }
+        .result-summary strong { color: var(--green); }
+
+        .cta-box { text-align: center; margin-top: 32px; }
+        .cta-box a {
+            background: var(--blue); color: var(--white); padding: 14px 30px;
+            border-radius: var(--radius-sm); font-size: 15px; font-weight: 600;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.2s;
+        }
+        .cta-box a:hover { background: var(--blue-hover); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(37,99,235,0.25); }
+
+        .back-link {
+            text-align: center; margin-top: 32px;
+        }
+        .back-link a {
+            color: var(--gray-400); text-decoration: none; font-size: 14px;
+        }
+        .back-link a:hover { color: var(--blue); }
+
+        @media (max-width: 600px) {
+            .calc-card { padding: 24px; }
+            .result-grid { grid-template-columns: 1fr; }
+            .calc-field .range-value { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="logo"><img src="images/klain-logo.jpg" alt="klain" style="height: 50px; width: auto;"></a>
+            <a href="/#contact" class="nav-cta">Gratis kennismaking →</a>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Bereken je <em>besparing</em></h1>
+        <p>Hoeveel tijd en geld bespaar jij met AI-automatisering? Schuif de sliders en ontdek het direct.</p>
+    </div>
+
+    <div class="calc-wrapper">
+        <div class="calc-card">
+            <div class="calc-field">
+                <label>⏱️ Uren per week aan rapportages & admin</label>
+                <div class="hint">Denk aan weekrapportages, urenregistratie, offertes, facturen, data invoer</div>
+                <div class="range-row">
+                    <input type="range" id="hours" min="2" max="40" value="10" oninput="calculate()">
+                    <span class="range-value" id="hoursVal">10 uur</span>
+                </div>
+                <div class="range-labels"><span>2 uur</span><span>40 uur</span></div>
+            </div>
+
+            <div class="calc-field">
+                <label>💰 Gemiddeld uurtarief (intern)</label>
+                <div class="hint">Wat kost een uur van de persoon die dit werk doet? (salaris + overhead)</div>
+                <div class="range-row">
+                    <input type="range" id="rate" min="25" max="150" value="50" step="5" oninput="calculate()">
+                    <span class="range-value" id="rateVal">€50</span>
+                </div>
+                <div class="range-labels"><span>€25</span><span>€150</span></div>
+            </div>
+
+            <div class="calc-field">
+                <label>👥 Aantal medewerkers betrokken</label>
+                <div class="hint">Hoeveel mensen besteden tijd aan dit soort taken?</div>
+                <div class="range-row">
+                    <input type="range" id="people" min="1" max="20" value="2" oninput="calculate()">
+                    <span class="range-value" id="peopleVal">2</span>
+                </div>
+                <div class="range-labels"><span>1</span><span>20</span></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="results visible" id="results">
+                <h2>Jouw besparingspotentieel</h2>
+                <div class="result-grid">
+                    <div class="result-card">
+                        <div class="number" id="savedHours">—</div>
+                        <div class="label">uur bespaard / week</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="number" id="savedYear">—</div>
+                        <div class="label">uur bespaard / jaar</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="number" id="savedMoney">—</div>
+                        <div class="label">besparing per jaar</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="number" id="roi">—</div>
+                        <div class="label">ROI</div>
+                    </div>
+                </div>
+                <div class="result-summary" id="summary"></div>
+                <div class="cta-box">
+                    <a href="/#contact">Gratis adviesgesprek plannen →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="/">← Terug naar klain.nl</a>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const hours = parseInt(document.getElementById('hours').value);
+            const rate = parseInt(document.getElementById('rate').value);
+            const people = parseInt(document.getElementById('people').value);
+
+            document.getElementById('hoursVal').textContent = hours + ' uur';
+            document.getElementById('rateVal').textContent = '€' + rate;
+            document.getElementById('peopleVal').textContent = people;
+
+            // klain bespaart gemiddeld 70% van admin/rapportage tijd
+            const savePct = 0.70;
+            const weeklyHoursSaved = Math.round(hours * people * savePct);
+            const yearlyHoursSaved = weeklyHoursSaved * 48; // 48 werkweken
+            const yearlySavings = yearlyHoursSaved * rate;
+
+            // Klain kost ~€299/maand = €3588/jaar (starter)
+            const klainCostYear = 299 * 12;
+            const roiMultiple = yearlySavings > 0 ? (yearlySavings / klainCostYear).toFixed(1) : 0;
+
+            document.getElementById('savedHours').textContent = weeklyHoursSaved;
+            document.getElementById('savedYear').textContent = yearlyHoursSaved.toLocaleString('nl-NL');
+            document.getElementById('savedMoney').textContent = '€' + yearlySavings.toLocaleString('nl-NL');
+            document.getElementById('roi').textContent = roiMultiple + 'x';
+
+            const netSavings = yearlySavings - klainCostYear;
+            if (netSavings > 0) {
+                document.getElementById('summary').innerHTML =
+                    'Na aftrek van klain (€299/maand) bespaar je netto <strong>€' +
+                    netSavings.toLocaleString('nl-NL') + ' per jaar</strong>. ' +
+                    'Dat is <strong>' + roiMultiple + 'x return</strong> op je investering.';
+            } else {
+                document.getElementById('summary').innerHTML =
+                    'Met deze configuratie is de investering beperkt rendabel. ' +
+                    '<a href="/#contact" style="color:#2563eb;">Plan een gesprek</a> — we kijken samen of klain past bij jouw situatie.';
+            }
+        }
+        // Initial calculation
+        calculate();
+    </script>
+</body>
+</html>
