@@ -341,13 +341,13 @@ const LS=k=>JSON.parse(localStorage.getItem('klain_'+k)||'null');
 const SS=(k,v)=>localStorage.setItem('klain_'+k,JSON.stringify(v));
 
 function initData(){
-    localStorage.removeItem('klain_init');
+    if(LS('init')) return;
     const thirtyDaysAgo = new Date(Date.now() - 30*86400000).toISOString().slice(0,10);
     const twentyDaysAgo = new Date(Date.now() - 20*86400000).toISOString().slice(0,10);
     const fiveDaysAgo = new Date(Date.now() - 5*86400000).toISOString().slice(0,10);
     const today = new Date().toISOString().slice(0,10);
 
-    SS('profiel',{naam:'Klussenbedrijf Harms',kvk:'12345678',btw:'NL001234567B01',adres:'Industrieweg 5, 7821 AR Emmen',iban:'NL91RABO0315273951'});
+    SS('profiel',{naam:'Klussenbedrijf Harms',kvk:'12345678',btw:'NL001234567B01',adres:'Hoofdstraat 14, 7901 AA Hoogeveen',iban:'NL91RABO0123456789'});
     SS('klanten',[
         {id:1,naam:'Supermarkt De Boer',adres:'Hoofdstraat 12, 7811 EA Emmen',email:'info@supermarktdeboer.nl'},
         {id:2,naam:'Garage Jansen',adres:'Kanaalweg 8, 7903 AB Hoogeveen',email:'info@garagejansen.nl'}
@@ -509,5 +509,11 @@ renderFacturen();
 updateDashboard();
 document.getElementById('ur-datum').value=new Date().toISOString().slice(0,10);
 </script>
+<div style="background: var(--blue, #2563eb); padding: 48px 24px; text-align: center; margin-top: 60px;">
+    <p style="color: rgba(255,255,255,0.8); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 12px;">Klain voor uw bedrijf</p>
+    <h2 style="color: #fff; font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px;">Herkenbaar? Klain implementeert dit voor u.</h2>
+    <p style="color: rgba(255,255,255,0.8); font-size: 16px; margin-bottom: 28px; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.6;">Begin met een AI Scan van 1,5 uur. U krijgt een concreet rapport met uw automatiserings-kansen en wat het oplevert.</p>
+    <a href="https://klain.nl/#contact" style="background: #fff; color: var(--blue, #2563eb); padding: 14px 32px; border-radius: 10px; font-size: 15px; font-weight: 600; text-decoration: none; display: inline-block;">Plan een AI Scan (€349) →</a>
+</div>
 </body>
 </html>
