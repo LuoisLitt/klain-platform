@@ -129,7 +129,7 @@
         .invoice-preview .inv-parties p { font-size: 13px; line-height: 1.7; }
         .invoice-preview table th { font-size: 11px; }
         .invoice-preview .inv-totals { margin-top: 20px; display: flex; justify-content: flex-end; }
-        .invoice-preview .inv-totals table { width: 250px; }
+        .invoice-preview .inv-totals table { width: 280px; }
         .invoice-preview .inv-totals td { padding: 6px 12px; }
         .invoice-preview .inv-totals .grand-total td { font-size: 16px; font-weight: 700; color: var(--blue); border-top: 2px solid var(--blue); }
         .invoice-preview .inv-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--gray-100); font-size: 12px; color: var(--gray-400); text-align: center; }
@@ -140,6 +140,24 @@
         .toast { position: fixed; bottom: 24px; right: 24px; background: var(--gray-900); color: var(--white); padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; z-index: 200; transform: translateY(80px); opacity: 0; transition: all .3s; }
         .toast.show { transform: translateY(0); opacity: 1; }
 
+        /* BTW Aangifte styles */
+        .kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+        .kpi-card-big { background: var(--white); border: 2px solid var(--gray-200); border-radius: var(--radius); padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,.06); text-align: center; }
+        .kpi-card-big .kpi-value { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 700; letter-spacing: -1px; }
+        .kpi-card-big .kpi-label { font-size: 13px; color: var(--gray-500); font-weight: 500; margin-top: 4px; }
+        .btw-positive { color: var(--red); }
+        .btw-negative { color: var(--green); }
+        .deadline-banner { border-radius: var(--radius-sm); padding: 12px 16px; font-size: 14px; font-weight: 500; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+        .deadline-banner.urgent { background: #fff7ed; border: 1px solid #fed7aa; color: var(--orange); }
+        .deadline-banner.info { background: var(--gray-50); border: 1px solid var(--gray-100); color: var(--gray-500); }
+        .kor-banner { background: #fefce8; border: 1px solid #fde68a; border-radius: var(--radius-sm); padding: 16px; font-size: 14px; color: #92400e; margin-bottom: 20px; line-height: 1.6; }
+        .kor-banner a { color: #b45309; font-weight: 600; text-decoration: none; }
+        .kor-banner a:hover { text-decoration: underline; }
+        .rubrieken-card { background: var(--gray-50); border: 1px solid var(--gray-100); border-radius: var(--radius-sm); padding: 20px; margin-bottom: 16px; }
+        .rubrieken-card .rubriek { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-200); font-size: 14px; }
+        .rubrieken-card .rubriek:last-child { border-bottom: none; font-weight: 600; }
+        .rubrieken-card .rubriek strong { color: var(--blue); }
+
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); z-index: 90; }
             .sidebar.open { transform: translateX(0); }
@@ -149,6 +167,7 @@
             .invoice-preview { padding: 20px; }
             .invoice-preview .inv-parties { grid-template-columns: 1fr; }
             .kpi-grid { grid-template-columns: 1fr; }
+            .kpi-grid-4 { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -186,6 +205,10 @@
         <a href="#" data-section="facturen">
             <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
             Facturen
+        </a>
+        <a href="#" data-section="btw">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z"/></svg>
+            BTW Aangifte
         </a>
         <div class="demo-badge">&#129302; Demo &mdash; klain.nl</div>
     </aside>
@@ -301,6 +324,15 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-grid" style="margin-top:14px">
+                    <div><label>BTW-tarief</label>
+                        <select id="fac-btw-tarief">
+                            <option value="21" selected>21%</option>
+                            <option value="9">9%</option>
+                            <option value="0">0% (vrijgesteld)</option>
+                        </select>
+                    </div>
+                </div>
                 <div id="fac-uren-select" style="margin-top:16px"></div>
                 <div class="btn-row"><button class="btn btn-primary" onclick="generateFactuur()">Factuur genereren</button></div>
             </div>
@@ -313,6 +345,78 @@
             <div class="card" style="margin-top:20px">
                 <h2>Factuuroverzicht</h2>
                 <div id="facturen-list"></div>
+            </div>
+        </div>
+
+        <!-- BTW AANGIFTE -->
+        <div class="section" id="sec-btw">
+            <h1>BTW Aangifte</h1>
+            <p class="subtitle">Kwartaaloverzicht en aangifte-invulhulp</p>
+
+            <div id="btw-deadline-banner"></div>
+
+            <div class="card" style="margin-bottom:20px">
+                <div class="form-grid">
+                    <div>
+                        <label>Kwartaal</label>
+                        <select id="btw-kwartaal" onchange="updateBTW()">
+                            <option value="1">Q1 2026 (jan – mrt)</option>
+                            <option value="2">Q2 2026 (apr – jun)</option>
+                            <option value="3">Q3 2026 (jul – sep)</option>
+                            <option value="4">Q4 2026 (okt – dec)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-grid-4">
+                <div class="kpi-card">
+                    <div class="kpi-value" id="btw-omzet">&euro;0,00</div>
+                    <div class="kpi-label">Omzet excl. BTW</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" id="btw-ontvangen">&euro;0,00</div>
+                    <div class="kpi-label">BTW ontvangen</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" id="btw-voorbelasting">&euro;0,00</div>
+                    <div class="kpi-label">Voorbelasting</div>
+                </div>
+                <div class="kpi-card-big">
+                    <div class="kpi-value" id="btw-te-betalen">&euro;0,00</div>
+                    <div class="kpi-label">Te betalen aan Belastingdienst</div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom:20px">
+                <label>BTW op uw inkopen dit kwartaal (voorbelasting)</label>
+                <input id="btw-voorbelasting-input" type="number" min="0" step="0.01" value="0" placeholder="0,00" style="max-width:240px;margin-top:6px" oninput="updateBTW()">
+            </div>
+
+            <div class="card">
+                <h2>Zo vult u uw aangifte in op Mijn Belastingdienst</h2>
+                <div class="rubrieken-card">
+                    <div class="rubriek"><span>Rubriek 1a — Leveringen/diensten belast met hoog tarief</span><span id="rub-1a-omzet"></span></div>
+                    <div class="rubriek"><span>Rubriek 1a — BTW</span><strong id="rub-1a-btw"></strong></div>
+                    <div class="rubriek"><span>Rubriek 5b — Voorbelasting</span><strong id="rub-5b"></strong></div>
+                    <div class="rubriek"><span>Rubriek 5g — Totaal te betalen</span><strong id="rub-5g"></strong></div>
+                </div>
+                <div class="btn-row">
+                    <a href="https://mijn.belastingdienst.nl" target="_blank" class="btn btn-primary">Open Mijn Belastingdienst &rarr;</a>
+                </div>
+            </div>
+
+            <div id="btw-kor-banner"></div>
+
+            <div class="card" style="margin-top:20px">
+                <h2>Jaaroverzicht</h2>
+                <p style="font-size:14px;color:var(--gray-500);margin-bottom:16px">Download een PDF met omzet per maand en BTW per kwartaal voor uw administratie.</p>
+                <button class="btn btn-secondary" onclick="downloadJaaroverzichtPDF()">&#128196; Download jaaroverzicht (PDF)</button>
+            </div>
+
+            <div class="upsell-banner" style="margin-top:20px">
+                <p>Klain installeert dit voor uw bedrijf — inclusief persoonlijke uitleg en eerste kwartaal begeleiding. <strong>Quick Win: &euro;1.499 eenmalig.</strong></p>
+                <a href="https://klain.nl/#contact" class="btn btn-primary">Plan een AI Scan &rarr;</a>
             </div>
         </div>
     </main>
@@ -341,11 +445,9 @@ const LS=k=>JSON.parse(localStorage.getItem('klain_'+k)||'null');
 const SS=(k,v)=>localStorage.setItem('klain_'+k,JSON.stringify(v));
 
 function initData(){
-    if(LS('init')) return;
-    const thirtyDaysAgo = new Date(Date.now() - 30*86400000).toISOString().slice(0,10);
-    const twentyDaysAgo = new Date(Date.now() - 20*86400000).toISOString().slice(0,10);
-    const fiveDaysAgo = new Date(Date.now() - 5*86400000).toISOString().slice(0,10);
-    const today = new Date().toISOString().slice(0,10);
+    if(LS('init_v3')) return;
+    // Clear old data
+    ['init','init_v2','facturen','uren','klanten','profiel','nextFacNr','nextId'].forEach(function(k){localStorage.removeItem('klain_'+k)});
 
     SS('profiel',{naam:'Klussenbedrijf Harms',kvk:'12345678',btw:'NL001234567B01',adres:'Hoofdstraat 14, 7901 AA Hoogeveen',iban:'NL91RABO0123456789'});
     SS('klanten',[
@@ -353,26 +455,34 @@ function initData(){
         {id:2,naam:'Garage Jansen',adres:'Kanaalweg 8, 7903 AB Hoogeveen',email:'info@garagejansen.nl'}
     ]);
     SS('uren',[
-        {id:1,klantId:1,datum:'2026-02-25',omschr:'Onderhoud airco',uren:3,tarief:85,gefactureerd:true},
-        {id:2,klantId:1,datum:'2026-02-26',omschr:'Installatie verlichting',uren:5,tarief:85,gefactureerd:true},
-        {id:3,klantId:1,datum:'2026-02-27',omschr:'Inspectie leidingwerk',uren:2,tarief:85,gefactureerd:true},
-        {id:4,klantId:2,datum:'2026-02-28',omschr:'Elektra aanleggen',uren:4,tarief:85,gefactureerd:false},
-        {id:5,klantId:2,datum:'2026-02-28',omschr:'Leidingwerk vervangen',uren:3,tarief:85,gefactureerd:false},
-        {id:6,klantId:2,datum:'2026-03-01',omschr:'Afwerking kozijnen',uren:2.5,tarief:85,gefactureerd:false}
+        {id:1,klantId:1,datum:'2026-01-15',omschr:'Onderhoud airco',uren:3,tarief:85,gefactureerd:true},
+        {id:2,klantId:1,datum:'2026-01-16',omschr:'Installatie verlichting',uren:5,tarief:85,gefactureerd:true},
+        {id:3,klantId:1,datum:'2026-01-17',omschr:'Inspectie leidingwerk',uren:2,tarief:85,gefactureerd:true},
+        {id:4,klantId:2,datum:'2026-02-10',omschr:'Elektra aanleggen',uren:5,tarief:85,gefactureerd:true},
+        {id:5,klantId:2,datum:'2026-02-11',omschr:'Leidingwerk vervangen',uren:5,tarief:85,gefactureerd:true},
+        {id:6,klantId:1,datum:'2026-03-01',omschr:'Reparatie cv-ketel',uren:8,tarief:85,gefactureerd:true},
+        {id:7,klantId:1,datum:'2026-03-02',omschr:'Onderhoud installatie',uren:8.47,tarief:85,gefactureerd:true},
+        {id:8,klantId:2,datum:'2026-02-28',omschr:'Afwerking kozijnen',uren:2.5,tarief:85,gefactureerd:false},
+        {id:9,klantId:2,datum:'2026-03-01',omschr:'Schilderwerk kantoor',uren:3,tarief:85,gefactureerd:false}
     ]);
 
-    var regels1=[{id:1,klantId:1,datum:'2026-02-25',omschr:'Onderhoud airco',uren:3,tarief:85},{id:2,klantId:1,datum:'2026-02-26',omschr:'Installatie verlichting',uren:5,tarief:85}];
-    var sub1=8*85,btw1=sub1*0.21;
-    var regels2=[{id:3,klantId:1,datum:'2026-02-27',omschr:'Inspectie leidingwerk',uren:2,tarief:85}];
-    var sub2=2*85,btw2=sub2*0.21;
+    // F-1001: €1.000 excl BTW + 21% = €1.210 incl (jan, Supermarkt De Boer)
+    var regels1=[{id:1,klantId:1,datum:'2026-01-15',omschr:'Onderhoud airco',uren:3,tarief:85},{id:2,klantId:1,datum:'2026-01-16',omschr:'Installatie verlichting',uren:5,tarief:85},{id:3,klantId:1,datum:'2026-01-17',omschr:'Inspectie leidingwerk',uren:2,tarief:85}];
+
+    // F-1002: €850 excl BTW + 21% = €1.028,50 incl (feb, Garage Jansen)
+    var regels2=[{id:4,klantId:2,datum:'2026-02-10',omschr:'Elektra aanleggen',uren:5,tarief:85},{id:5,klantId:2,datum:'2026-02-11',omschr:'Leidingwerk vervangen',uren:5,tarief:85}];
+
+    // F-1003: €1.400 excl BTW + 21% = €1.694 incl (mrt, Supermarkt De Boer)
+    var regels3=[{id:6,klantId:1,datum:'2026-03-01',omschr:'Reparatie cv-ketel',uren:8,tarief:85},{id:7,klantId:1,datum:'2026-03-02',omschr:'Onderhoud installatie',uren:8.47,tarief:85}];
 
     SS('facturen',[
-        {id:50,nummer:'F-1001',klantId:1,klantNaam:'Supermarkt De Boer',datum:thirtyDaysAgo,vervalDatum:twentyDaysAgo,termijn:14,regels:regels1,subtotaal:sub1,btw:btw1,totaal:sub1+btw1,status:'Verzonden'},
-        {id:51,nummer:'F-1002',klantId:1,klantNaam:'Supermarkt De Boer',datum:fiveDaysAgo,vervalDatum:today,termijn:30,regels:regels2,subtotaal:sub2,btw:btw2,totaal:sub2+btw2,status:'Concept'}
+        {id:50,nummer:'F-1001',klantId:1,klantNaam:'Supermarkt De Boer',datum:'2026-01-30',vervalDatum:'2026-02-13',termijn:14,regels:regels1,subtotaal:1000,btwTarief:21,btw:210,totaal:1210,status:'Verzonden'},
+        {id:51,nummer:'F-1002',klantId:2,klantNaam:'Garage Jansen',datum:'2026-02-15',vervalDatum:'2026-03-17',termijn:30,regels:regels2,subtotaal:850,btwTarief:21,btw:178.50,totaal:1028.50,status:'Betaald'},
+        {id:52,nummer:'F-1003',klantId:1,klantNaam:'Supermarkt De Boer',datum:'2026-03-01',vervalDatum:'2026-03-31',termijn:30,regels:regels3,subtotaal:1400,btwTarief:21,btw:294,totaal:1694,status:'Concept'}
     ]);
-    SS('nextFacNr',1003);
+    SS('nextFacNr',1004);
     SS('nextId',100);
-    SS('init',true);
+    SS('init_v3',true);
 }
 
 function nid(){var i=(LS('nextId')||100)+1;SS('nextId',i);return i;}
@@ -391,6 +501,7 @@ document.querySelectorAll('.sidebar a[data-section]').forEach(function(a){
         if(a.dataset.section==='facturen'){renderFacturen();loadOpenUren();}
         if(a.dataset.section==='klanten') renderKlanten();
         if(a.dataset.section==='profiel') loadProfiel();
+        if(a.dataset.section==='btw'){setDefaultKwartaal();updateBTW();}
     });
 });
 
@@ -462,11 +573,47 @@ function renderUren(){
 function loadOpenUren(){var klantId=parseInt(document.getElementById('fac-klant').value);var el=document.getElementById('fac-uren-select');if(!klantId){el.innerHTML='';return;}var uren=(LS('uren')||[]).filter(function(u){return u.klantId===klantId&&!u.gefactureerd});if(!uren.length){el.innerHTML='<p style="color:var(--gray-400);font-size:14px">Geen openstaande uren voor deze klant</p>';return;}el.innerHTML='<p style="font-size:13px;font-weight:600;margin-bottom:8px">Openstaande uren:</p><table><thead><tr><th><input type="checkbox" checked onchange="toggleAllUren(this)"></th><th>Datum</th><th>Omschrijving</th><th>Uren</th><th>Totaal</th></tr></thead><tbody>'+uren.map(function(u){return '<tr><td><input type="checkbox" checked value="'+u.id+'" class="uur-cb"></td><td>'+u.datum+'</td><td>'+u.omschr+'</td><td>'+u.uren+'</td><td>\u20AC'+fmt(u.uren*u.tarief)+'</td></tr>'}).join('')+'</tbody></table>';}
 function toggleAllUren(cb){document.querySelectorAll('.uur-cb').forEach(function(c){c.checked=cb.checked});}
 
-function generateFactuur(){var klantId=parseInt(document.getElementById('fac-klant').value);if(!klantId)return toast('Selecteer een klant');var checked=Array.from(document.querySelectorAll('.uur-cb:checked')).map(function(c){return parseInt(c.value)});if(!checked.length)return toast('Selecteer minstens \u00e9\u00e9n urenregel');var profiel=LS('profiel')||{};var klanten=LS('klanten')||[];var klant=klanten.find(function(k){return k.id===klantId});var uren=LS('uren')||[];var regels=uren.filter(function(u){return checked.indexOf(u.id)!==-1});var facNr=LS('nextFacNr')||1001;SS('nextFacNr',facNr+1);var today=new Date().toISOString().slice(0,10);var termijn=parseInt(document.getElementById('fac-termijn').value);var vervalDatum=new Date(Date.now()+termijn*86400000).toISOString().slice(0,10);var subtotaal=regels.reduce(function(s,r){return s+r.uren*r.tarief},0);var btw=subtotaal*0.21;var totaal=subtotaal+btw;regels.forEach(function(r){var u=uren.find(function(x){return x.id===r.id});if(u)u.gefactureerd=true;});SS('uren',uren);var factuur={id:nid(),nummer:'F-'+facNr,klantId:klantId,klantNaam:klant.naam,datum:today,vervalDatum:vervalDatum,termijn:termijn,regels:regels,subtotaal:subtotaal,btw:btw,totaal:totaal,status:'Concept'};var facturen=LS('facturen')||[];facturen.push(factuur);SS('facturen',facturen);renderInvoicePreview(factuur,profiel,klant);renderFacturen();loadOpenUren();toast('Factuur '+factuur.nummer+' aangemaakt \u2713');}
+function generateFactuur(){
+    var klantId=parseInt(document.getElementById('fac-klant').value);
+    if(!klantId)return toast('Selecteer een klant');
+    var checked=Array.from(document.querySelectorAll('.uur-cb:checked')).map(function(c){return parseInt(c.value)});
+    if(!checked.length)return toast('Selecteer minstens \u00e9\u00e9n urenregel');
+    var profiel=LS('profiel')||{};
+    var klanten=LS('klanten')||[];
+    var klant=klanten.find(function(k){return k.id===klantId});
+    var uren=LS('uren')||[];
+    var regels=uren.filter(function(u){return checked.indexOf(u.id)!==-1});
+    var facNr=LS('nextFacNr')||1001;
+    SS('nextFacNr',facNr+1);
+    var today=new Date().toISOString().slice(0,10);
+    var termijn=parseInt(document.getElementById('fac-termijn').value);
+    var btwTarief=parseInt(document.getElementById('fac-btw-tarief').value);
+    var vervalDatum=new Date(Date.now()+termijn*86400000).toISOString().slice(0,10);
+    var subtotaal=regels.reduce(function(s,r){return s+r.uren*r.tarief},0);
+    var btw=subtotaal*(btwTarief/100);
+    var totaal=subtotaal+btw;
+    regels.forEach(function(r){var u=uren.find(function(x){return x.id===r.id});if(u)u.gefactureerd=true;});
+    SS('uren',uren);
+    var factuur={id:nid(),nummer:'F-'+facNr,klantId:klantId,klantNaam:klant.naam,datum:today,vervalDatum:vervalDatum,termijn:termijn,regels:regels,subtotaal:subtotaal,btwTarief:btwTarief,btw:btw,totaal:totaal,status:'Concept'};
+    var facturen=LS('facturen')||[];
+    facturen.push(factuur);
+    SS('facturen',facturen);
+    renderInvoicePreview(factuur,profiel,klant);
+    renderFacturen();
+    loadOpenUren();
+    toast('Factuur '+factuur.nummer+' aangemaakt \u2713');
+}
 
-function renderInvoicePreview(f,profiel,klant){document.getElementById('invoice-preview-container').style.display='block';document.getElementById('invoice-preview-container').dataset.factuurId=f.id;document.getElementById('invoice-preview').innerHTML='<div class="inv-header"><div><h2>FACTUUR</h2><p style="color:var(--gray-500);font-size:13px;margin-top:4px">'+f.nummer+'</p></div><div class="inv-meta"><p>Factuurdatum: '+f.datum+'</p><p>Vervaldatum: '+f.vervalDatum+'</p><p>Betaaltermijn: '+f.termijn+' dagen</p></div></div><div class="inv-parties"><div><h4>Van</h4><p><strong>'+(profiel.naam||'')+'</strong><br>'+(profiel.adres||'')+'<br>KVK: '+(profiel.kvk||'')+'<br>BTW: '+(profiel.btw||'')+'<br>IBAN: '+(profiel.iban||'')+'</p></div><div><h4>Aan</h4><p><strong>'+klant.naam+'</strong><br>'+klant.adres+'<br>'+klant.email+'</p></div></div><table><thead><tr><th>Datum</th><th>Omschrijving</th><th>Uren</th><th>Tarief</th><th style="text-align:right">Bedrag</th></tr></thead><tbody>'+f.regels.map(function(r){return '<tr><td>'+r.datum+'</td><td>'+r.omschr+'</td><td>'+r.uren+'</td><td>\u20AC'+fmt(r.tarief)+'</td><td style="text-align:right">\u20AC'+fmt(r.uren*r.tarief)+'</td></tr>'}).join('')+'</tbody></table><div class="inv-totals"><table><tr><td>Subtotaal</td><td style="text-align:right">\u20AC'+fmt(f.subtotaal)+'</td></tr><tr><td>BTW (21%)</td><td style="text-align:right">\u20AC'+fmt(f.btw)+'</td></tr><tr class="grand-total"><td>Totaal</td><td style="text-align:right">\u20AC'+fmt(f.totaal)+'</td></tr></table></div><div class="inv-footer">Gelieve het totaalbedrag over te maken op '+(profiel.iban||'IBAN')+' t.n.v. '+(profiel.naam||'')+' onder vermelding van '+f.nummer+'.</div>';}
+function renderInvoicePreview(f,profiel,klant){
+    var btwLabel='BTW ('+(f.btwTarief!=null?f.btwTarief:21)+'%)';
+    document.getElementById('invoice-preview-container').style.display='block';
+    document.getElementById('invoice-preview-container').dataset.factuurId=f.id;
+    document.getElementById('invoice-preview').innerHTML='<div class="inv-header"><div><h2>FACTUUR</h2><p style="color:var(--gray-500);font-size:13px;margin-top:4px">'+f.nummer+'</p></div><div class="inv-meta"><p>Factuurdatum: '+f.datum+'</p><p>Vervaldatum: '+f.vervalDatum+'</p><p>Betaaltermijn: '+f.termijn+' dagen</p></div></div><div class="inv-parties"><div><h4>Van</h4><p><strong>'+(profiel.naam||'')+'</strong><br>'+(profiel.adres||'')+'<br>KVK: '+(profiel.kvk||'')+'<br>BTW: '+(profiel.btw||'')+'<br>IBAN: '+(profiel.iban||'')+'</p></div><div><h4>Aan</h4><p><strong>'+klant.naam+'</strong><br>'+klant.adres+'<br>'+klant.email+'</p></div></div><table><thead><tr><th>Datum</th><th>Omschrijving</th><th>Uren</th><th>Tarief</th><th style="text-align:right">Bedrag</th></tr></thead><tbody>'+f.regels.map(function(r){return '<tr><td>'+r.datum+'</td><td>'+r.omschr+'</td><td>'+r.uren+'</td><td>\u20AC'+fmt(r.tarief)+'</td><td style="text-align:right">\u20AC'+fmt(r.uren*r.tarief)+'</td></tr>'}).join('')+'</tbody></table><div class="inv-totals"><table><tr><td>Subtotaal excl. BTW</td><td style="text-align:right">\u20AC'+fmt(f.subtotaal)+'</td></tr><tr><td>'+btwLabel+'</td><td style="text-align:right">\u20AC'+fmt(f.btw)+'</td></tr><tr class="grand-total"><td>Totaal incl. BTW</td><td style="text-align:right">\u20AC'+fmt(f.totaal)+'</td></tr></table></div><div class="inv-footer">Gelieve het totaalbedrag over te maken op '+(profiel.iban||'IBAN')+' t.n.v. '+(profiel.naam||'')+' onder vermelding van '+f.nummer+'.</div>';
+}
 
-function downloadPDF(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF();var fId=parseInt(document.getElementById('invoice-preview-container').dataset.factuurId);var facturen=LS('facturen')||[];var f=facturen.find(function(x){return x.id===fId});if(!f)return toast('Factuur niet gevonden');var profiel=LS('profiel')||{};var klant=(LS('klanten')||[]).find(function(k){return k.id===f.klantId})||{};var y=20;doc.setFontSize(24);doc.setTextColor(37,99,235);doc.text('FACTUUR',20,y);doc.setFontSize(11);doc.setTextColor(100);doc.text(f.nummer,20,y+8);doc.text('Factuurdatum: '+f.datum,190,y,{align:'right'});doc.text('Vervaldatum: '+f.vervalDatum,190,y+6,{align:'right'});y+=28;doc.setTextColor(50);doc.setFontSize(9);doc.text('VAN',20,y);doc.text('AAN',110,y);y+=6;doc.setFontSize(10);doc.setTextColor(30);doc.text(profiel.naam||'',20,y);doc.text(klant.naam||'',110,y);y+=5;doc.setFontSize(9);doc.setTextColor(80);doc.text(profiel.adres||'',20,y);doc.text(klant.adres||'',110,y);y+=5;doc.text('KVK: '+(profiel.kvk||''),20,y);doc.text(klant.email||'',110,y);y+=5;doc.text('BTW: '+(profiel.btw||''),20,y);y+=5;doc.text('IBAN: '+(profiel.iban||''),20,y);y+=14;doc.setFillColor(240,242,245);doc.rect(20,y-4,170,8,'F');doc.setFontSize(8);doc.setTextColor(100);doc.text('DATUM',22,y);doc.text('OMSCHRIJVING',52,y);doc.text('UREN',120,y);doc.text('TARIEF',140,y);doc.text('BEDRAG',175,y,{align:'right'});y+=8;doc.setTextColor(30);doc.setFontSize(9);f.regels.forEach(function(r){doc.text(r.datum,22,y);doc.text(r.omschr,52,y);doc.text(String(r.uren),122,y);doc.text('\u20AC'+fmt(r.tarief),140,y);doc.text('\u20AC'+fmt(r.uren*r.tarief),175,y,{align:'right'});y+=7;});y+=6;doc.setDrawColor(200);doc.line(120,y,190,y);y+=8;doc.text('Subtotaal',140,y);doc.text('\u20AC'+fmt(f.subtotaal),175,y,{align:'right'});y+=6;doc.text('BTW (21%)',140,y);doc.text('\u20AC'+fmt(f.btw),175,y,{align:'right'});y+=6;doc.setDrawColor(37,99,235);doc.line(120,y,190,y);y+=7;doc.setFontSize(11);doc.setTextColor(37,99,235);doc.text('Totaal',140,y);doc.text('\u20AC'+fmt(f.totaal),175,y,{align:'right'});y+=20;doc.setFontSize(8);doc.setTextColor(150);doc.text('Gelieve over te maken op '+(profiel.iban||'IBAN')+' t.n.v. '+(profiel.naam||'')+' o.v.v. '+f.nummer,105,y,{align:'center'});doc.save(f.nummer+'.pdf');toast('PDF gedownload \u2713');}
+function downloadPDF(){
+    var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF();var fId=parseInt(document.getElementById('invoice-preview-container').dataset.factuurId);var facturen=LS('facturen')||[];var f=facturen.find(function(x){return x.id===fId});if(!f)return toast('Factuur niet gevonden');var profiel=LS('profiel')||{};var klant=(LS('klanten')||[]).find(function(k){return k.id===f.klantId})||{};var btwLabel='BTW ('+(f.btwTarief!=null?f.btwTarief:21)+'%)';var y=20;doc.setFontSize(24);doc.setTextColor(37,99,235);doc.text('FACTUUR',20,y);doc.setFontSize(11);doc.setTextColor(100);doc.text(f.nummer,20,y+8);doc.text('Factuurdatum: '+f.datum,190,y,{align:'right'});doc.text('Vervaldatum: '+f.vervalDatum,190,y+6,{align:'right'});y+=28;doc.setTextColor(50);doc.setFontSize(9);doc.text('VAN',20,y);doc.text('AAN',110,y);y+=6;doc.setFontSize(10);doc.setTextColor(30);doc.text(profiel.naam||'',20,y);doc.text(klant.naam||'',110,y);y+=5;doc.setFontSize(9);doc.setTextColor(80);doc.text(profiel.adres||'',20,y);doc.text(klant.adres||'',110,y);y+=5;doc.text('KVK: '+(profiel.kvk||''),20,y);doc.text(klant.email||'',110,y);y+=5;doc.text('BTW: '+(profiel.btw||''),20,y);y+=5;doc.text('IBAN: '+(profiel.iban||''),20,y);y+=14;doc.setFillColor(240,242,245);doc.rect(20,y-4,170,8,'F');doc.setFontSize(8);doc.setTextColor(100);doc.text('DATUM',22,y);doc.text('OMSCHRIJVING',52,y);doc.text('UREN',120,y);doc.text('TARIEF',140,y);doc.text('BEDRAG',175,y,{align:'right'});y+=8;doc.setTextColor(30);doc.setFontSize(9);f.regels.forEach(function(r){doc.text(r.datum,22,y);doc.text(r.omschr,52,y);doc.text(String(r.uren),122,y);doc.text('\u20AC'+fmt(r.tarief),140,y);doc.text('\u20AC'+fmt(r.uren*r.tarief),175,y,{align:'right'});y+=7;});y+=6;doc.setDrawColor(200);doc.line(120,y,190,y);y+=8;doc.text('Subtotaal excl. BTW',140,y);doc.text('\u20AC'+fmt(f.subtotaal),175,y,{align:'right'});y+=6;doc.text(btwLabel,140,y);doc.text('\u20AC'+fmt(f.btw),175,y,{align:'right'});y+=6;doc.setDrawColor(37,99,235);doc.line(120,y,190,y);y+=7;doc.setFontSize(11);doc.setTextColor(37,99,235);doc.text('Totaal incl. BTW',140,y);doc.text('\u20AC'+fmt(f.totaal),175,y,{align:'right'});y+=20;doc.setFontSize(8);doc.setTextColor(150);doc.text('Gelieve over te maken op '+(profiel.iban||'IBAN')+' t.n.v. '+(profiel.naam||'')+' o.v.v. '+f.nummer,105,y,{align:'center'});doc.save(f.nummer+'.pdf');toast('PDF gedownload \u2713');
+}
 
 function updateFactuurStatus(id,status){var facturen=LS('facturen')||[];var f=facturen.find(function(x){return x.id===id});if(f){f.status=status;SS('facturen',facturen);renderFacturen();updateDashboard();toast('Status bijgewerkt \u2713');}}
 
@@ -476,14 +623,14 @@ function renderFacturen(){
     if(!facturen.length){el.innerHTML='<div class="empty-state"><p>Nog geen facturen</p></div>';return;}
     var now=new Date();
     var bc=function(s){return s==='Betaald'?'badge-betaald':s==='Verzonden'?'badge-verzonden':'badge-concept'};
-    el.innerHTML='<table><thead><tr><th>Nummer</th><th>Klant</th><th>Datum</th><th>Totaal</th><th>Status</th><th></th></tr></thead><tbody>'+facturen.map(function(f){
+    el.innerHTML='<table><thead><tr><th>Nummer</th><th>Klant</th><th>Datum</th><th>Excl. BTW</th><th>BTW</th><th>Totaal</th><th>Status</th><th></th></tr></thead><tbody>'+facturen.map(function(f){
         var daysSince=Math.floor((now-new Date(f.datum))/86400000);
-        var isOverdue=f.status==='Verzonden'&&daysSince>14;
+        var isOverdue=f.status==='Verzonden'&&new Date(f.vervalDatum)<now;
         var statusCell='<span class="badge '+bc(f.status)+'">'+f.status+'</span>';
         if(isOverdue) statusCell+=' <span class="badge badge-late">Te laat</span>';
         var actionsCell='<select style="font-size:12px;padding:4px 8px;border:1px solid var(--gray-200);border-radius:6px;cursor:pointer" onchange="updateFactuurStatus('+f.id+',this.value)"><option'+(f.status==='Concept'?' selected':'')+'>Concept</option><option'+(f.status==='Verzonden'?' selected':'')+'>Verzonden</option><option'+(f.status==='Betaald'?' selected':'')+'>Betaald</option></select>';
         if(isOverdue) actionsCell+='<button class="btn-reminder" onclick="showReminder('+f.id+')">Herinnering sturen</button>';
-        return '<tr><td>'+f.nummer+'</td><td>'+f.klantNaam+'</td><td>'+f.datum+'</td><td>\u20AC'+fmt(f.totaal)+'</td><td>'+statusCell+'</td><td>'+actionsCell+'</td></tr>';
+        return '<tr><td>'+f.nummer+'</td><td>'+f.klantNaam+'</td><td>'+f.datum+'</td><td>\u20AC'+fmt(f.subtotaal)+'</td><td>\u20AC'+fmt(f.btw)+'</td><td>\u20AC'+fmt(f.totaal)+'</td><td>'+statusCell+'</td><td>'+actionsCell+'</td></tr>';
     }).join('')+'</tbody></table>';
 }
 
@@ -499,6 +646,171 @@ function showReminder(factuurId){
     document.getElementById('reminder-modal').classList.add('show');
 }
 function closeReminderModal(){document.getElementById('reminder-modal').classList.remove('show');}
+
+// ============ BTW AANGIFTE ============
+
+function setDefaultKwartaal(){
+    var now=new Date();
+    var q=Math.floor(now.getMonth()/3)+1;
+    document.getElementById('btw-kwartaal').value=String(q);
+}
+
+function getQuarterMonths(q){
+    q=parseInt(q);
+    if(q===1) return [0,1,2];
+    if(q===2) return [3,4,5];
+    if(q===3) return [6,7,8];
+    return [9,10,11];
+}
+
+function getQuarterDeadline(q){
+    q=parseInt(q);
+    if(q===1) return new Date(2026,3,30);
+    if(q===2) return new Date(2026,6,31);
+    if(q===3) return new Date(2026,9,31);
+    return new Date(2027,0,31);
+}
+
+function getQuarterDeadlineLabel(q){
+    q=parseInt(q);
+    if(q===1) return '30 april 2026';
+    if(q===2) return '31 juli 2026';
+    if(q===3) return '31 oktober 2026';
+    return '31 januari 2027';
+}
+
+function updateBTW(){
+    var q=parseInt(document.getElementById('btw-kwartaal').value);
+    var months=getQuarterMonths(q);
+    var facturen=LS('facturen')||[];
+    var year=2026;
+
+    var qFacturen=facturen.filter(function(f){
+        var d=new Date(f.datum);
+        return d.getFullYear()===year && months.indexOf(d.getMonth())!==-1;
+    });
+
+    var omzetExcl=qFacturen.reduce(function(s,f){return s+f.subtotaal},0);
+    var btwOntvangen=qFacturen.reduce(function(s,f){return s+f.btw},0);
+    var voorbelasting=parseFloat(document.getElementById('btw-voorbelasting-input').value)||0;
+    var teBetalen=btwOntvangen-voorbelasting;
+
+    document.getElementById('btw-omzet').textContent='\u20AC'+fmt(omzetExcl);
+    document.getElementById('btw-ontvangen').textContent='\u20AC'+fmt(btwOntvangen);
+    document.getElementById('btw-voorbelasting').textContent='\u20AC'+fmt(voorbelasting);
+
+    var teBetalenEl=document.getElementById('btw-te-betalen');
+    if(teBetalen>0){
+        teBetalenEl.className='kpi-value btw-positive';
+        teBetalenEl.textContent='\u20AC'+fmt(teBetalen)+' (betalen)';
+    } else if(teBetalen<0){
+        teBetalenEl.className='kpi-value btw-negative';
+        teBetalenEl.textContent='\u20AC'+fmt(Math.abs(teBetalen))+' (terug)';
+    } else {
+        teBetalenEl.className='kpi-value';
+        teBetalenEl.textContent='\u20AC0,00';
+    }
+
+    // Rubrieken
+    document.getElementById('rub-1a-omzet').textContent='\u20AC'+fmt(omzetExcl);
+    document.getElementById('rub-1a-btw').textContent='\u20AC'+fmt(btwOntvangen);
+    document.getElementById('rub-5b').textContent='\u20AC'+fmt(voorbelasting);
+    document.getElementById('rub-5g').textContent='\u20AC'+fmt(teBetalen);
+
+    // Deadline banner
+    var deadline=getQuarterDeadline(q);
+    var now=new Date();
+    var daysLeft=Math.ceil((deadline-now)/86400000);
+    var bannerEl=document.getElementById('btw-deadline-banner');
+    var deadlineLabel=getQuarterDeadlineLabel(q);
+    if(daysLeft>0 && daysLeft<=30){
+        bannerEl.innerHTML='<div class="deadline-banner urgent">\u23F0 Uw BTW-aangifte Q'+q+' is over '+daysLeft+' dagen \u2014 deadline '+deadlineLabel+'</div>';
+    } else if(daysLeft>30){
+        bannerEl.innerHTML='<div class="deadline-banner info">\uD83D\uDCC5 Deadline BTW-aangifte Q'+q+': '+deadlineLabel+' (nog '+daysLeft+' dagen)</div>';
+    } else {
+        bannerEl.innerHTML='<div class="deadline-banner urgent">\u26A0\uFE0F Deadline BTW-aangifte Q'+q+' is verstreken ('+deadlineLabel+')</div>';
+    }
+
+    // KOR check
+    var jaarFacturen=facturen.filter(function(f){return new Date(f.datum).getFullYear()===year});
+    var jaarOmzet=jaarFacturen.reduce(function(s,f){return s+f.subtotaal},0);
+    var korEl=document.getElementById('btw-kor-banner');
+    if(jaarOmzet<20000){
+        korEl.innerHTML='<div class="kor-banner">\u26A0\uFE0F Uw geschatte jaaromzet ligt onder \u20AC20.000. U komt mogelijk in aanmerking voor de <strong>KOR</strong> (kleineondernemersregeling) \u2014 dan doet u helemaal geen BTW-aangifte meer.<br><a href="https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/zakelijk/btw/hoe_werkt_de_btw/kleineondernemersregeling/kleineondernemersregeling" target="_blank">Meer informatie \u2192</a></div>';
+    } else {
+        korEl.innerHTML='';
+    }
+}
+
+function downloadJaaroverzichtPDF(){
+    var jsPDF=window.jspdf.jsPDF;
+    var doc=new jsPDF();
+    var profiel=LS('profiel')||{};
+    var facturen=LS('facturen')||[];
+    var year=2026;
+    var jaarFacturen=facturen.filter(function(f){return new Date(f.datum).getFullYear()===year});
+
+    var y=20;
+    doc.setFontSize(20);doc.setTextColor(37,99,235);
+    doc.text('Jaaroverzicht '+year,20,y);
+    y+=12;
+    doc.setFontSize(11);doc.setTextColor(50);
+    doc.text((profiel.naam||'')+' | KVK: '+(profiel.kvk||''),20,y);
+    y+=16;
+
+    // Omzet per maand
+    doc.setFontSize(14);doc.setTextColor(30);
+    doc.text('Omzet per maand',20,y);y+=8;
+    doc.setFillColor(240,242,245);doc.rect(20,y-4,170,8,'F');
+    doc.setFontSize(9);doc.setTextColor(100);
+    doc.text('Maand',22,y);doc.text('Omzet excl. BTW',90,y);doc.text('BTW',140,y);doc.text('Totaal',175,y,{align:'right'});
+    y+=8;
+    var maanden=['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
+    var jaarTotaalExcl=0,jaarTotaalBtw=0,jaarTotaalIncl=0;
+    doc.setTextColor(30);
+    maanden.forEach(function(m,i){
+        var mf=jaarFacturen.filter(function(f){return new Date(f.datum).getMonth()===i});
+        var excl=mf.reduce(function(s,f){return s+f.subtotaal},0);
+        var btw=mf.reduce(function(s,f){return s+f.btw},0);
+        var incl=excl+btw;
+        jaarTotaalExcl+=excl;jaarTotaalBtw+=btw;jaarTotaalIncl+=incl;
+        if(excl>0){
+            doc.text(m,22,y);
+            doc.text('\u20AC'+fmt(excl),90,y);
+            doc.text('\u20AC'+fmt(btw),140,y);
+            doc.text('\u20AC'+fmt(incl),170,y,{align:'right'});
+            y+=6;
+        }
+    });
+    y+=2;doc.setDrawColor(37,99,235);doc.line(20,y,190,y);y+=6;
+    doc.setFontSize(10);doc.setTextColor(37,99,235);
+    doc.text('Totaal '+year,22,y);
+    doc.text('\u20AC'+fmt(jaarTotaalExcl),90,y);
+    doc.text('\u20AC'+fmt(jaarTotaalBtw),140,y);
+    doc.text('\u20AC'+fmt(jaarTotaalIncl),170,y,{align:'right'});
+    y+=16;
+
+    // BTW per kwartaal
+    doc.setFontSize(14);doc.setTextColor(30);
+    doc.text('BTW per kwartaal',20,y);y+=8;
+    doc.setFillColor(240,242,245);doc.rect(20,y-4,170,8,'F');
+    doc.setFontSize(9);doc.setTextColor(100);
+    doc.text('Kwartaal',22,y);doc.text('Omzet excl. BTW',90,y);doc.text('BTW',140,y);
+    y+=8;doc.setTextColor(30);
+    for(var qi=1;qi<=4;qi++){
+        var qm=getQuarterMonths(qi);
+        var qf=jaarFacturen.filter(function(f){return qm.indexOf(new Date(f.datum).getMonth())!==-1});
+        var qExcl=qf.reduce(function(s,f){return s+f.subtotaal},0);
+        var qBtw=qf.reduce(function(s,f){return s+f.btw},0);
+        doc.text('Q'+qi+' '+year,22,y);
+        doc.text('\u20AC'+fmt(qExcl),90,y);
+        doc.text('\u20AC'+fmt(qBtw),140,y);
+        y+=6;
+    }
+
+    doc.save('Jaaroverzicht-'+year+'.pdf');
+    toast('Jaaroverzicht gedownload \u2713');
+}
 
 initData();
 loadProfiel();
