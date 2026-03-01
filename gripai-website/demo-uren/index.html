@@ -249,13 +249,6 @@
         <div class="section" id="sec-profiel">
             <h1>Bedrijfsprofiel</h1>
             <p class="subtitle">Jouw bedrijfsgegevens voor op de factuur</p>
-            <div class="card" style="margin-bottom:20px;">
-                <h2>KVK opzoeken</h2>
-                <div style="display:flex;gap:10px;align-items:flex-end">
-                    <div style="flex:1"><label>KVK-nummer</label><input id="kvk-lookup-nr" placeholder="Bijv. 12345678" maxlength="8"></div>
-                    <button class="btn btn-primary" onclick="kvkLookup()" id="kvk-lookup-btn">Opzoeken</button>
-                </div>
-            </div>
             <div class="card">
                 <div class="form-grid">
                     <div><label>Bedrijfsnaam</label><input id="pf-naam" placeholder="Bijv. Klussenbedrijf Harms"></div>
@@ -274,14 +267,6 @@
         <div class="section" id="sec-klanten">
             <h1>Klanten</h1>
             <p class="subtitle">Beheer je klantenbestand</p>
-            <div class="card" style="margin-bottom:20px;">
-                <h2>🔍 KVK zoeken</h2>
-                <div style="display:flex;gap:10px;align-items:flex-end">
-                    <div style="flex:1"><label>Bedrijfsnaam of KVK-nummer</label><input id="kvk-search-input" placeholder="Bijv. bakker of 12345678"></div>
-                    <button class="btn btn-primary" onclick="kvkSearch()" id="kvk-search-btn">Zoeken</button>
-                </div>
-                <div id="kvk-search-results" style="margin-top:12px"></div>
-            </div>
             <div class="card">
                 <h2>Klant toevoegen</h2>
                 <div class="form-grid">
@@ -303,20 +288,6 @@
         <div class="section" id="sec-uren">
             <h1>Urenregistratie</h1>
             <p class="subtitle">Registreer uren per klant</p>
-            <div class="card" style="margin-bottom:20px;border:1px solid var(--blue-muted);background:var(--blue-light);">
-                <h2>⏱ Uren timer</h2>
-                <div id="timer-display" style="font-family:'Fraunces',serif;font-size:48px;font-weight:700;letter-spacing:-2px;color:var(--black);margin:16px 0;">00:00:00</div>
-                <div class="form-grid">
-                    <div><label>Klant</label><select id="timer-klant"></select></div>
-                    <div><label>Omschrijving</label><input id="timer-omschr" placeholder="Waar werk je aan?"></div>
-                </div>
-                <div class="btn-row">
-                    <button class="btn btn-primary" id="timer-start-btn" onclick="timerStart()">▶ Start</button>
-                    <button class="btn btn-secondary" id="timer-stop-btn" onclick="timerStop()" disabled>⏹ Stop</button>
-                    <button class="btn btn-success" id="timer-register-btn" onclick="timerRegister()" disabled>✓ Registreer</button>
-                </div>
-                <div id="timer-result" style="margin-top:12px;font-size:14px;color:var(--gray-500);display:none">Getimed: <strong id="timer-hours" style="color:var(--black)">0</strong> uur</div>
-            </div>
             <div class="uren-info-banner" id="uren-banner">
                 <span id="uren-banner-text"></span>
                 <div style="display:flex;align-items:center;gap:12px">
@@ -553,9 +524,9 @@ const LS=k=>JSON.parse(localStorage.getItem('klain_'+k)||'null');
 const SS=(k,v)=>localStorage.setItem('klain_'+k,JSON.stringify(v));
 
 function initData(){
-    if(LS('init_v4')) return;
+    if(LS('init_v3')) return;
     // Clear old data
-    ['init','init_v2','init_v3','facturen','uren','klanten','profiel','nextFacNr','nextId'].forEach(function(k){localStorage.removeItem('klain_'+k)});
+    ['init','init_v2','facturen','uren','klanten','profiel','nextFacNr','nextId'].forEach(function(k){localStorage.removeItem('klain_'+k)});
 
     SS('profiel',{naam:'Klussenbedrijf Harms',kvk:'12345678',btw:'NL001234567B01',adres:'Hoofdstraat 14, 7901 AA Hoogeveen',iban:'NL91RABO0123456789'});
     SS('klanten',[
@@ -597,7 +568,7 @@ function initData(){
         {id:202,leverancier:'Lease Auto BV',datum:'2026-03-01',omschr:'Leasekosten maart',excl:320,btwTarief:21,btw:67.20,totaal:387.20}
     ]);
 
-    SS('init_v4',true);
+    SS('init_v3',true);
 }
 
 function nid(){var i=(LS('nextId')||100)+1;SS('nextId',i);return i;}
@@ -612,7 +583,7 @@ document.querySelectorAll('.sidebar a[data-section]').forEach(function(a){
         document.querySelector('.sidebar').classList.remove('open');
         if(a.dataset.section==='dashboard') updateDashboard();
         if(a.dataset.section==='uren'||a.dataset.section==='facturen') populateKlantSelects();
-        if(a.dataset.section==='uren'){renderUren();populateTimerKlant();}
+        if(a.dataset.section==='uren') renderUren();
         if(a.dataset.section==='facturen'){renderFacturen();loadOpenUren();}
         if(a.dataset.section==='klanten') renderKlanten();
         if(a.dataset.section==='profiel') loadProfiel();
@@ -745,7 +716,6 @@ function renderFacturen(){
         var statusCell='<span class="badge '+bc(f.status)+'">'+f.status+'</span>';
         if(isOverdue) statusCell+=' <span class="badge badge-late">Te laat</span>';
         var actionsCell='<select style="font-size:12px;padding:4px 8px;border:1px solid var(--gray-200);border-radius:6px;cursor:pointer" onchange="updateFactuurStatus('+f.id+',this.value)"><option'+(f.status==='Concept'?' selected':'')+'>Concept</option><option'+(f.status==='Verzonden'?' selected':'')+'>Verzonden</option><option'+(f.status==='Betaald'?' selected':'')+'>Betaald</option></select>';
-        var emailSent=getEmailStatus()[f.id];if(emailSent){actionsCell+=' <button class="btn btn-sm" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;cursor:default" disabled>✓ Verzonden</button>';}else{actionsCell+=' <button class="btn btn-sm btn-secondary" onclick="sendFactuurEmail('+f.id+',this)" id="email-btn-'+f.id+'">📧 Verstuur</button>';}
         if(isOverdue) actionsCell+='<button class="btn-reminder" onclick="showReminder('+f.id+')">Herinnering sturen</button>';
         return '<tr><td>'+f.nummer+'</td><td>'+f.klantNaam+'</td><td>'+f.datum+'</td><td>\u20AC'+fmt(f.subtotaal)+'</td><td>\u20AC'+fmt(f.btw)+'</td><td>\u20AC'+fmt(f.totaal)+'</td><td>'+statusCell+'</td><td>'+actionsCell+'</td></tr>';
     }).join('')+'</tbody></table>';
@@ -1052,149 +1022,6 @@ function simulateUpload(file) {
         document.getElementById('upload-success-banner').style.display = 'block';
     }, 2000);
 }
-
-
-// ============ URENTIMER ============
-var _timerInterval=null, _timerStart=null, _timerElapsed=0, _timerRunning=false;
-
-function timerStart(){
-    var klantId=parseInt(document.getElementById('timer-klant').value);
-    if(!klantId) return toast('Selecteer eerst een klant');
-    _timerStart=Date.now()-_timerElapsed;
-    _timerRunning=true;
-    document.getElementById('timer-start-btn').disabled=true;
-    document.getElementById('timer-stop-btn').disabled=false;
-    document.getElementById('timer-register-btn').disabled=true;
-    document.getElementById('timer-result').style.display='none';
-    _timerInterval=setInterval(function(){
-        _timerElapsed=Date.now()-_timerStart;
-        var s=Math.floor(_timerElapsed/1000);
-        var h=Math.floor(s/3600);var m=Math.floor((s%3600)/60);var sec=s%60;
-        document.getElementById('timer-display').textContent=
-            String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
-    },1000);
-}
-
-function timerStop(){
-    clearInterval(_timerInterval);
-    _timerRunning=false;
-    document.getElementById('timer-start-btn').disabled=false;
-    document.getElementById('timer-stop-btn').disabled=true;
-    document.getElementById('timer-register-btn').disabled=false;
-    var hours=_timerElapsed/3600000;
-    var rounded=Math.ceil(hours*4)/4; // round up to 0.25
-    if(rounded<0.25) rounded=0.25;
-    document.getElementById('timer-hours').textContent=rounded;
-    document.getElementById('timer-result').style.display='block';
-}
-
-function timerRegister(){
-    var klantId=parseInt(document.getElementById('timer-klant').value);
-    if(!klantId) return toast('Selecteer een klant');
-    var hours=parseFloat(document.getElementById('timer-hours').textContent);
-    if(!hours||hours<=0) return toast('Start eerst de timer');
-    var omschr=document.getElementById('timer-omschr').value||'Werkzaamheden';
-    var uren=LS('uren')||[];
-    uren.push({id:nid(),klantId:klantId,datum:new Date().toISOString().slice(0,10),omschr:omschr,uren:hours,tarief:85,gefactureerd:false});
-    SS('uren',uren);
-    // Reset timer
-    clearInterval(_timerInterval);
-    _timerElapsed=0;_timerRunning=false;_timerStart=null;
-    document.getElementById('timer-display').textContent='00:00:00';
-    document.getElementById('timer-omschr').value='';
-    document.getElementById('timer-start-btn').disabled=false;
-    document.getElementById('timer-stop-btn').disabled=true;
-    document.getElementById('timer-register-btn').disabled=true;
-    document.getElementById('timer-result').style.display='none';
-    renderUren();
-    toast('Uren geregistreerd via timer ✓');
-}
-
-function populateTimerKlant(){
-    var klanten=LS('klanten')||[];
-    var opts='<option value="">— Selecteer klant —</option>'+klanten.map(function(k){return '<option value="'+k.id+'">'+k.naam+'</option>'}).join('');
-    document.getElementById('timer-klant').innerHTML=opts;
-}
-
-// ============ KVK OPZOEKEN (Profiel) ============
-function kvkLookup(){
-    var nr=document.getElementById('kvk-lookup-nr').value.trim();
-    if(nr.length!==8||!/^\d+$/.test(nr)) return toast('Vul een geldig 8-cijferig KVK-nummer in');
-    var btn=document.getElementById('kvk-lookup-btn');
-    btn.disabled=true;btn.textContent='Zoeken...';
-    setTimeout(function(){
-        btn.disabled=false;btn.textContent='Opzoeken';
-        if(nr==='12345678'){
-            document.getElementById('pf-naam').value='Klussenbedrijf Harms';
-            document.getElementById('pf-kvk').value='12345678';
-            document.getElementById('pf-btw').value='NL001234567B01';
-            document.getElementById('pf-iban').value='NL91RABO0123456789';
-            document.getElementById('pf-adres').value='Hoofdstraat 14, 7901 AA Hoogeveen';
-        } else {
-            var namen=['Techniek Plus','Bouwbedrijf Noord','Van Dijk Services','Installatie Totaal','De Groot & Zn'];
-            var plaatsen=['Emmen','Hoogeveen','Coevorden','Klazienaveen','Assen'];
-            var idx=parseInt(nr.slice(-1))%5;
-            document.getElementById('pf-naam').value=namen[idx];
-            document.getElementById('pf-kvk').value=nr;
-            document.getElementById('pf-btw').value='NL00'+nr+'B01';
-            document.getElementById('pf-iban').value='NL'+nr.slice(0,2)+'RABO0'+nr;
-            document.getElementById('pf-adres').value='Industrieweg '+(parseInt(nr.slice(-2)))+', 78'+nr.slice(4,6)+' AB '+plaatsen[idx];
-        }
-        toast('Bedrijfsgegevens ingevuld ✓');
-    },1000);
-}
-
-// ============ KVK ZOEKEN (Klanten) ============
-var _kvkDatabase=[
-    {naam:'Bakkerij De Korst',adres:'Weerdingerstraat 45, 7811 AB Emmen',email:'info@dekorst.nl',kvk:'87654321'},
-    {naam:'Bakker Advies BV',adres:'Schutstraat 12, 7902 EA Hoogeveen',email:'contact@bakkeradvies.nl',kvk:'87654322'},
-    {naam:'Bakkerij Het Broodhuys',adres:'Hoofdstraat 88, 7741 JH Coevorden',email:'info@broodhuys.nl',kvk:'87654323'},
-    {naam:'Garage Pietersen',adres:'Rondweg 5, 7824 AA Emmen',email:'info@garagepietersen.nl',kvk:'23456789'},
-    {naam:'Autoservice Drenthe',adres:'Nijverheidsweg 19, 7903 AH Hoogeveen',email:'info@autoservicedrenthe.nl',kvk:'23456790'},
-    {naam:'Schildersbedrijf Van Dijk',adres:'Kerkstraat 22, 7811 CC Emmen',email:'info@schildersvandijk.nl',kvk:'34567890'},
-    {naam:'Aannemersbedrijf De Vries',adres:'Boslaan 7, 7904 JB Hoogeveen',email:'info@devries-bouw.nl',kvk:'34567891'},
-    {naam:'Supermarkt Daling',adres:'Marktplein 3, 7741 GE Coevorden',email:'info@daling.nl',kvk:'45678901'},
-    {naam:'Hoveniersbedrijf Groen',adres:'Tuinstraat 15, 7891 AB Klazienaveen',email:'info@hoveniersgroen.nl',kvk:'45678902'},
-    {naam:'Installatiebedrijf Mulder',adres:'Industrieweg 44, 7903 AK Hoogeveen',email:'info@mulder-installatie.nl',kvk:'56789012'}
-];
-
-function kvkSearch(){
-    var q=document.getElementById('kvk-search-input').value.trim().toLowerCase();
-    if(!q) return toast('Vul een zoekterm in');
-    var btn=document.getElementById('kvk-search-btn');
-    btn.disabled=true;btn.textContent='Zoeken...';
-    setTimeout(function(){
-        btn.disabled=false;btn.textContent='Zoeken';
-        var results=_kvkDatabase.filter(function(b){
-            return b.naam.toLowerCase().indexOf(q)!==-1||b.kvk.indexOf(q)!==-1;
-        }).slice(0,3);
-        if(!results.length){
-            // Generate some based on query
-            results=[
-                {naam:q.charAt(0).toUpperCase()+q.slice(1)+' BV',adres:'Hoofdstraat 1, 7811 AA Emmen',email:'info@'+q.replace(/\s/g,'')+'.nl',kvk:String(10000000+Math.floor(Math.random()*89999999))},
-                {naam:q.charAt(0).toUpperCase()+q.slice(1)+' & Zn',adres:'Kerkweg 12, 7903 AB Hoogeveen',email:'contact@'+q.replace(/\s/g,'')+'.nl',kvk:String(10000000+Math.floor(Math.random()*89999999))}
-            ];
-        }
-        var el=document.getElementById('kvk-search-results');
-        el.innerHTML=results.map(function(r){
-            return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px solid var(--gray-100);border-radius:var(--radius-sm);margin-bottom:8px;background:var(--white)"><div><strong>'+r.naam+'</strong><br><span style="font-size:13px;color:var(--gray-500)">'+r.adres+' — KVK '+r.kvk+'</span></div><button class="btn btn-sm btn-primary" onclick="kvkSelectKlant(''+r.naam.replace(/'/g,"\\'")+'',''+r.adres.replace(/'/g,"\\'")+'',''+r.email.replace(/'/g,"\\'")+'')">Toevoegen</button></div>';
-        }).join('');
-    },1000);
-}
-
-function kvkSelectKlant(naam,adres,email){
-    document.getElementById('kl-naam').value=naam;
-    document.getElementById('kl-adres').value=adres;
-    document.getElementById('kl-email').value=email;
-    document.getElementById('kvk-search-results').innerHTML='';
-    document.getElementById('kvk-search-input').value='';
-    toast('Gegevens ingevuld — klik "Toevoegen" om op te slaan');
-}
-
-// ============ EMAIL VERZENDEN (Facturen) ============
-function getEmailStatus(){return LS('factuur_email_status')||{};}
-function setEmailStatus(id){var s=getEmailStatus();s[id]=true;SS('factuur_email_status',s);}
-
 initData();
 loadProfiel();
 renderKlanten();
@@ -1204,24 +1031,6 @@ renderFacturen();
 updateDashboard();
 renderInkoop();
 document.getElementById('ur-datum').value=new Date().toISOString().slice(0,10);
-populateTimerKlant();
-function sendFactuurEmail(id,btn){
-    btn.disabled=true;btn.textContent='Versturen...';
-    var facturen=LS('facturen')||[];
-    var f=facturen.find(function(x){return x.id===id});
-    setTimeout(function(){
-        btn.style.background='#f0fdf4';btn.style.color='#16a34a';btn.style.border='1px solid #bbf7d0';
-        btn.textContent='✓ Verzonden';
-        setEmailStatus(id);
-        if(f){
-            f.status='Verzonden';
-            SS('facturen',facturen);
-            toast('Factuur verzonden naar '+(f.klantNaam||'klant'));
-            renderFacturen();
-        }
-    },1500);
-}
-
 </script>
 <div style="background: var(--blue, #2563eb); padding: 48px 24px; text-align: center; margin-top: 60px;">
     <p style="color: rgba(255,255,255,0.8); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 12px;">Klain voor uw bedrijf</p>
