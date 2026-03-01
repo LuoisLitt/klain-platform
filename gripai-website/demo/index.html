@@ -247,7 +247,7 @@
             <div>
                 <h1>De Keukenloods</h1>
                 <p class="subtitle">Automatisch gegenereerd weekrapport</p>
-                <div class="date">Week 5 — 27 jan t/m 2 feb 2026</div>
+                <div class="date" id="period-label">Week 5 — 27 jan t/m 2 feb 2026</div>
             </div>
             <span class="demo-badge">Demo</span>
         </div>
@@ -255,12 +255,19 @@
 
     <div class="demo-content">
         <div class="container">
+            <!-- Periode Selector -->
+            <div style="display:flex; gap:8px; margin-bottom:24px;">
+                <button onclick="switchPeriod('vorige-week')" id="btn-vorige-week" style="padding:10px 20px; border-radius:8px; border:1px solid #d1d5e0; background:#fff; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;">Vorige week</button>
+                <button onclick="switchPeriod('deze-week')" id="btn-deze-week" style="padding:10px 20px; border-radius:8px; border:1px solid #2563eb; background:#2563eb; color:#fff; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;">Deze week</button>
+                <button onclick="switchPeriod('vorige-maand')" id="btn-vorige-maand" style="padding:10px 20px; border-radius:8px; border:1px solid #d1d5e0; background:#fff; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;">Vorige maand</button>
+            </div>
+
             <!-- KPI Cards -->
             <div class="grid grid-4">
                 <div class="card stat-card">
-                    <div class="stat-value">€89.400</div>
+                    <div class="stat-value" id="kpi-omzet">€89.400</div>
                     <div class="stat-label">Omzet deze week</div>
-                    <div class="stat-change positive">+12% vs vorige week</div>
+                    <div class="stat-change positive" id="kpi-omzet-change">+12% vs vorige week</div>
                 </div>
                 <div class="card stat-card">
                     <div class="stat-value">6</div>
@@ -273,7 +280,7 @@
                     <div class="stat-change negative">-5% vs vorige week</div>
                 </div>
                 <div class="card stat-card">
-                    <div class="stat-value warning">€23.500</div>
+                    <div class="stat-value warning" id="kpi-openstaand">€23.500</div>
                     <div class="stat-label">Openstaand</div>
                     <div class="stat-change">3 facturen >30d</div>
                 </div>
@@ -319,7 +326,7 @@
                     </div>
                     <div class="list-item">
                         <span class="list-item-label">Totale pipeline waarde</span>
-                        <span class="list-item-value">€186.000</span>
+                        <span class="list-item-value" id="kpi-pipeline">€186.000</span>
                     </div>
                     <div class="list-item">
                         <span class="list-item-label">Gem. ouderdom</span>
@@ -448,6 +455,12 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Inline Upsell -->
+            <div style="background:#eff6ff; border:1px solid #dbeafe; border-radius:12px; padding:20px 24px; margin-top:24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+                <p style="font-size:14px; color:#3d4152; margin:0;">U heeft dit rapport nu handmatig bekeken. Klain stuurt dit elke maandag automatisch naar uw inbox.</p>
+                <a href="https://klain.nl/#contact" style="background:#2563eb; color:#fff; padding:10px 20px; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none; white-space:nowrap;">Automatiseren →</a>
+            </div>
         </div>
     </div>
 
@@ -461,5 +474,29 @@
     <p style="color: rgba(255,255,255,0.8); font-size: 16px; margin-bottom: 28px; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.6;">Begin met een AI Scan van 1,5 uur. U krijgt een concreet rapport met uw automatiserings-kansen en wat het oplevert.</p>
     <a href="https://klain.nl/#contact" style="background: #fff; color: var(--blue, #2563eb); padding: 14px 32px; border-radius: 10px; font-size: 15px; font-weight: 600; text-decoration: none; display: inline-block;">Plan een AI Scan (€349) →</a>
 </div>
+
+    <script>
+    var periods = {
+        'vorige-week': { label: 'Week 4 — 20 t/m 26 jan 2026', omzet: '€79.800', omzetChange: '+8% vs vorige week', openstaand: '€19.200', pipeline: '€164.000' },
+        'deze-week': { label: 'Week 5 — 27 jan t/m 2 feb 2026', omzet: '€89.400', omzetChange: '+12% vs vorige week', openstaand: '€23.500', pipeline: '€186.000' },
+        'vorige-maand': { label: 'Januari 2026', omzet: '€342.600', omzetChange: '+6% vs december', openstaand: '€31.400', pipeline: '€210.000' }
+    };
+    function switchPeriod(key) {
+        var d = periods[key];
+        document.getElementById('period-label').textContent = d.label;
+        document.getElementById('kpi-omzet').textContent = d.omzet;
+        document.getElementById('kpi-omzet-change').textContent = d.omzetChange;
+        document.getElementById('kpi-openstaand').textContent = d.openstaand;
+        document.getElementById('kpi-pipeline').textContent = d.pipeline;
+        ['vorige-week','deze-week','vorige-maand'].forEach(function(k) {
+            var btn = document.getElementById('btn-' + k);
+            if (k === key) {
+                btn.style.background = '#2563eb'; btn.style.color = '#fff'; btn.style.borderColor = '#2563eb';
+            } else {
+                btn.style.background = '#fff'; btn.style.color = '#0f1117'; btn.style.borderColor = '#d1d5e0';
+            }
+        });
+    }
+    </script>
 </body>
 </html>
