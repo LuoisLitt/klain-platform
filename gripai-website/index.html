@@ -416,7 +416,9 @@
             border-radius: var(--radius-lg);
             padding: 40px;
             position: relative; transition: all 0.3s;
+            display: flex; flex-direction: column;
         }
+        .pricing-card .pricing-features { flex: 1; }
         .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.08); }
         .pricing-card.featured {
             border: 2px solid var(--blue);
