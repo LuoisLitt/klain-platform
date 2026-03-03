@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel vs. Klain — Wat kost uw spreadsheet u écht? | klain</title>
+    <meta name="description" content="Vergelijk Excel met Klain's AI-automatisering. Ontdek de verborgen kosten van handmatig werken en hoeveel tijd u kunt besparen.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0f1117;
+            --gray-900: #1a1d27;
+            --gray-700: #3d4152;
+            --gray-500: #6b7084;
+            --gray-400: #8e93a6;
+            --gray-200: #d1d5e0;
+            --gray-100: #eef0f5;
+            --gray-50: #f7f8fa;
+            --white: #ffffff;
+            --blue: #2563eb;
+            --blue-hover: #1d4ed8;
+            --blue-light: #eff6ff;
+            --blue-muted: #dbeafe;
+            --green: #16a34a;
+            --green-light: #f0fdf4;
+            --orange: #ea580c;
+            --orange-light: #fff7ed;
+            --red: #dc2626;
+            --red-light: #fef2f2;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-lg: 24px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--black); line-height: 1.6; background: var(--white);
+            -webkit-font-smoothing: antialiased;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* ─── NAV ─── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; height: 64px;
+            background: rgba(255,255,255,1); z-index: 1000;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            height: 100%; display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700; color: var(--black); text-decoration: none; }
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a { color: var(--gray-700); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--black); }
+        .nav-cta {
+            background: var(--blue); color: var(--white); padding: 10px 22px;
+            border-radius: var(--radius-sm); text-decoration: none; font-size: 14px;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .nav-cta:hover { background: var(--blue-hover); transform: translateY(-1px); }
+        .mobile-menu-btn { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 8px; }
+        .mobile-menu-btn span { width: 22px; height: 2px; background: var(--black); border-radius: 2px; }
+
+        /* ─── HERO ─── */
+        .hero {
+            padding: 140px 24px 80px; text-align: center;
+            background: var(--white); position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(37,99,235,0.06), transparent);
+            pointer-events: none;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--orange-light); color: var(--orange);
+            padding: 8px 18px; border-radius: 100px;
+            font-size: 13px; font-weight: 600; margin-bottom: 28px;
+            border: 1px solid rgba(234,88,12,0.15);
+        }
+        .hero h1 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 700; letter-spacing: -1.5px; line-height: 1.15;
+            max-width: 800px; margin: 0 auto 24px;
+        }
+        .hero h1 em { font-style: italic; color: var(--blue); }
+        .hero p {
+            font-size: clamp(16px, 2vw, 19px);
+            color: var(--gray-500); max-width: 600px;
+            margin: 0 auto 40px; line-height: 1.7;
+        }
+
+        /* ─── HIDDEN COST ─── */
+        .cost-banner {
+            background: var(--red-light); border: 1px solid rgba(220,38,38,0.12);
+            border-radius: var(--radius-lg); padding: 48px; text-align: center;
+            max-width: 800px; margin: 0 auto 80px;
+        }
+        .cost-banner .cost-label {
+            font-size: 13px; font-weight: 600; color: var(--red);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+        }
+        .cost-banner .cost-amount {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(40px, 6vw, 64px); font-weight: 700; color: var(--red);
+            margin-bottom: 8px;
+        }
+        .cost-banner .cost-sub {
+            font-size: 16px; color: var(--gray-500); max-width: 480px; margin: 0 auto;
+        }
+        .cost-banner .cost-math {
+            margin-top: 20px; font-size: 14px; color: var(--gray-400);
+            font-weight: 500;
+        }
+
+        /* ─── COMPARISON TABLE ─── */
+        .compare-section { padding: 0 24px 100px; }
+        .section-label {
+            font-size: 13px; font-weight: 600; color: var(--blue);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;
+        }
+        .section-heading {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(30px, 4vw, 44px);
+            font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 16px;
+        }
+        .section-subheading {
+            font-size: 17px; color: var(--gray-500); max-width: 560px; line-height: 1.7;
+        }
+        .section-header { text-align: center; margin-bottom: 64px; }
+        .section-header .section-subheading { margin: 0 auto; }
+
+        .compare-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+            max-width: 960px; margin: 0 auto;
+        }
+        .compare-col {
+            border-radius: var(--radius-lg); padding: 40px;
+            position: relative;
+        }
+        .compare-col.excel {
+            background: var(--gray-50); border: 1px solid var(--gray-200);
+        }
+        .compare-col.klain {
+            background: var(--blue-light); border: 2px solid var(--blue);
+            box-shadow: 0 8px 32px rgba(37,99,235,0.12);
+        }
+        .compare-col-badge {
+            position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+            padding: 6px 20px; border-radius: 100px;
+            font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .compare-col.excel .compare-col-badge { background: var(--gray-700); color: var(--white); }
+        .compare-col.klain .compare-col-badge { background: var(--blue); color: var(--white); }
+        .compare-col h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 24px; font-weight: 700; margin-bottom: 28px; text-align: center;
+        }
+        .compare-row {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .compare-row:last-child { border-bottom: none; }
+        .compare-icon { flex-shrink: 0; width: 24px; height: 24px; margin-top: 1px; }
+        .compare-icon.bad { color: var(--red); }
+        .compare-icon.good { color: var(--green); }
+        .compare-row-text .row-title { font-size: 14px; font-weight: 600; color: var(--black); }
+        .compare-row-text .row-desc { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
+
+        /* ─── NUMBERS ROW ─── */
+        .numbers-section { background: var(--gray-50); padding: 80px 24px; }
+        .numbers-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+            max-width: 960px; margin: 0 auto;
+        }
+        .number-card { text-align: center; }
+        .number-value {
+            font-family: 'Fraunces', serif;
+            font-size: 36px; font-weight: 700; margin-bottom: 6px;
+        }
+        .number-value.red { color: var(--red); }
+        .number-value.green { color: var(--green); }
+        .number-value.blue { color: var(--blue); }
+        .number-label { font-size: 13px; color: var(--gray-500); font-weight: 500; }
+
+        /* ─── SCENARIO SECTION ─── */
+        .scenario-section { padding: 100px 24px; background: var(--white); }
+        .scenario-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+            max-width: 960px; margin: 0 auto;
+        }
+        .scenario-card {
+            border-radius: var(--radius-lg); padding: 36px;
+            border: 1px solid var(--gray-100);
+        }
+        .scenario-card.before { background: var(--gray-50); }
+        .scenario-card.after { background: var(--green-light); border-color: rgba(22,163,74,0.2); }
+        .scenario-time {
+            font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+        }
+        .scenario-card.before .scenario-time { color: var(--gray-400); }
+        .scenario-card.after .scenario-time { color: var(--green); }
+        .scenario-card h3 {
+            font-size: 18px; font-weight: 700; margin-bottom: 16px;
+        }
+        .scenario-steps { list-style: none; }
+        .scenario-steps li {
+            font-size: 14px; color: var(--gray-700); padding: 8px 0;
+            display: flex; align-items: flex-start; gap: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+        .scenario-steps li:last-child { border-bottom: none; }
+        .scenario-steps li .step-time {
+            flex-shrink: 0; font-weight: 700; font-size: 13px;
+            min-width: 60px;
+        }
+        .scenario-card.before .step-time { color: var(--orange); }
+        .scenario-card.after .step-time { color: var(--green); }
+        .scenario-total {
+            margin-top: 16px; padding-top: 16px; border-top: 2px solid rgba(0,0,0,0.08);
+            font-size: 16px; font-weight: 700;
+            display: flex; justify-content: space-between;
+        }
+        .scenario-card.before .scenario-total { color: var(--orange); }
+        .scenario-card.after .scenario-total { color: var(--green); }
+
+        /* ─── CTA ─── */
+        .cta-section {
+            padding: 120px 24px; text-align: center;
+            background: var(--black); color: var(--white);
+            position: relative; overflow: hidden;
+        }
+        .cta-section::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 120%, rgba(37,99,235,0.2), transparent);
+            pointer-events: none;
+        }
+        .cta-section h2 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(32px, 5vw, 48px); font-weight: 700;
+            letter-spacing: -0.5px; margin-bottom: 16px; position: relative;
+        }
+        .cta-section p {
+            font-size: 17px; color: rgba(255,255,255,0.6);
+            max-width: 480px; margin: 0 auto 24px; position: relative;
+        }
+        .cta-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; }
+        .btn-primary {
+            background: var(--blue); color: var(--white);
+            padding: 14px 30px; border-radius: var(--radius-sm);
+            font-size: 15px; font-weight: 600; text-decoration: none;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary:hover { background: var(--blue-hover); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(37,99,235,0.25); }
+        .btn-secondary {
+            background: transparent; color: var(--white);
+            padding: 14px 30px; border-radius: var(--radius-sm);
+            font-size: 15px; font-weight: 600; text-decoration: none;
+            transition: all 0.2s; border: 1px solid rgba(255,255,255,0.2);
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.4); }
+        .cta-section .btn-primary { background: var(--white); color: var(--black); }
+        .cta-section .btn-primary:hover { background: var(--gray-100); box-shadow: 0 8px 24px rgba(255,255,255,0.15); }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: var(--white); border-top: 1px solid var(--gray-100);
+            padding: 32px 24px; text-align: center;
+        }
+        footer p { font-size: 13px; color: var(--gray-400); }
+        footer a { color: var(--blue); text-decoration: none; font-weight: 500; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 968px) {
+            .nav-links, .nav-cta { display: none; }
+            .mobile-menu-btn { display: flex; }
+            .compare-grid, .scenario-grid { grid-template-columns: 1fr; }
+            .numbers-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 640px) {
+            .hero { padding: 110px 16px 60px; }
+            .cost-banner { padding: 32px 20px; }
+            .numbers-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+        }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { opacity: 0; animation: fadeUp 0.6s ease-out forwards; }
+        .fade-up.d1 { animation-delay: 0.1s; }
+        .fade-up.d2 { animation-delay: 0.2s; }
+        .fade-up.d3 { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="logo"><img src="/images/klain-logo.jpg" alt="klain" style="height: 50px; width: auto;"></a>
+            <ul class="nav-links">
+                <li><a href="/#mogelijkheden">Mogelijkheden</a></li>
+                <li><a href="/#werkwijze">Werkwijze</a></li>
+                <li><a href="/#prijzen">Prijzen</a></li>
+                <li><a href="/ai-scan" style="color:var(--blue);">🎯 AI Scan</a></li>
+                <li><a href="/roi-calculator">ROI Calculator</a></li>
+            </ul>
+            <a href="/#contact" class="nav-cta">Gratis kennismaking →</a>
+            <button class="mobile-menu-btn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-badge fade-up">
+            📊 De verborgen kosten van "gratis" Excel
+        </div>
+        <h1 class="fade-up d1">Uw Excel kost u <em>€15.600 per jaar.</em></h1>
+        <p class="fade-up d2">De meeste MKB-ondernemers besteden 6 uur per week aan handmatige rapportages, offertes en administratie in Excel. Dat voelt gratis — maar is het niet.</p>
+    </section>
+
+    <!-- Hidden cost banner -->
+    <div class="container fade-up d3">
+        <div class="cost-banner">
+            <div class="cost-label">Verborgen kosten van Excel</div>
+            <div class="cost-amount">€15.600</div>
+            <div class="cost-sub">Dat is wat 6 uur per week handmatig werken u écht kost — elk jaar weer.</div>
+            <div class="cost-math">6 uur/week × €50/uur × 52 weken = €15.600 per jaar</div>
+        </div>
+    </div>
+
+    <!-- Comparison -->
+    <section class="compare-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">De vergelijking</div>
+                <h2 class="section-heading">Excel vs. Klain — zij aan zij</h2>
+                <p class="section-subheading">Hoe uw huidige werkwijze zich verhoudt tot wat er mogelijk is.</p>
+            </div>
+            <div class="compare-grid">
+                <!-- Excel column -->
+                <div class="compare-col excel">
+                    <div class="compare-col-badge">Huidige werkwijze</div>
+                    <h3>📄 Excel</h3>
+                    <div class="compare-row">
+                        <svg class="compare-icon bad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+                        <div class="compare-row-text">
+                            <div class="row-title">4-6 uur per week</div>
+                            <div class="row-desc">Handmatig data invoeren, kopiëren, formatteren</div>
+                        </div>
+                    </div>
+                    <div class="compare-row">
+                        <svg class="compare-icon bad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+                        <div class="compare-row-text">
+                            <div class="row-title">Momentopname</div>
+                            <div class="row-desc">Data is verouderd zodra u het invoert</div>
+                        </div>
+                    </div>
+                    <div class="compare-row">
+                        <svg class="compare-icon bad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+                        <div class="compare-row-text">
+                            <div class="row-title">Versieconflicten</div>
+                            <div class="row-desc">"Welke versie is de juiste?" — constant</div>
+                        </div>
+                    </div>
+                    <div class="compare-row">
+                        <svg class="compare-icon bad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+                        <div class="compare-row-text">
+                            <div class="row-title">Afwijkingen? Achteraf</div>
+                            <div class="row-desc">U merkt problemen pas als het te laat is</div>
+                        </div>
+                    </div>
+                    <div class="compare-row">
+                        <svg class="compare-icon bad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+                        <div class="compare-row-text">
+                            <div class="row-title">Foutgevoelig</div>
+                            <div class="row-desc">Eén verkeerde formule = verkeerde beslissingen</div>
+                        </div>
+                    </div>
+                    <div class="compare-row">
+                        <svg class="compare-icon bad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+                        <div class="compare-row-text">
+                            <div class="row-title">"Gratis" — maar €15.600/jaar</div>
+                            <div class="row-desc">Uw uren zijn niet gratis</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Klain column -->
+                <div class="compare-col klain">
+                    <div class="compare-col-badge">Met Klain</div>
+                    <h3>⚡ Klain</h3>
+                    <div class="compare-row">
+                        <svg class="compare-icon good" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+                        <div class="compare-row-text">
+                            <div class="row-title">10 minuten per week</div>
+                            <div class="row-desc">Rapportage wordt automatisch opgesteld</div>
+                        </div>
+                    </div>
+                    <div class="compare-row">
+                        <svg class="compare-icon good" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+                        <div class="compare-row-text">
+                            <div class="row-title">Altijd actueel</div>
+                            <div class="row-desc">Data wordt real-time opgehaald uit uw systemen</div>
+                        </div>
+                    </div>
+                    <div class="compare-row">
+                        <svg class="compare-icon good" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+                        <div class="compare-row-text">
+                            <div class="row-title">Eén bron van waarheid</div>
+                            <div class="row-desc">Nooit meer zoeken naar de juiste versie</div>
+                        </div>
+                    </div>
+                    <div class="compare-row">
+                        <svg class="compare-icon good" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+                        <div class="compare-row-text">
+                            <div class="row-title">Automatische alerts</div>
+                            <div class="row-desc">Afwijkingen worden direct gesignaleerd</div>
+                        </div>
+                    </div>
+                    <div class="compare-row">
+                        <svg class="compare-icon good" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+                        <div class="compare-row-text">
+                            <div class="row-title">Betrouwbaar & consistent</div>
+                            <div class="row-desc">AI maakt geen tikfouten in formules</div>
+                        </div>
+                    </div>
+                    <div class="compare-row">
+                        <svg class="compare-icon good" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+                        <div class="compare-row-text">
+                            <div class="row-title">Vanaf €1.499 eenmalig</div>
+                            <div class="row-desc">Terugverdiend in 4–8 weken</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Numbers row -->
+    <section class="numbers-section">
+        <div class="container">
+            <div class="numbers-grid">
+                <div class="number-card">
+                    <div class="number-value red">6 uur</div>
+                    <div class="number-label">Gemiddeld per week in Excel</div>
+                </div>
+                <div class="number-card">
+                    <div class="number-value green">10 min</div>
+                    <div class="number-label">Per week met Klain</div>
+                </div>
+                <div class="number-card">
+                    <div class="number-value blue">98%</div>
+                    <div class="number-label">Tijdsbesparing</div>
+                </div>
+                <div class="number-card">
+                    <div class="number-value green">4 wkn</div>
+                    <div class="number-label">Gemiddelde terugverdientijd</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scenario: a typical Monday -->
+    <section class="scenario-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Een typische maandag</div>
+                <h2 class="section-heading">Uw maandagochtend, twee versies</h2>
+                <p class="section-subheading">Herkenbaar? Zo ziet het eruit met en zonder Klain.</p>
+            </div>
+            <div class="scenario-grid">
+                <div class="scenario-card before">
+                    <div class="scenario-time">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        Zonder Klain
+                    </div>
+                    <h3>De Excel-marathon</h3>
+                    <ul class="scenario-steps">
+                        <li><span class="step-time">45 min</span> Data verzamelen uit 3 systemen</li>
+                        <li><span class="step-time">30 min</span> Kopiëren naar Excel, formules checken</li>
+                        <li><span class="step-time">20 min</span> Grafiekjes maken, formatteren</li>
+                        <li><span class="step-time">15 min</span> Openstaande facturen handmatig nalopen</li>
+                        <li><span class="step-time">20 min</span> E-mail typen met samenvatting</li>
+                        <li><span class="step-time">10 min</span> Fout gevonden, terug naar stap 1...</li>
+                    </ul>
+                    <div class="scenario-total">
+                        <span>Totaal</span>
+                        <span>2 uur 20 min</span>
+                    </div>
+                </div>
+                <div class="scenario-card after">
+                    <div class="scenario-time">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        Met Klain
+                    </div>
+                    <h3>De slimme maandag</h3>
+                    <ul class="scenario-steps">
+                        <li><span class="step-time">0 min</span> Klain haalt data automatisch op</li>
+                        <li><span class="step-time">0 min</span> Rapport wordt zondagavond al gemaakt</li>
+                        <li><span class="step-time">0 min</span> Grafieken en trends zijn klaar</li>
+                        <li><span class="step-time">5 min</span> U leest het rapport bij de koffie</li>
+                        <li><span class="step-time">5 min</span> U bekijkt de AI-signaleringen</li>
+                        <li><span class="step-time">0 min</span> Geen fouten, altijd actueel</li>
+                    </ul>
+                    <div class="scenario-total">
+                        <span>Totaal</span>
+                        <span>10 minuten ☕</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <h2>Klaar met Excel-marathons?</h2>
+        <p>Bereken wat uw handwerk u kost, of plan direct een gesprek.</p>
+        <div class="cta-buttons">
+            <a href="/#contact" class="btn-primary">Plan een kennismaking →</a>
+            <a href="/roi-calculator" class="btn-secondary">Bereken uw besparing →</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 <a href="/">klain</a> — AI-consultant voor Noord-Nederland</p>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.compare-col, .number-card, .scenario-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
