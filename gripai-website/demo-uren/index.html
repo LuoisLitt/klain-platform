@@ -114,6 +114,33 @@
         .badge-concept { background: var(--gray-100); color: var(--gray-500); }
         .badge-verzonden { background: var(--blue-light); color: var(--blue); }
         .badge-betaald { background: var(--green-light); color: var(--green); }
+        .badge-whatsapp { background: #dcfce7; color: #16a34a; font-size: 11px; margin-left: 4px; }
+
+        .btn-whatsapp { background: #25D366; color: #fff; border: none; font-size: 12px; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-family: inherit; transition: all .15s; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-whatsapp:hover { background: #1da851; transform: translateY(-1px); }
+        .btn-whatsapp svg { width: 14px; height: 14px; fill: #fff; }
+
+        .wa-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+        .wa-modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .wa-modal { background: var(--white); border-radius: var(--radius-lg); padding: 32px; max-width: 560px; width: 90%; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
+        .wa-modal h3 { font-size: 18px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .wa-modal .wa-preview { background: #e5ddd5; border-radius: var(--radius-sm); padding: 16px; margin: 16px 0; font-size: 13px; line-height: 1.7; white-space: pre-wrap; font-family: inherit; }
+        .wa-modal .wa-preview .wa-bubble { background: #dcf8c6; border-radius: 8px; padding: 12px 14px; max-width: 90%; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+        .wa-modal .wa-toggle-row { display: flex; align-items: center; gap: 10px; margin: 12px 0; }
+        .wa-modal .wa-toggle-row label { margin-bottom: 0; font-size: 14px; font-weight: 500; color: var(--gray-700); }
+        .wa-toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+        .wa-toggle input { opacity: 0; width: 0; height: 0; }
+        .wa-toggle .slider { position: absolute; cursor: pointer; inset: 0; background: var(--gray-200); border-radius: 24px; transition: .3s; }
+        .wa-toggle .slider:before { content: ''; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .3s; }
+        .wa-toggle input:checked + .slider { background: #25D366; }
+        .wa-toggle input:checked + .slider:before { transform: translateX(20px); }
+        .wa-link-input { width: 100%; padding: 10px 12px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); font-family: inherit; font-size: 14px; margin-top: 8px; transition: border-color .2s; }
+        .wa-link-input:focus { outline: none; border-color: #25D366; box-shadow: 0 0 0 3px rgba(37,211,102,.1); }
+
+        .tip-banner { background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1px solid #bbf7d0; border-radius: var(--radius); padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--gray-700); line-height: 1.5; }
+        .tip-banner .tip-icon { font-size: 20px; flex-shrink: 0; }
+        .tip-banner strong { color: #16a34a; }
+        .tip-banner .tip-close { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--gray-400); padding: 0 4px; margin-left: auto; flex-shrink: 0; }
 
         .empty-state { text-align: center; padding: 40px 20px; color: var(--gray-400); font-size: 14px; }
         .delete-btn { background: none; border: none; color: var(--gray-400); cursor: pointer; font-size: 16px; padding: 4px 8px; border-radius: 4px; transition: all .15s; }
@@ -376,10 +403,19 @@
             <div id="invoice-preview-container" style="display:none">
                 <div class="btn-row" style="justify-content:flex-end;margin-bottom:10px">
                     <button class="btn btn-success" onclick="downloadPDF()">&#128196; Download PDF</button>
+                    <button class="btn btn-whatsapp" onclick="openWaModal(parseInt(document.getElementById('invoice-preview-container').dataset.factuurId))">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Verstuur via WhatsApp
+                    </button>
                 </div>
                 <div id="invoice-preview" class="invoice-preview"></div>
             </div>
-            <div class="card" style="margin-top:20px">
+            <div id="wa-tip-banner" class="tip-banner" style="margin-top:20px">
+                <span class="tip-icon">💡</span>
+                <span><strong>Tip:</strong> Facturen met betaallink worden gemiddeld 3x sneller betaald <span style="color:var(--gray-400)">(bron: Rabobank)</span>. Verstuur direct via WhatsApp.</span>
+                <button class="tip-close" onclick="this.parentElement.style.display='none';SS('wa_tip_hidden',true)">&times;</button>
+            </div>
+            <div class="card" style="margin-top:0">
                 <h2>Factuuroverzicht</h2>
                 <div id="facturen-list"></div>
             </div>
@@ -542,6 +578,38 @@
         </div>
         <div class="btn-row">
             <button class="btn btn-secondary" onclick="closeReminderModal()">Sluiten</button>
+        </div>
+    </div>
+</div>
+
+<!-- WHATSAPP MODAL -->
+<div class="wa-modal-overlay" id="wa-modal" onclick="if(event.target===this)closeWaModal()">
+    <div class="wa-modal">
+        <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Verstuur via WhatsApp</h3>
+        <p style="color:var(--gray-500);font-size:13px;margin-bottom:12px;">Bekijk het bericht en open WhatsApp om te versturen.</p>
+
+        <div class="wa-preview">
+            <div class="wa-bubble" id="wa-preview-text"></div>
+        </div>
+
+        <div class="wa-toggle-row">
+            <label class="wa-toggle">
+                <input type="checkbox" id="wa-tikkie-toggle" onchange="updateWaPreview()">
+                <span class="slider"></span>
+            </label>
+            <label for="wa-tikkie-toggle">Tikkie / betaallink toevoegen</label>
+        </div>
+        <div id="wa-tikkie-field" style="display:none;">
+            <input class="wa-link-input" id="wa-tikkie-url" placeholder="https://tikkie.me/pay/..." oninput="updateWaPreview()">
+        </div>
+
+        <div class="btn-row" style="margin-top:20px;">
+            <button class="btn btn-whatsapp" style="font-size:14px;padding:10px 24px;" onclick="openWhatsApp()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Open WhatsApp
+            </button>
+            <button class="btn btn-secondary" onclick="markWaSent();closeWaModal()">✓ Al verstuurd</button>
+            <button class="btn btn-secondary" onclick="closeWaModal()">Sluiten</button>
         </div>
     </div>
 </div>
@@ -736,6 +804,7 @@ function updateFactuurStatus(id,status){var facturen=LS('facturen')||[];var f=fa
 
 function renderFacturen(){
     var facturen=LS('facturen')||[];
+    var waStatus=LS('wa_sent')||{};
     var el=document.getElementById('facturen-list');
     if(!facturen.length){el.innerHTML='<div class="empty-state"><p>Nog geen facturen</p></div>';return;}
     var now=new Date();
@@ -745,7 +814,12 @@ function renderFacturen(){
         var isOverdue=f.status==='Verzonden'&&new Date(f.vervalDatum)<now;
         var statusCell='<span class="badge '+bc(f.status)+'">'+f.status+'</span>';
         if(isOverdue) statusCell+=' <span class="badge badge-late">Te laat</span>';
-        var verzonden=f.status==='Verzonden';var verstuurBtn=verzonden?'<button class="btn btn-secondary" style="background:#dcfce7;color:#16a34a;border-color:#bbf7d0;cursor:default;font-size:12px;" disabled>&#10003; Verzonden</button>':'<button class="btn btn-secondary" style="font-size:12px;" onclick="verstuurFactuur('+f.id+')">&#9993; Verstuur</button>';var actionsCell='<select style="font-size:12px;padding:4px 8px;border:1px solid var(--gray-200);border-radius:6px;cursor:pointer" onchange="updateFactuurStatus('+f.id+',this.value)"><option'+(f.status==='Concept'?' selected':'')+'>Concept</option><option'+(f.status==='Verzonden'?' selected':'')+'>Verzonden</option><option'+(f.status==='Betaald'?' selected':'')+'>Betaald</option></select> '+verstuurBtn;
+        // WhatsApp sent badge
+        if(waStatus[f.id]) statusCell+=' <span class="badge badge-whatsapp" title="Verstuurd via WhatsApp op '+waStatus[f.id].date+'">✓ WhatsApp</span>';
+        var verzonden=f.status==='Verzonden';var verstuurBtn=verzonden?'<button class="btn btn-secondary" style="background:#dcfce7;color:#16a34a;border-color:#bbf7d0;cursor:default;font-size:12px;" disabled>&#10003; Verzonden</button>':'<button class="btn btn-secondary" style="font-size:12px;" onclick="verstuurFactuur('+f.id+')">&#9993; Verstuur</button>';
+        // WhatsApp button
+        var waBtn=' <button class="btn-whatsapp" onclick="openWaModal('+f.id+')"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</button>';
+        var actionsCell='<select style="font-size:12px;padding:4px 8px;border:1px solid var(--gray-200);border-radius:6px;cursor:pointer" onchange="updateFactuurStatus('+f.id+',this.value)"><option'+(f.status==='Concept'?' selected':'')+'>Concept</option><option'+(f.status==='Verzonden'?' selected':'')+'>Verzonden</option><option'+(f.status==='Betaald'?' selected':'')+'>Betaald</option></select> '+verstuurBtn+waBtn;
         if(isOverdue) actionsCell+='<button class="btn-reminder" onclick="showReminder('+f.id+')">Herinnering sturen</button>';
         return '<tr><td>'+f.nummer+'</td><td>'+f.klantNaam+'</td><td>'+f.datum+'</td><td>\u20AC'+fmt(f.subtotaal)+'</td><td>\u20AC'+fmt(f.btw)+'</td><td>\u20AC'+fmt(f.totaal)+'</td><td>'+statusCell+'</td><td>'+actionsCell+'</td></tr>';
     }).join('')+'</tbody></table>';
@@ -1203,7 +1277,103 @@ function kvkKlantToevoegen(kvk) {
     document.getElementById('kvk-klant-results').innerHTML = '<div style="color:#16a34a;font-size:13px;">&#10003; ' + b.naam + ' ingevuld \u2014 klik Toevoegen om op te slaan.</div>';
 }
 
+// ============ WHATSAPP VERSTUREN ============
+var waCurrentFactuurId = null;
+
+function openWaModal(factuurId) {
+    waCurrentFactuurId = factuurId;
+    document.getElementById('wa-tikkie-toggle').checked = false;
+    document.getElementById('wa-tikkie-field').style.display = 'none';
+    document.getElementById('wa-tikkie-url').value = '';
+    updateWaPreview();
+    document.getElementById('wa-modal').classList.add('show');
+}
+
+function closeWaModal() {
+    document.getElementById('wa-modal').classList.remove('show');
+    waCurrentFactuurId = null;
+}
+
+function getWaMessage(factuurId) {
+    var facturen = LS('facturen') || [];
+    var f = facturen.find(function(x) { return x.id === factuurId; });
+    if (!f) return '';
+    var profiel = LS('profiel') || {};
+    var klanten = LS('klanten') || [];
+    var klant = klanten.find(function(k) { return k.id === f.klantId; }) || {};
+
+    // Build description from regels
+    var omschrijvingen = f.regels.map(function(r) { return r.omschr; });
+    var uniqueOmschr = omschrijvingen.filter(function(v, i, a) { return a.indexOf(v) === i; });
+    var omschr = uniqueOmschr.slice(0, 3).join(', ');
+    if (uniqueOmschr.length > 3) omschr += ' e.a.';
+
+    // Calculate vervaldatum
+    var vervalDatum = f.vervalDatum;
+
+    var msg = 'Beste ' + (klant.naam || f.klantNaam) + ',\n\n';
+    msg += 'Hierbij ontvangt u factuur ' + f.nummer + ' voor ' + omschr + '.\n\n';
+    msg += 'Bedrag: \u20AC' + fmt(f.totaal) + '\n';
+    msg += 'Vervaldatum: ' + vervalDatum + '\n\n';
+    msg += 'Heeft u vragen? Neem gerust contact op.\n\n';
+    msg += 'Met vriendelijke groet,\n';
+    msg += (profiel.naam || 'Uw bedrijf');
+
+    // Add tikkie link if enabled
+    var tikkieEnabled = document.getElementById('wa-tikkie-toggle').checked;
+    var tikkieUrl = document.getElementById('wa-tikkie-url').value.trim();
+    if (tikkieEnabled && tikkieUrl) {
+        msg += '\n\nBetaallink: ' + tikkieUrl;
+    }
+
+    return msg;
+}
+
+function updateWaPreview() {
+    var tikkieEnabled = document.getElementById('wa-tikkie-toggle').checked;
+    document.getElementById('wa-tikkie-field').style.display = tikkieEnabled ? 'block' : 'none';
+
+    if (waCurrentFactuurId) {
+        var msg = getWaMessage(waCurrentFactuurId);
+        document.getElementById('wa-preview-text').textContent = msg;
+    }
+}
+
+function openWhatsApp() {
+    if (!waCurrentFactuurId) return;
+    var msg = getWaMessage(waCurrentFactuurId);
+    var url = 'https://wa.me/?text=' + encodeURIComponent(msg);
+    window.open(url, '_blank');
+    markWaSent();
+    closeWaModal();
+}
+
+function markWaSent() {
+    if (!waCurrentFactuurId) return;
+    var waStatus = LS('wa_sent') || {};
+    waStatus[waCurrentFactuurId] = { sent: true, date: new Date().toISOString().slice(0, 10) };
+    SS('wa_sent', waStatus);
+    renderFacturen();
+    toast('WhatsApp status bijgewerkt \u2713');
+}
+
+function toggleWaSent(factuurId) {
+    var waStatus = LS('wa_sent') || {};
+    if (waStatus[factuurId]) {
+        delete waStatus[factuurId];
+    } else {
+        waStatus[factuurId] = { sent: true, date: new Date().toISOString().slice(0, 10) };
+    }
+    SS('wa_sent', waStatus);
+    renderFacturen();
+}
+
 initData();
+// Hide tip banner if user dismissed it
+if (LS('wa_tip_hidden')) {
+    var tipBanner = document.getElementById('wa-tip-banner');
+    if (tipBanner) tipBanner.style.display = 'none';
+}
 loadProfiel();
 renderKlanten();
 populateKlantSelects();
