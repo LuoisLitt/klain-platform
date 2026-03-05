@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>klain | AI voor ondernemers in Drenthe & Groningen</title>
+    <meta name="description" content="AI-automatisering voor MKB-ondernemers in Drenthe en Groningen. Lokale aanpak, persoonlijk contact, bewezen resultaat.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0f1117;
+            --gray-900: #1a1d27;
+            --gray-700: #3d4152;
+            --gray-500: #6b7084;
+            --gray-400: #8e93a6;
+            --gray-200: #d1d5e0;
+            --gray-100: #eef0f5;
+            --gray-50: #f7f8fa;
+            --white: #ffffff;
+            --blue: #2563eb;
+            --blue-hover: #1d4ed8;
+            --blue-light: #eff6ff;
+            --blue-muted: #dbeafe;
+            --green: #16a34a;
+            --green-light: #f0fdf4;
+            --orange: #ea580c;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-lg: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--black);
+            line-height: 1.6;
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* ─── NAV ─── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 64px;
+            background: rgba(255,255,255,1);
+            z-index: 1000;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            height: 100%; display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-size: 26px; font-weight: 700; color: var(--black);
+            text-decoration: none;
+        }
+        .nav-back {
+            color: var(--gray-500); text-decoration: none; font-size: 14px;
+            font-weight: 500; transition: color 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .nav-back:hover { color: var(--black); }
+        .nav-cta {
+            background: var(--blue); color: var(--white); padding: 10px 22px;
+            border-radius: var(--radius-sm); text-decoration: none; font-size: 14px;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .nav-cta:hover { background: var(--blue-hover); transform: translateY(-1px); }
+
+        /* ─── HERO ─── */
+        .hero {
+            padding: 140px 24px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, var(--blue-light) 0%, var(--white) 100%);
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--white); color: var(--blue);
+            padding: 8px 18px; border-radius: 100px;
+            font-size: 13px; font-weight: 600; margin-bottom: 28px;
+            border: 1px solid var(--blue-muted);
+        }
+        .hero h1 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(34px, 5vw, 56px);
+            font-weight: 700; letter-spacing: -1.5px; line-height: 1.15;
+            max-width: 800px; margin: 0 auto 24px;
+        }
+        .hero h1 em { font-style: italic; color: var(--blue); }
+        .hero p {
+            font-size: clamp(16px, 2vw, 18px);
+            color: var(--gray-500); max-width: 600px;
+            margin: 0 auto 40px; line-height: 1.7;
+        }
+        .btn-primary {
+            background: var(--blue); color: var(--white);
+            padding: 14px 30px; border-radius: var(--radius-sm);
+            font-size: 15px; font-weight: 600; text-decoration: none;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary:hover { background: var(--blue-hover); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(37,99,235,0.25); }
+        .btn-secondary {
+            background: var(--white); color: var(--black);
+            padding: 14px 30px; border-radius: var(--radius-sm);
+            font-size: 15px; font-weight: 600; text-decoration: none;
+            transition: all 0.2s; border: 1px solid var(--gray-200);
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-secondary:hover { background: var(--gray-50); border-color: var(--gray-400); }
+        .hero-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+        /* ─── SER QUOTE ─── */
+        .ser-section { padding: 80px 24px; background: var(--white); }
+        .ser-card {
+            max-width: 860px; margin: 0 auto;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-100);
+            padding: 48px;
+            position: relative;
+        }
+        .ser-card::before {
+            content: '"'; position: absolute; top: 16px; left: 32px;
+            font-family: 'Fraunces', serif; font-size: 80px; color: var(--blue-muted);
+            line-height: 1;
+        }
+        .ser-source {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--blue-light); color: var(--blue);
+            padding: 6px 14px; border-radius: 100px;
+            font-size: 12px; font-weight: 600; margin-bottom: 20px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .ser-quote {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(18px, 2.5vw, 24px);
+            line-height: 1.5; color: var(--gray-900);
+            margin-bottom: 20px; font-style: italic;
+        }
+        .ser-context {
+            font-size: 15px; color: var(--gray-500); line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        .ser-link {
+            font-size: 13px; color: var(--blue); font-weight: 600;
+            text-decoration: none;
+        }
+        .ser-link:hover { text-decoration: underline; }
+
+        /* ─── STATS ─── */
+        .stats-section { padding: 60px 24px; background: var(--white); }
+        .stats-grid {
+            max-width: 900px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+        }
+        .stat-card {
+            text-align: center; padding: 32px;
+            background: var(--gray-50); border-radius: var(--radius);
+            border: 1px solid var(--gray-100);
+        }
+        .stat-big {
+            font-family: 'Fraunces', serif;
+            font-size: 42px; font-weight: 700; color: var(--blue);
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 14px; color: var(--gray-500); margin-top: 8px; line-height: 1.5;
+        }
+
+        /* ─── PROBLEMS ─── */
+        .problems-section { padding: 100px 24px; background: var(--gray-50); }
+        .section-header { text-align: center; margin-bottom: 56px; }
+        .section-label {
+            font-size: 13px; font-weight: 600; color: var(--blue);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;
+        }
+        .section-heading {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 700; letter-spacing: -0.5px;
+            line-height: 1.2; margin-bottom: 16px;
+        }
+        .section-subheading {
+            font-size: 17px; color: var(--gray-500);
+            max-width: 560px; margin: 0 auto; line-height: 1.7;
+        }
+        .problems-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px; max-width: 960px; margin: 0 auto;
+        }
+        .problem-card {
+            background: var(--white);
+            border: 1px solid var(--gray-100);
+            border-radius: var(--radius);
+            padding: 32px;
+        }
+        .problem-icon {
+            width: 48px; height: 48px;
+            background: var(--blue-light);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px; font-size: 24px;
+        }
+        .problem-card h3 {
+            font-size: 18px; font-weight: 700; margin-bottom: 10px;
+        }
+        .problem-card p {
+            font-size: 14px; color: var(--gray-500); line-height: 1.7;
+        }
+
+        /* ─── APPROACH ─── */
+        .approach-section { padding: 100px 24px; background: var(--white); }
+        .approach-grid {
+            max-width: 800px; margin: 0 auto;
+            display: flex; flex-direction: column; gap: 0;
+        }
+        .approach-step {
+            display: grid; grid-template-columns: 60px 1fr;
+            gap: 24px; padding: 32px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .approach-step:last-child { border-bottom: none; }
+        .approach-number {
+            width: 48px; height: 48px;
+            background: var(--blue); color: var(--white);
+            border-radius: 50%; display: flex;
+            align-items: center; justify-content: center;
+            font-family: 'Fraunces', serif;
+            font-size: 20px; font-weight: 700;
+        }
+        .approach-step h3 {
+            font-size: 18px; font-weight: 700; margin-bottom: 8px;
+        }
+        .approach-step p {
+            font-size: 15px; color: var(--gray-500); line-height: 1.7;
+        }
+
+        /* ─── LOCAL TRUST ─── */
+        .trust-section { padding: 80px 24px; background: var(--gray-50); }
+        .trust-grid {
+            max-width: 900px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+        .trust-card {
+            background: var(--white);
+            border: 1px solid var(--gray-100);
+            border-radius: var(--radius);
+            padding: 28px; text-align: center;
+        }
+        .trust-card .trust-icon {
+            font-size: 32px; margin-bottom: 16px;
+        }
+        .trust-card h3 {
+            font-size: 16px; font-weight: 700; margin-bottom: 8px;
+        }
+        .trust-card p {
+            font-size: 14px; color: var(--gray-500); line-height: 1.6;
+        }
+
+        /* ─── CTA ─── */
+        .cta-section {
+            padding: 100px 24px; text-align: center;
+            background: var(--black); color: var(--white);
+            position: relative; overflow: hidden;
+        }
+        .cta-section::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 120%, rgba(37,99,235,0.2), transparent);
+            pointer-events: none;
+        }
+        .cta-section h2 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(28px, 4vw, 44px);
+            font-weight: 700; margin-bottom: 16px; position: relative;
+        }
+        .cta-section p {
+            font-size: 17px; color: rgba(255,255,255,0.6);
+            max-width: 500px; margin: 0 auto 40px;
+            position: relative; line-height: 1.7;
+        }
+        .cta-section .btn-primary {
+            background: var(--white); color: var(--black); position: relative;
+        }
+        .cta-section .btn-primary:hover {
+            background: var(--gray-100);
+            box-shadow: 0 8px 24px rgba(255,255,255,0.15);
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: var(--white);
+            border-top: 1px solid var(--gray-100);
+            padding: 32px 24px;
+            text-align: center;
+        }
+        footer p { font-size: 13px; color: var(--gray-400); }
+        footer a { color: var(--blue); text-decoration: none; font-weight: 500; }
+        footer a:hover { text-decoration: underline; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; gap: 16px; }
+            .stat-big { font-size: 36px; }
+            .ser-card { padding: 32px 24px; }
+            .approach-step { grid-template-columns: 48px 1fr; gap: 16px; }
+            .nav-cta { display: none; }
+        }
+        @media (max-width: 640px) {
+            .hero { padding: 110px 16px 60px; }
+            .hero-buttons { flex-direction: column; }
+            .hero-buttons a { width: 100%; text-align: center; justify-content: center; }
+        }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { opacity: 0; animation: fadeUp 0.6s ease-out forwards; }
+        .fade-up.d1 { animation-delay: 0.1s; }
+        .fade-up.d2 { animation-delay: 0.2s; }
+        .fade-up.d3 { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="logo"><img src="/images/klain-logo.jpg" alt="klain" style="height: 50px; width: auto;"></a>
+            <a href="/" class="nav-back">← Terug naar klain.nl</a>
+            <a href="#contact" class="nav-cta">Gratis kennismaking →</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-badge fade-up">📍 Drenthe · Groningen · Noord-Nederland</div>
+        <h1 class="fade-up d1">AI voor ondernemers <em>in uw regio</em></h1>
+        <p class="fade-up d2">De SER Noord-Nederland roept op tot versnelling van AI-adoptie in het MKB. klain maakt dat concreet: ik kom bij u langs en automatiseer het proces dat u de meeste tijd kost.</p>
+        <div class="hero-buttons fade-up d3">
+            <a href="#contact" class="btn-primary">Plan een kennismaking →</a>
+            <a href="#waarom" class="btn-secondary">Waarom lokaal?</a>
+        </div>
+    </section>
+
+    <!-- SER Quote -->
+    <section class="ser-section">
+        <div class="container">
+            <div class="ser-card">
+                <div class="ser-source">SER Noord-Nederland — Maart 2026</div>
+                <p class="ser-quote">"Zonder extra ondersteuning dreigt een groeiende kloof tussen digitale koplopers en een grote middengroep die moeite heeft aan te haken."</p>
+                <p class="ser-context">De SER Noord-Nederland adviseert: versnel AI-adoptie via een 'één voordeur' voor ondernemers. Bouw voort op het regionale ecosysteem. Bereid de regio voor op het 'mens plus AI'-model. klain is precies die voordeur — persoonlijk, lokaal, en concreet.</p>
+                <a href="https://sernoordnederland.nl/nieuw-advies-robotisering-automatisering-en-ai-in-het-mkb-in-noord-nederland/" target="_blank" class="ser-link">Lees het volledige SER-advies →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-big">84%</div>
+                    <div class="stat-label">van MKB-financeteams besteedt &gt;25% aan handmatige taken</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-big">16%</div>
+                    <div class="stat-label">gebruikt daadwerkelijk AI — de rest twijfelt nog</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-big">€15.600</div>
+                    <div class="stat-label">verborgen kosten per jaar door handmatig Excel-werk</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Herkenbare problemen -->
+    <section class="problems-section" id="waarom">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Herkenbaar?</div>
+                <h2 class="section-heading">De dagelijkse realiteit van ondernemers in Drenthe</h2>
+                <p class="section-subheading">Dit hoor ik elke week van MKB'ers in Emmen, Coevorden, Klazienaveen en omgeving.</p>
+            </div>
+            <div class="problems-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">📊</div>
+                    <h3>"Ik werk 's avonds aan mijn administratie"</h3>
+                    <p>Weekrapportages, offertes, facturen — het stapelt op. Terwijl u eigenlijk bij uw gezin wilt zijn of aan uw bedrijf wilt werken.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">🤷</div>
+                    <h3>"Ik weet niet waar ik moet beginnen met AI"</h3>
+                    <p>63% van de ondernemers verkent AI-mogelijkheden, maar slechts 16% zet de stap. Niet door onwil, maar door onduidelijkheid.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">💰</div>
+                    <h3>"Software is duur en onpersoonlijk"</h3>
+                    <p>Grote SaaS-pakketten, Engelstalige support, geen lokaal aanspreekpunt. Dat past niet bij hoe wij in het noorden zaken doen.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">📉</div>
+                    <h3>"Ik neem beslissingen op gevoel"</h3>
+                    <p>Pas eind van de maand weet u hoe u ervoor staat. Cashflow, debiteuren, marges — het overzicht ontbreekt wanneer het ertoe doet.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Aanpak -->
+    <section class="approach-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Lokale aanpak</div>
+                <h2 class="section-heading">Hoe ik werk</h2>
+                <p class="section-subheading">Geen anoniem softwarebedrijf. Ik kom bij u langs, spreek uw taal, en bouw wat u nodig heeft.</p>
+            </div>
+            <div class="approach-grid">
+                <div class="approach-step">
+                    <div class="approach-number">1</div>
+                    <div>
+                        <h3>Kennismaking aan uw keukentafel</h3>
+                        <p>Ik kom langs voor een gesprek van anderhalf uur. We lopen uw processen door en ik breng in kaart wat de meeste tijd kost. Geen jargon, geen verkooppraatje.</p>
+                    </div>
+                </div>
+                <div class="approach-step">
+                    <div class="approach-number">2</div>
+                    <div>
+                        <h3>Concreet voorstel met ROI</h3>
+                        <p>U krijgt een rapport met uw top 3 automatiseringskansen. Voor elke kans berekenen we de besparing in uren en euro's. Zo weet u precies wat het oplevert.</p>
+                    </div>
+                </div>
+                <div class="approach-step">
+                    <div class="approach-number">3</div>
+                    <div>
+                        <h3>Ik bouw het, u werkt door</h3>
+                        <p>Binnen 2-3 weken is uw eerste proces geautomatiseerd. Weekrapportages, offertes, debiteurenbeheer — u kiest wat het meeste helpt. Geen technische kennis nodig.</p>
+                    </div>
+                </div>
+                <div class="approach-step">
+                    <div class="approach-number">4</div>
+                    <div>
+                        <h3>Nazorg vanuit de regio</h3>
+                        <p>Geen ticket naar een callcenter. Als er iets is, belt u mij. Ik zit om de hoek en ken uw bedrijf. Dat is het verschil met een SaaS-abonnement uit de Randstad.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lokaal vertrouwen -->
+    <section class="trust-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Waarom lokaal</div>
+                <h2 class="section-heading">Een adviseur die uw regio kent</h2>
+            </div>
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <div class="trust-icon">🏦</div>
+                    <h3>10+ jaar MKB-advies</h3>
+                    <p>Als accountmanager bij de Rabobank heb ik honderden ondernemers in Drenthe geadviseerd. Ik ken de uitdagingen.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">🤝</div>
+                    <h3>Persoonlijk contact</h3>
+                    <p>Geen chatbot, geen ticketsysteem. U heeft mijn directe nummer. Ik kom langs als dat nodig is.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">📍</div>
+                    <h3>Gevestigd in de regio</h3>
+                    <p>Emmen, Coevorden, Klazienaveen, Dalen — ik ken de bedrijven, de branches, en de manier van werken hier.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" id="contact">
+        <h2>Klaar voor uw eerste stap met AI?</h2>
+        <p>Plan een vrijblijvende kennismaking. Ik kom bij u langs, luister, en vertel u eerlijk wat er mogelijk is. Geen verplichtingen.</p>
+        <a href="mailto:ernst@klain.nl" class="btn-primary">Plan een kennismaking →</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 <a href="/">klain</a> · AI-consultant voor Noord-Nederland · <a href="mailto:ernst@klain.nl">ernst@klain.nl</a></p>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.problem-card, .stat-card, .trust-card, .approach-step').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
