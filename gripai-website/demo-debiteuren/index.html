@@ -55,6 +55,11 @@
             box-sizing: border-box;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* Nav */
         .top-nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: rgba(255,255,255,1); border-bottom: 1px solid #eef0f5; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
         .top-nav .logo img { height: 36px; }
@@ -808,6 +813,66 @@
             </div>
         </div>
 
+        <!-- AI Cash Insight -->
+        <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 16px; padding: 28px 32px; margin-bottom: 24px; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -40px; right: -40px; width: 220px; height: 220px; background: rgba(255,255,255,0.03); border-radius: 50%;"></div>
+            <div style="position: absolute; bottom: -20px; left: 40%; width: 160px; height: 160px; background: rgba(37,99,235,0.06); border-radius: 50%;"></div>
+            <div style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 20px; font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;">AI Analyse</div>
+
+            <div style="display: flex; align-items: flex-start; gap: 32px; flex-wrap: wrap; position: relative; z-index: 1;">
+                <!-- Left: main number -->
+                <div style="flex: 1; min-width: 260px;">
+                    <div style="color: rgba(255,255,255,0.5); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Direct opvraagbaar</div>
+                    <div style="font-size: 48px; font-weight: 800; color: #fff; font-family: 'Fraunces', serif; letter-spacing: -2px; line-height: 1;">€14.290</div>
+                    <div style="color: rgba(255,255,255,0.5); font-size: 14px; margin-top: 10px; line-height: 1.6;">staat vast bij <strong style="color: rgba(255,255,255,0.9);">3 klanten</strong> die niet reageren op e-mail.<br>Tot nu toe deed u dit <strong style="color: #fb923c;">handmatig — 23 min per factuur</strong>.</div>
+                    <div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span style="background: rgba(251,146,60,0.15); border: 1px solid rgba(251,146,60,0.3); color: #fb923c; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px;">3× herinnering handmatig verstuurd</span>
+                        <span style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px;">2× geen reactie ontvangen</span>
+                    </div>
+                </div>
+
+                <!-- Middle: debtor breakdown -->
+                <div style="display: flex; flex-direction: column; gap: 10px; min-width: 260px;">
+                    <div style="background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25); border-radius: 10px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; color: #fff; font-size: 13px;">Fam. Pietersen</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.45);">54 dagen — reageert alleen op bellen</div>
+                        </div>
+                        <div style="font-weight: 700; color: #f87171; font-size: 15px; white-space: nowrap;">€4.250</div>
+                    </div>
+                    <div style="background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25); border-radius: 10px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; color: #fff; font-size: 13px;">Dhr. Klaassen</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.45);">47 dagen — cashflowproblemen</div>
+                        </div>
+                        <div style="font-weight: 700; color: #f87171; font-size: 15px; white-space: nowrap;">€2.890</div>
+                    </div>
+                    <div style="background: rgba(251,146,60,0.12); border: 1px solid rgba(251,146,60,0.25); border-radius: 10px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; color: #fff; font-size: 13px;">Bakkerij 't Stoepje</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.45);">27 dagen — preventieve actie nodig</div>
+                        </div>
+                        <div style="font-weight: 700; color: #fb923c; font-size: 15px; white-space: nowrap;">€8.650</div>
+                    </div>
+                </div>
+
+                <!-- Right: recovery rate + CTA -->
+                <div style="display: flex; flex-direction: column; gap: 10px; align-self: center; min-width: 180px;">
+                    <div style="text-align: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px;">
+                        <div style="font-size: 11px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Incasso bij automatisering</div>
+                        <div style="font-size: 36px; font-weight: 800; color: #4ade80; font-family: 'Fraunces', serif; letter-spacing: -1px;">94%</div>
+                        <div style="font-size: 12px; color: rgba(255,255,255,0.4);">binnen 30 dagen</div>
+                    </div>
+                    <button onclick="showROIModal()" style="background: #2563eb; color: #fff; border: none; border-radius: 10px; padding: 14px 20px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">
+                        Bereken mijn ROI →
+                    </button>
+                    <button onclick="simulateAutomation()" style="background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 10px 20px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%;" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">
+                        ▶ Simuleer automatisering
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Stats Row -->
         <div class="stats-row">
             <div class="stat-card">
@@ -892,6 +957,10 @@
                             <button class="btn-small btn-secondary">Filter</button>
                             <button class="btn-small btn-secondary">Sorteren</button>
                         </div>
+                    </div>
+                    <div style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 12px; color: #9a3412; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 16px;">⏱️</span>
+                        <span>U besteedt gemiddeld <strong>23 minuten per factuur</strong> aan handmatige opvolging. Bij 6 openstaande facturen is dat <strong>2,3 uur per week</strong> — volledig te automatiseren.</span>
                     </div>
                     <div class="table-container">
                         <table class="table">
@@ -1248,6 +1317,37 @@
                     </div>
                 </div>
 
+                <!-- ROI Card -->
+                <div class="card" style="background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #bbf7d0;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                        <span style="background: #16a34a; color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">ROI Berekening</span>
+                    </div>
+                    <div style="font-size: 13px; color: #166534; margin-bottom: 16px; font-weight: 500;">Op basis van uw huidige debiteuren:</div>
+                    <div style="display: flex; flex-direction: column; gap: 0; margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #bbf7d0;">
+                            <span style="font-size: 13px; color: #166534;">Investering Quick Win</span>
+                            <span style="font-weight: 700; color: #0f1117;">€1.499</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #bbf7d0;">
+                            <span style="font-size: 13px; color: #166534;">Direct te innen (94%)</span>
+                            <span style="font-weight: 700; color: #16a34a;">+€13.433</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #bbf7d0;">
+                            <span style="font-size: 13px; color: #166534;">Tijdsbesparing/maand</span>
+                            <span style="font-weight: 700; color: #16a34a;">~8 uur</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0 0;">
+                            <span style="font-size: 13px; color: #166534; font-weight: 600;">Terugverdientijd</span>
+                            <span style="font-weight: 800; color: #0f1117; font-size: 18px; font-family: 'Fraunces', serif; letter-spacing: -0.5px;">6 dagen</span>
+                        </div>
+                    </div>
+                    <div style="background: #16a34a; border-radius: 10px; padding: 14px; text-align: center; margin-bottom: 12px;">
+                        <div style="color: rgba(255,255,255,0.75); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">ROI eerste maand</div>
+                        <div style="color: #fff; font-size: 32px; font-weight: 800; font-family: 'Fraunces', serif; letter-spacing: -1px;">20×</div>
+                    </div>
+                    <a href="https://klain.nl/#contact" style="display: block; text-align: center; background: #0f1117; color: #fff; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none;">Start Quick Win (€1.499) →</a>
+                </div>
+
                 <!-- Recent Activity -->
                 <div class="card">
                     <div class="card-header">
@@ -1293,6 +1393,49 @@
     </div>
 
     <script>
+        function showROIModal() {
+            document.getElementById('roiModal').style.display = 'flex';
+        }
+
+        function closeROIModal() {
+            document.getElementById('roiModal').style.display = 'none';
+        }
+
+        function simulateAutomation() {
+            const steps = [
+                { icon: '📧', label: 'Factuur Pietersen gedetecteerd (54 dagen)', delay: 0 },
+                { icon: '🤖', label: 'AI analyseert betaalgedrag — bellen heeft 92% kans', delay: 700 },
+                { icon: '📞', label: 'Automatische belherinnering gepland voor 09:00', delay: 1400 },
+                { icon: '📋', label: 'Betalingsregeling voorgesteld aan Klaassen (3 termijnen)', delay: 2100 },
+                { icon: '✉️', label: 'Preventieve herinnering verstuurd naar Bakkerij \'t Stoepje', delay: 2800 },
+                { icon: '✅', label: 'Alle 3 klanten in opvolgworkflow — u hoeft niets te doen', delay: 3500 },
+                { icon: '💰', label: 'Verwachte incasso: €13.433 binnen 30 dagen', delay: 4200 },
+            ];
+            const container = document.getElementById('simulationLog');
+            const panel = document.getElementById('simulationPanel');
+            container.innerHTML = '';
+            panel.style.display = 'block';
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            steps.forEach(step => {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:13px;color:#166534;animation:fadeIn 0.3s ease;';
+                    el.innerHTML = `<span style="font-size:18px;">${step.icon}</span><span>${step.label}</span>`;
+                    container.appendChild(el);
+                    container.scrollTop = container.scrollHeight;
+                    if (step === steps[steps.length - 1]) {
+                        setTimeout(() => {
+                            const final = document.createElement('div');
+                            final.style.cssText = 'margin-top:12px;background:#16a34a;border-radius:10px;padding:14px;text-align:center;color:#fff;font-weight:700;font-size:14px;';
+                            final.innerHTML = '🎉 Klain heeft dit in 4,2 seconden gedaan. Handmatig kostte u 1,5 uur.';
+                            container.appendChild(final);
+                        }, 600);
+                    }
+                }, step.delay);
+            });
+        }
+
         function makeCall(name) {
             alert(`Bellen: ${name}\n\nTelefoonnummer gekopieerd naar klembord.\n\nIn de productieversie wordt het gesprek automatisch gelogd.`);
         }
@@ -1329,6 +1472,67 @@
 
         <div style="background:#f7f8fa; border-radius:12px; padding:20px 24px; margin-top:24px; max-width:1400px; margin-left:auto; margin-right:auto; padding-left:24px; padding-right:24px;">
             <p style="font-size:13px; color:#6b7084; margin:0; line-height:1.7;"><strong style="color:#0f1117;">Hoe werkt de AI-voorspelling?</strong> Klain analyseert het betalingsgedrag van elke klant en voorspelt wanneer betaling verwacht wordt. Hoe hoger het percentage, hoe zekerder de voorspelling. Bij rode klanten stuurt Klain automatisch een herinnering.</p>
+        </div>
+
+        <!-- Simulation Panel -->
+        <div id="simulationPanel" style="display:none; max-width:1400px; margin: 0 auto 24px; padding: 0 24px;">
+            <div style="background:#0f1117; border-radius:16px; padding:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <div style="color:#fff; font-weight:700; font-size:16px;">⚡ Klain automatiseert nu uw debiteurenopvolging</div>
+                    <button onclick="document.getElementById('simulationPanel').style.display='none'" style="background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.6);padding:4px 12px;border-radius:6px;cursor:pointer;font-size:13px;">Sluiten</button>
+                </div>
+                <div id="simulationLog" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;"></div>
+            </div>
+        </div>
+
+        <!-- ROI Modal -->
+        <div id="roiModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; padding:24px;" onclick="if(event.target===this)closeROIModal()">
+            <div style="background:#fff; border-radius:20px; padding:36px; max-width:520px; width:100%; box-shadow:0 24px 80px rgba(0,0,0,0.3); position:relative;">
+                <button onclick="closeROIModal()" style="position:absolute;top:16px;right:16px;background:#f7f8fa;border:none;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#6b7084;">×</button>
+                <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#2563eb;margin-bottom:8px;">ROI Berekening</div>
+                <div style="font-family:'Fraunces',serif; font-size:26px; font-weight:700; color:#0f1117; margin-bottom:4px; letter-spacing:-0.5px;">Wat levert Klain u op?</div>
+                <div style="font-size:14px; color:#6b7084; margin-bottom:28px;">Op basis van uw actuele debiteuren</div>
+
+                <div style="display:flex;flex-direction:column;gap:0;border:1px solid #eef0f5;border-radius:12px;overflow:hidden;margin-bottom:20px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#f7f8fa;">
+                        <div>
+                            <div style="font-weight:600;font-size:14px;">Openstaand bedrag</div>
+                            <div style="font-size:12px;color:#6b7084;">3 klanten, risico op non-betaling</div>
+                        </div>
+                        <div style="font-weight:700;font-size:18px;color:#0f1117;">€14.290</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;">
+                        <div>
+                            <div style="font-weight:600;font-size:14px;">Verwachte incasso (94%)</div>
+                            <div style="font-size:12px;color:#6b7084;">Gebaseerd op vergelijkbare klanten</div>
+                        </div>
+                        <div style="font-weight:700;font-size:18px;color:#16a34a;">€13.433</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#f7f8fa;">
+                        <div>
+                            <div style="font-weight:600;font-size:14px;">Tijdsbesparing</div>
+                            <div style="font-size:12px;color:#6b7084;">~8u/maand handmatig werk</div>
+                        </div>
+                        <div style="font-weight:700;font-size:18px;color:#16a34a;">+8u</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;">
+                        <div>
+                            <div style="font-weight:600;font-size:14px;">Investering Quick Win</div>
+                            <div style="font-size:12px;color:#6b7084;">Eenmalig, inclusief implementatie</div>
+                        </div>
+                        <div style="font-weight:700;font-size:18px;color:#0f1117;">€1.499</div>
+                    </div>
+                </div>
+
+                <div style="background:linear-gradient(135deg,#16a34a,#15803d);border-radius:12px;padding:20px;text-align:center;margin-bottom:20px;">
+                    <div style="color:rgba(255,255,255,0.75);font-size:12px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Netto opbrengst eerste maand</div>
+                    <div style="color:#fff;font-size:40px;font-weight:800;font-family:'Fraunces',serif;letter-spacing:-2px;line-height:1;">€11.934</div>
+                    <div style="color:rgba(255,255,255,0.7);font-size:13px;margin-top:6px;">ROI: <strong style="color:#fff;">20×</strong> &nbsp;·&nbsp; Terugverdientijd: <strong style="color:#fff;">6 dagen</strong></div>
+                </div>
+
+                <a href="https://klain.nl/#contact" style="display:block;text-align:center;background:#2563eb;color:#fff;padding:16px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;margin-bottom:10px;">Plan een AI Scan (€349) — ik bereken uw exacte ROI →</a>
+                <div style="text-align:center;font-size:12px;color:#6b7084;">Vrijblijvend · Binnen 2 werkdagen · Uw data blijft bij u</div>
+            </div>
         </div>
 
 <div style="background: var(--blue, #2563eb); padding: 48px 24px; text-align: center; margin-top: 60px;">
