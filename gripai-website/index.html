@@ -290,6 +290,29 @@
         .safety-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
         .safety-card p { font-size: 14px; color: var(--gray-500); line-height: 1.7; }
 
+        /* ─── FAQ ─── */
+        .faq-item { border-bottom: 1px solid var(--gray-200); }
+        .faq-q {
+            width: 100%; background: none; border: none; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 22px 0; text-align: left;
+            font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
+            color: var(--black); gap: 16px;
+        }
+        .faq-q:hover { color: var(--blue); }
+        .faq-icon {
+            font-size: 22px; font-weight: 300; color: var(--gray-400);
+            transition: transform 0.25s; flex-shrink: 0; line-height: 1;
+        }
+        .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--blue); }
+        .faq-a {
+            max-height: 0; overflow: hidden;
+            font-size: 15px; color: var(--gray-500); line-height: 1.75;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding-bottom: 0;
+        }
+        .faq-item.open .faq-a { max-height: 300px; padding-bottom: 22px; }
+
         /* ─── CTA ─── */
         .cta-section {
             padding: 120px 24px;
@@ -717,6 +740,79 @@
         </div>
     </section>
 
+    <!-- FAQ -->
+    <section style="padding: 96px 24px; background: var(--gray-50);">
+        <div class="container" style="max-width: 720px;">
+            <div class="section-header">
+                <div class="section-label">Veelgestelde vragen</div>
+                <h2 class="section-heading">Wat u misschien wilt weten</h2>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0; margin-top: 48px; border-top: 1px solid var(--gray-200);">
+
+                <div class="faq-item">
+                    <button class="faq-q" onclick="toggleFaq(this)">
+                        Wat is Claude eigenlijk?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        Claude is een AI-assistent van Anthropic, het meest toonaangevende AI-veiligheidsbedrijf ter wereld. Denk aan ChatGPT, maar gebouwd met een sterkere focus op betrouwbaarheid en veiligheid. Claude leest documenten, schrijft teksten, analyseert cijfers en voert taken uit, allemaal in het Nederlands. Klain richt Claude in zodat het past bij uw bedrijf.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" onclick="toggleFaq(this)">
+                        Worden mijn bedrijfsgegevens gedeeld of opgeslagen?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        Nee. U heeft uw eigen Claude Team-account bij Anthropic. Uw documenten, klantgegevens en gesprekken staan op dat account. Klain heeft daar geen toegang toe. Anthropic gebruikt zakelijke gesprekken niet om hun modellen te trainen. Uw data is van u.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" onclick="toggleFaq(this)">
+                        Heb ik technische kennis nodig?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        Nee. Dat is precies waarom Klain bestaat. Ik regel de technische kant: account aanmaken, Claude instellen met uw bedrijfskennis, prompts schrijven, team trainen. U hoeft alleen uw medewerkers te vertellen: "Zo gebruik je dit."
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" onclick="toggleFaq(this)">
+                        Hoe lang duurt de inrichting?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        Gemiddeld twee tot drie weken van AI Scan tot een volledig ingericht Claude Team. De eerste week inventariseer ik uw processen. De tweede week richt ik in. Daarna een korte training met uw team, en u kunt ermee aan de slag.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" onclick="toggleFaq(this)">
+                        Kan ik stoppen wanneer ik wil?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        Ja. De retainer voor onderhoud is maandelijks opzegbaar. De eenmalige inrichtingskosten betaalt u eenmalig. Uw Claude-account en alles wat daarin zit, behoudt u altijd, ongeacht of u met Klain werkt.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" onclick="toggleFaq(this)">
+                        Wat als Claude een fout maakt?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        AI maakt soms fouten, net als medewerkers. Daarom trainen we uw team om output te checken bij kritische beslissingen. In de praktijk valt dit mee: Claude is sterk in taken als schrijven, samenvatten en analyseren. Bij getallen of juridische zaken altijd even nalopen.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
     <!-- About Ernst -->
     <section class="about-section" id="over" style="padding: 80px 24px;">
         <div class="container" style="max-width: 640px; text-align:center;">
@@ -781,6 +877,14 @@
                 }
             });
         }, { threshold: 0.1 });
+
+        // FAQ accordion
+        function toggleFaq(btn) {
+            const item = btn.closest('.faq-item');
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+            if (!isOpen) item.classList.add('open');
+        }
 
         document.querySelectorAll('.project-card, .pricing-card, .step-card, .safety-card').forEach(el => {
             el.style.opacity = '0';
