@@ -237,7 +237,7 @@
     <p class="sub">Vorig jaar kon AI vragen beantwoorden. Nu schrijft het code, bouwt het apps, deployt het naar productie — en monitort het zichzelf. Dat verandert wat een persoon alleen kan bereiken.</p>
     <div class="stat-grid">
       <div class="stat"><span class="num">5u</span><div class="desc">per week besteed aan bouwen</div></div>
-      <div class="stat"><span class="num">8</span><div class="desc">live applicaties gebouwd</div></div>
+      <div class="stat"><span class="num">2</span><div class="desc">live applicaties gebouwd</div></div>
       <div class="stat"><span class="num">€0</span><div class="desc">extern development-budget</div></div>
     </div>
   </div>
@@ -314,33 +314,17 @@
         <div class="tl-dot"></div>
         <div class="tl-content">
           <h4>Klain.nl — AI-consultancy voor MKB</h4>
-          <p>Volledige website, 10+ interactieve demo's, subsidiecheck met 138 regelingen, ROI-calculator, contactflows.</p>
+          <p>Volledige website, 10+ interactieve demo's, subsidiecheck met 138 regelingen, ROI-calculator, FAQ, contactflows. Gebouwd in avonduren.</p>
         </div>
         <span class="tl-tag">Live</span>
       </div>
       <div class="tl-item">
         <div class="tl-dot" style="background:#34d399"></div>
         <div class="tl-content">
-          <h4>Dura Fulfilment Dashboard</h4>
-          <p>Real-time orderbeheer voor 180 webshops, 299.000+ orders. API-integratie, parallel fetching, live data.</p>
+          <h4>Metric — Weekrapportages SaaS</h4>
+          <p>Geautomatiseerde financiële weekrapportages voor MKB-ondernemers. AI-inzichten, week-op-week delta's, debiteuren per naam.</p>
         </div>
         <span class="tl-tag" style="color:#34d399; border-color:rgba(52,211,153,0.3); background:rgba(52,211,153,0.1);">Live</span>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot" style="background:#fb923c"></div>
-        <div class="tl-content">
-          <h4>Kinderopvang-platform (demo)</h4>
-          <p>Urenregistratie, automatische facturering, SEPA-batch export, PDF-generatie. Volledig werkend systeem.</p>
-        </div>
-        <span class="tl-tag" style="color:#fb923c; border-color:rgba(251,146,60,0.3); background:rgba(251,146,60,0.1);">Demo</span>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <h4>Metric — Weekrapportages SaaS</h4>
-          <p>Geautomatiseerde financiële weekrapportages voor MKB. AI-inzichten, delta's, debiteuren per naam.</p>
-        </div>
-        <span class="tl-tag">Live</span>
       </div>
     </div>
   </div>
@@ -438,7 +422,7 @@
     setTimeout(() => slides[current].classList.remove('exit'), 400);
     current = Math.max(0, Math.min(n, total - 1));
     slides[current].classList.add('active');
-    document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+    document.getElementById('counter').textContent = (current+1) + ' / ' + total;
     document.getElementById('prevBtn').disabled = current === 0;
     document.getElementById('nextBtn').disabled = current === total - 1;
     document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
