@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI in Actie — Ernst Beekman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #080c14;
+    color: #f0f2f7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── DECK ── */
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 64px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    transform: translateY(16px);
+  }
+  .slide.active {
+    opacity: 1; pointer-events: all;
+    transform: translateY(0);
+  }
+  .slide.exit {
+    opacity: 0; transform: translateY(-16px);
+  }
+
+  /* ── BACKGROUNDS ── */
+  .bg-dark    { background: #080c14; }
+  .bg-blue    { background: linear-gradient(135deg, #0f1e3d 0%, #0a1628 100%); }
+  .bg-accent  { background: linear-gradient(135deg, #1a3a8f 0%, #0f1e3d 100%); }
+  .bg-green   { background: linear-gradient(135deg, #0a2b1a 0%, #080c14 100%); }
+  .bg-split   { background: #080c14; }
+
+  /* ── LABEL ── */
+  .label {
+    font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase;
+    color: #4f7ef8; margin-bottom: 20px;
+  }
+  .label-white { color: rgba(255,255,255,0.5); }
+
+  /* ── HEADINGS ── */
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(42px, 6vw, 78px);
+    font-weight: 700; line-height: 1.05; letter-spacing: -1.5px;
+    color: #ffffff; text-align: center;
+  }
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(32px, 4.5vw, 58px);
+    font-weight: 700; line-height: 1.1; letter-spacing: -1px;
+    color: #ffffff; text-align: center;
+  }
+  h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(18px, 2.5vw, 26px);
+    font-weight: 600; color: #ffffff;
+  }
+  .em { color: #4f7ef8; font-style: italic; }
+  .em-green { color: #34d399; }
+  .em-orange { color: #fb923c; }
+
+  p.sub {
+    font-size: clamp(15px, 1.8vw, 20px);
+    color: rgba(240,242,247,0.65);
+    line-height: 1.7; text-align: center; max-width: 640px;
+    margin-top: 20px;
+  }
+
+  /* ── DIVIDER ── */
+  hr { border: none; border-top: 1px solid rgba(255,255,255,0.08); width: 100%; margin: 32px 0; }
+
+  /* ── CARDS ── */
+  .cards { display: flex; gap: 24px; width: 100%; max-width: 1000px; margin-top: 48px; }
+  .card {
+    flex: 1; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 32px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .card-icon { font-size: 28px; }
+  .card h3 { font-size: 18px; }
+  .card p  { font-size: 14px; color: rgba(240,242,247,0.6); line-height: 1.65; }
+
+  /* ── LIST ── */
+  .check-list { list-style: none; display: flex; flex-direction: column; gap: 14px; max-width: 700px; width: 100%; margin-top: 40px; }
+  .check-list li {
+    display: flex; align-items: flex-start; gap: 14px;
+    font-size: clamp(15px, 1.6vw, 18px); color: rgba(240,242,247,0.85); line-height: 1.5;
+  }
+  .check-list li::before { content: '✓'; color: #34d399; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── STAT GRID ── */
+  .stat-grid { display: flex; gap: 32px; margin-top: 48px; flex-wrap: wrap; justify-content: center; }
+  .stat { text-align: center; }
+  .stat .num {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(48px, 6vw, 80px);
+    font-weight: 700; color: #4f7ef8; line-height: 1;
+    display: block;
+  }
+  .stat .desc { font-size: 13px; color: rgba(240,242,247,0.5); margin-top: 8px; max-width: 140px; }
+
+  /* ── TIMELINE ── */
+  .timeline { display: flex; flex-direction: column; gap: 0; max-width: 760px; width: 100%; margin-top: 40px; }
+  .tl-item { display: flex; gap: 24px; align-items: flex-start; padding: 24px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .tl-item:last-child { border-bottom: none; }
+  .tl-dot { width: 10px; height: 10px; border-radius: 50%; background: #4f7ef8; flex-shrink: 0; margin-top: 7px; }
+  .tl-content h4 { font-size: 16px; font-weight: 600; color: #ffffff; margin-bottom: 4px; }
+  .tl-content p  { font-size: 14px; color: rgba(240,242,247,0.55); line-height: 1.6; }
+  .tl-tag { font-size: 11px; background: rgba(79,126,248,0.15); color: #4f7ef8; border: 1px solid rgba(79,126,248,0.3); border-radius: 20px; padding: 3px 10px; margin-left: auto; flex-shrink: 0; margin-top: 2px; white-space: nowrap; }
+
+  /* ── QUOTE ── */
+  .quote-block {
+    max-width: 760px; text-align: center;
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: clamp(22px, 3vw, 36px);
+    color: rgba(240,242,247,0.9); line-height: 1.4;
+    position: relative; padding: 0 24px;
+  }
+  .quote-block::before {
+    content: '"'; font-size: 120px; color: rgba(79,126,248,0.2);
+    position: absolute; top: -40px; left: -16px; font-style: normal;
+    font-family: 'Fraunces', serif; line-height: 1;
+  }
+
+  /* ── DEMO BOX ── */
+  .demo-box {
+    max-width: 840px; width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(79,126,248,0.25);
+    border-radius: 20px; padding: 40px 48px; margin-top: 40px;
+    text-align: center;
+  }
+  .demo-box .demo-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #4f7ef8; margin-bottom: 16px; }
+  .demo-box h3 { font-size: 22px; font-weight: 600; color: #fff; margin-bottom: 12px; }
+  .demo-box p  { font-size: 15px; color: rgba(240,242,247,0.55); line-height: 1.7; }
+  .demo-steps { display: flex; gap: 16px; margin-top: 28px; flex-wrap: wrap; justify-content: center; }
+  .demo-step {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 14px 20px; font-size: 14px; color: rgba(240,242,247,0.75);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .demo-step .step-n { color: #4f7ef8; font-weight: 700; font-size: 13px; }
+
+  /* ── NAV ── */
+  .nav {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 16px;
+    background: rgba(255,255,255,0.06); backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 40px; padding: 10px 20px;
+    z-index: 100;
+  }
+  .nav button {
+    background: none; border: none; cursor: pointer;
+    color: rgba(240,242,247,0.6); font-size: 18px;
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; transition: all 0.2s;
+  }
+  .nav button:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .nav button:disabled { opacity: 0.25; cursor: default; }
+  .slide-counter { font-size: 13px; color: rgba(240,242,247,0.4); min-width: 48px; text-align: center; }
+  .progress {
+    position: fixed; top: 0; left: 0; height: 2px;
+    background: #4f7ef8; transition: width 0.3s ease;
+    z-index: 200;
+  }
+
+  /* ── LOGO watermark ── */
+  .watermark {
+    position: fixed; top: 28px; right: 36px;
+    font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700;
+    color: rgba(255,255,255,0.15); letter-spacing: -0.5px; z-index: 100;
+  }
+
+  /* ── SPLIT LAYOUT ── */
+  .split { display: flex; gap: 64px; width: 100%; max-width: 1000px; align-items: center; }
+  .split-left  { flex: 1; }
+  .split-right { flex: 1; }
+  .split h2 { text-align: left; }
+  .split p.sub { text-align: left; }
+  .code-block {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 24px 28px; font-family: monospace;
+    font-size: 13px; line-height: 1.8; color: rgba(240,242,247,0.7);
+  }
+  .code-block .c-green { color: #34d399; }
+  .code-block .c-blue  { color: #60a5fa; }
+  .code-block .c-gray  { color: rgba(240,242,247,0.35); }
+
+  /* ── FOOTER SLIDE ── */
+  .contact-row { display: flex; gap: 24px; margin-top: 40px; flex-wrap: wrap; justify-content: center; }
+  .contact-chip {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 40px; padding: 12px 24px; font-size: 15px; color: rgba(240,242,247,0.7);
+  }
+
+  @media (max-width: 768px) {
+    .slide { padding: 40px 28px; }
+    .cards { flex-direction: column; }
+    .split { flex-direction: column; gap: 32px; }
+    .stat-grid { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="watermark">klain</div>
+
+<div class="deck" id="deck">
+
+  <!-- ─── SLIDE 1: TITLE ─── -->
+  <div class="slide bg-blue active" id="s1">
+    <div class="label">Rabobank · Maart 2026</div>
+    <h1>AI in Actie</h1>
+    <p class="sub" style="font-size: clamp(17px,2vw,22px); margin-top: 16px;">Wat OpenClaw en Claude Code kunnen doen —<br>en wat we er samen mee hebben gebouwd.</p>
+    <p style="margin-top: 48px; font-size: 14px; color: rgba(240,242,247,0.35);">Ernst Beekman · Accountmanager MKB</p>
+  </div>
+
+  <!-- ─── SLIDE 2: CONTEXT ─── -->
+  <div class="slide bg-dark" id="s2">
+    <div class="label">Startpunt</div>
+    <h2>AI is geen hype meer.<br>Het <span class="em">bouwt</span> nu.</h2>
+    <p class="sub">Vorig jaar kon AI vragen beantwoorden. Nu schrijft het code, bouwt het apps, deployt het naar productie — en monitort het zichzelf. Dat verandert wat een persoon alleen kan bereiken.</p>
+    <div class="stat-grid">
+      <div class="stat"><span class="num">5u</span><div class="desc">per week besteed aan bouwen</div></div>
+      <div class="stat"><span class="num">8</span><div class="desc">live applicaties gebouwd</div></div>
+      <div class="stat"><span class="num">€0</span><div class="desc">extern development-budget</div></div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 3: DE TWEE TOOLS ─── -->
+  <div class="slide bg-dark" id="s3">
+    <div class="label">De toolset</div>
+    <h2>Twee tools.<br>Eén samenwerking.</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🤖</div>
+        <h3>OpenClaw (Iris)</h3>
+        <p>Proactieve AI-assistent. Denkt mee, monitort, plant taken, stuurt berichten en onthoudt context over sessies heen. Werkt 24/7 op de achtergrond.</p>
+        <p style="margin-top: 8px; color: #4f7ef8; font-size: 13px;">Research · Planning · Alerts · Memory</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💻</div>
+        <h3>Claude Code</h3>
+        <p>AI coding agent. Schrijft code, bouwt volledige applicaties, fixt bugs, deployt naar Vercel en pusht naar GitHub — op instructie in gewone taal.</p>
+        <p style="margin-top: 8px; color: #4f7ef8; font-size: 13px;">Bouwen · Deployen · Debuggen · Itereren</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 4: OPENCCLAW DETAIL ─── -->
+  <div class="slide bg-dark" id="s4">
+    <div class="label">OpenClaw · Iris</div>
+    <h2>Een assistent die<br><span class="em">niet wacht</span> op vragen.</h2>
+    <ul class="check-list">
+      <li>Stuurt elke ochtend een markt-briefing op basis van actueel webonderzoek</li>
+      <li>Monitort live applicaties en geeft alleen alert bij een echte fout</li>
+      <li>Onthoudt context: beslissingen, voorkeuren, lopende projecten</li>
+      <li>Plant en voert taken uit op schema — zonder dat ik er naar om hoef te vragen</li>
+      <li>Werkt samen met Claude Code: detecteert een probleem, stuurt Claude Code om het op te lossen</li>
+    </ul>
+  </div>
+
+  <!-- ─── SLIDE 5: CLAUDE CODE DETAIL ─── -->
+  <div class="slide bg-dark" id="s5">
+    <div class="label">Claude Code</div>
+    <h2>Van idee naar<br><span class="em">live applicatie</span>.</h2>
+    <div class="split" style="margin-top: 40px;">
+      <div class="split-left">
+        <ul class="check-list">
+          <li>Begrijpt een opdracht in gewone taal</li>
+          <li>Leest de bestaande codebase, snapt de context</li>
+          <li>Schrijft, test en itereert zelfstandig</li>
+          <li>Deployt direct naar productie</li>
+          <li>Legt uit wat het heeft gedaan en waarom</li>
+        </ul>
+      </div>
+      <div class="split-right">
+        <div class="code-block">
+          <span class="c-gray"># Instructie aan Claude Code:</span><br><br>
+          <span class="c-green">"Bouw een debiteuren-dashboard</span><br>
+          <span class="c-green"> met AI-uitleg per klant,</span><br>
+          <span class="c-green"> deploy naar Vercel."</span><br><br>
+          <span class="c-gray">─────────────────────────</span><br>
+          <span class="c-blue">✓ Code geschreven</span><br>
+          <span class="c-blue">✓ Getest</span><br>
+          <span class="c-blue">✓ Live in productie</span><br>
+          <span class="c-gray">Doorlooptijd: ~45 minuten</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 6: WAT WE GEBOUWD HEBBEN ─── -->
+  <div class="slide bg-dark" id="s6">
+    <div class="label">Portfolio · Samen gebouwd</div>
+    <h2>Wat we hebben gemaakt.</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <h4>Klain.nl — AI-consultancy voor MKB</h4>
+          <p>Volledige website, 10+ interactieve demo's, subsidiecheck met 138 regelingen, ROI-calculator, contactflows.</p>
+        </div>
+        <span class="tl-tag">Live</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:#34d399"></div>
+        <div class="tl-content">
+          <h4>Dura Fulfilment Dashboard</h4>
+          <p>Real-time orderbeheer voor 180 webshops, 299.000+ orders. API-integratie, parallel fetching, live data.</p>
+        </div>
+        <span class="tl-tag" style="color:#34d399; border-color:rgba(52,211,153,0.3); background:rgba(52,211,153,0.1);">Live</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:#fb923c"></div>
+        <div class="tl-content">
+          <h4>Kinderopvang-platform (demo)</h4>
+          <p>Urenregistratie, automatische facturering, SEPA-batch export, PDF-generatie. Volledig werkend systeem.</p>
+        </div>
+        <span class="tl-tag" style="color:#fb923c; border-color:rgba(251,146,60,0.3); background:rgba(251,146,60,0.1);">Demo</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <h4>Metric — Weekrapportages SaaS</h4>
+          <p>Geautomatiseerde financiële weekrapportages voor MKB. AI-inzichten, delta's, debiteuren per naam.</p>
+        </div>
+        <span class="tl-tag">Live</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 7: DE KLAIN DEMOS ─── -->
+  <div class="slide bg-dark" id="s7">
+    <div class="label">Klain.nl · Demo's</div>
+    <h2>Klain als <span class="em">showcase</span><br>van AI-mogelijkheden.</h2>
+    <div class="cards" style="margin-top: 40px; flex-wrap: wrap;">
+      <div class="card" style="min-width: 200px; flex: 1;">
+        <div class="card-icon">📊</div>
+        <h3>Debiteuren AI</h3>
+        <p>Live KPI-kaarten + Claude-uitleg per debiteur. Toont hoe AI financiële data vertaalt naar actie.</p>
+      </div>
+      <div class="card" style="min-width: 200px; flex: 1;">
+        <div class="card-icon">💰</div>
+        <h3>Cashflow Forecast</h3>
+        <p>Scenario-analyse: basis, optimistisch, pessimistisch. Interactieve grafiek met AI-advies.</p>
+      </div>
+      <div class="card" style="min-width: 200px; flex: 1;">
+        <div class="card-icon">🧾</div>
+        <h3>Factuur & Uren</h3>
+        <p>Tijdregistratie, automatische PDF-factuur, BTW-aangifte, Tikkie-integratie, WhatsApp-versturen.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 8: QUOTE / IMPACT ─── -->
+  <div class="slide bg-accent" id="s8">
+    <div class="quote-block">
+      Wat voorheen een team van developers kostte, bouwt één persoon nu in avonduren — met AI als co-pilot.
+    </div>
+    <p style="margin-top: 40px; font-size: 14px; color: rgba(240,242,247,0.4);">Niet hypothetisch. Dit is de afgelopen 4 weken gebeurd.</p>
+  </div>
+
+  <!-- ─── SLIDE 9: LIVE DEMO ─── -->
+  <div class="slide bg-dark" id="s9">
+    <div class="label">Live · Nu</div>
+    <h2>Demo: Claude Code<br><span class="em">in actie</span>.</h2>
+    <div class="demo-box">
+      <div class="demo-label">Wat u zo ziet</div>
+      <h3>Van instructie naar werkende code — live</h3>
+      <p>Ik geef Claude Code een opdracht in gewone taal. U ziet hoe het denkt, bouwt en deployt. Geen voorbereide demo — dit gebeurt nu.</p>
+      <div class="demo-steps">
+        <div class="demo-step"><span class="step-n">1</span> Opdracht geven in Nederlands</div>
+        <div class="demo-step"><span class="step-n">2</span> Claude Code denkt en bouwt</div>
+        <div class="demo-step"><span class="step-n">3</span> Live resultaat in browser</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 10: MOGELIJKHEDEN ─── -->
+  <div class="slide bg-dark" id="s10">
+    <div class="label">Implicaties</div>
+    <h2>Wat dit mogelijk maakt<br>voor <span class="em">organisaties</span>.</h2>
+    <ul class="check-list" style="max-width: 780px;">
+      <li>Prototypes en tools bouwen zonder extern development-budget of lange doorlooptijden</li>
+      <li>Interne processen automatiseren: rapportages, dataverzameling, klantkommunicatie</li>
+      <li>Medewerkers versterken met AI-assistenten die bedrijfskennis kennen en toepassen</li>
+      <li>Klantgerichte tools tonen — dashboards, analyses, offertes — snel en goedkoop valideren</li>
+      <li>Concurrentievoordeel: wie nu investeert in AI-werkwijzen, loopt over twee jaar niet in te halen</li>
+    </ul>
+  </div>
+
+  <!-- ─── SLIDE 11: SLOT ─── -->
+  <div class="slide bg-blue" id="s11">
+    <div class="label">Tot slot</div>
+    <h2>De combinatie werkt.</h2>
+    <p class="sub" style="font-size: clamp(16px,1.9vw,21px);">OpenClaw denkt mee. Claude Code bouwt. Samen leveren ze resultaten die voorheen onbereikbaar waren voor één persoon — of kostbaar voor een team.</p>
+    <div class="contact-row">
+      <div class="contact-chip">ernst@klain.nl</div>
+      <div class="contact-chip">klain.nl</div>
+      <div class="contact-chip">Ernst Beekman · Rabobank</div>
+    </div>
+    <p style="margin-top: 48px; font-size: 13px; color: rgba(240,242,247,0.25);">Vragen welkom.</p>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- ── NAVIGATION ── -->
+<div class="nav">
+  <button id="prevBtn" onclick="prevSlide()" disabled>←</button>
+  <span class="slide-counter" id="counter">1 / 11</span>
+  <button id="nextBtn" onclick="nextSlide()">→</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total  = slides.length;
+  let current  = 0;
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit');
+    setTimeout(() => slides[current].classList.remove('exit'), 400);
+    current = Math.max(0, Math.min(n, total - 1));
+    slides[current].classList.add('active');
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === total - 1;
+    document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+  }
+
+  function nextSlide() { if (current < total - 1) goTo(current + 1); }
+  function prevSlide() { if (current > 0) goTo(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); prevSlide(); }
+  });
+
+  // Init progress
+  document.getElementById('progress').style.width = (1 / total * 100) + '%';
+</script>
+</body>
+</html>
