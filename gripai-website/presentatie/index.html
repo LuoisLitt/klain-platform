@@ -100,7 +100,8 @@
   .bcard .bname { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #4f7ef8; margin-bottom: 14px; }
   .bcard h3 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 12px; line-height: 1.2; }
   .bcard p  { font-size: 14px; color: rgba(240,242,247,0.55); line-height: 1.7; }
-  .bcard .burl { margin-top: 20px; font-size: 13px; color: rgba(79,126,248,0.7); }
+  .bcard .burl { margin-top: 20px; font-size: 13px; color: rgba(79,126,248,0.7); text-decoration: none; display: inline-block; }
+  .bcard .burl:hover { color: #4f7ef8; text-decoration: underline; }
 
   /* ── DEMO ── */
   .demo-card {
@@ -226,13 +227,13 @@
         <div class="bname">Project 1</div>
         <h3>Klain.nl</h3>
         <p>AI-consultancy voor MKB-ondernemers in Noord-Nederland. Volledige website, 10+ interactieve demo's — cashflow, debiteuren, offertes, subsidies. Van idee tot live in vier weken.</p>
-        <div class="burl">klain.nl</div>
+        <a class="burl" href="https://www.klain.nl" target="_blank">klain.nl ↗</a>
       </div>
       <div class="bcard">
         <div class="bname">Project 2</div>
         <h3>Metric</h3>
         <p>Geautomatiseerde weekrapportages voor MKB. Koppelt met boekhouding, genereert AI-inzichten, toont debiteuren per naam. Verdict-first: conclusie direct bovenaan.</p>
-        <div class="burl">metric-rust.vercel.app</div>
+        <a class="burl" href="https://metric-rust.vercel.app" target="_blank">metric-rust.vercel.app ↗</a>
       </div>
     </div>
   </div>
