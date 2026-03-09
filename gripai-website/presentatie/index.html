@@ -141,6 +141,13 @@
   .nav button:disabled { opacity: 0.2; cursor: default; }
   .counter { font-size: 13px; color: rgba(240,242,247,0.35); min-width: 44px; text-align: center; }
 
+  /* ── EXAMPLES ── */
+  .examples { display: flex; flex-direction: column; gap: 0; width: 100%; max-width: 820px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .ex-item { display: flex; gap: 28px; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.06); align-items: flex-start; }
+  .ex-time { font-size: 12px; font-weight: 600; color: #4f7ef8; letter-spacing: 0.5px; flex-shrink: 0; width: 64px; padding-top: 2px; }
+  .ex-title { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 5px; }
+  .ex-desc  { font-size: 13px; color: rgba(240,242,247,0.5); line-height: 1.65; }
+
   .progress { position: fixed; top: 0; left: 0; height: 2px; background: #4f7ef8; transition: width 0.3s ease; z-index: 200; }
   .watermark { position: fixed; top: 28px; right: 36px; font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: rgba(255,255,255,0.1); z-index: 100; }
 
@@ -198,7 +205,43 @@
     </div>
   </div>
 
-  <!-- 3. WAT HET OPLEVERT -->
+  <!-- 3. OPENCLAW VOORBEELDEN -->
+  <div class="slide bg-dark">
+    <div class="label">OpenClaw · Deze week</div>
+    <h2>Wat het <span class="em">concreet</span> doet.</h2>
+    <div class="examples">
+      <div class="ex-item">
+        <div class="ex-time">Zo 08:00</div>
+        <div class="ex-content">
+          <div class="ex-title">Ochtend-briefing gestuurd via Telegram</div>
+          <div class="ex-desc">Zelf onderzoek gedaan: MKB-trends, 58% vindt AI-adoptie moeilijk, 60% mist kansen. Twee concrete business-ideeën voor Klain opgesteld en verstuurd — zonder dat ik iets vroeg.</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-time">Zo 21:00</div>
+        <div class="ex-content">
+          <div class="ex-title">Monitoring: Railway backend down gedetecteerd</div>
+          <div class="ex-desc">Automatische check op alle live systemen. Alert gestuurd met exacte foutmelding. Gratis plan verlopen — binnen een minuut op de hoogte.</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-time">Zo 21:02</div>
+        <div class="ex-content">
+          <div class="ex-title">OpenClaw update ontdekt en geïnstalleerd</div>
+          <div class="ex-desc">Versie 2026.3.2 → 2026.3.7 gedetecteerd. Changelog samengevat, update uitgevoerd. Geen handmatige actie nodig.</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-time">Ma 11:40</div>
+        <div class="ex-content">
+          <div class="ex-title">582 Claude-sessies geanalyseerd op gebruikspatronen</div>
+          <div class="ex-desc">Alle sessiebestanden gescraped, gecategoriseerd en omgezet in een adviesrapport: wat moet een skill worden, wat een plugin, wat een agent.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. WAT HET OPLEVERT -->
   <div class="slide bg-dark">
     <div class="label">Het resultaat</div>
     <h2>Wat het<br><span class="em">oplevert</span>.</h2>
@@ -257,7 +300,7 @@
 
 <div class="nav">
   <button id="prev" onclick="go(-1)" disabled>←</button>
-  <span class="counter" id="ctr">1 / 5</span>
+  <span class="counter" id="ctr">1 / 6</span>
   <button id="next" onclick="go(1)">→</button>
 </div>
 
