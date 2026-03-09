@@ -141,6 +141,33 @@
   .nav button:disabled { opacity: 0.2; cursor: default; }
   .counter { font-size: 13px; color: rgba(240,242,247,0.35); min-width: 44px; text-align: center; }
 
+  /* ── ACQUISITIETOOL ── */
+  .acq-card {
+    width: 100%; max-width: 820px; margin-top: 44px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; overflow: hidden;
+  }
+  .acq-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px 36px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .acq-name { font-size: 20px; font-weight: 700; color: #fff; }
+  .acq-sub  { font-size: 13px; color: rgba(240,242,247,0.45); margin-top: 4px; }
+  .acq-badge {
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+    background: rgba(251,146,60,0.12); color: #fb923c;
+    border: 1px solid rgba(251,146,60,0.25); border-radius: 20px; padding: 6px 16px;
+  }
+  .acq-body { padding: 24px 36px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .acq-body p { font-size: 14px; color: rgba(240,242,247,0.6); line-height: 1.75; }
+  .acq-signals { padding: 20px 36px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .sig {
+    font-size: 12px; color: rgba(240,242,247,0.65);
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 5px 14px;
+  }
+
   /* ── EXAMPLES ── */
   .examples { display: flex; flex-direction: column; gap: 0; width: 100%; max-width: 820px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.06); }
   .ex-item { display: flex; gap: 28px; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.06); align-items: flex-start; }
@@ -281,7 +308,35 @@
     </div>
   </div>
 
-  <!-- 5. DEMO -->
+  <!-- 5b. ACQUISITIETOOL -->
+  <div class="slide bg-dark">
+    <div class="label">Gebouwd · Voor Rabobank</div>
+    <h2>Een tool voor<br><span class="em">mijn eigen werk</span>.</h2>
+    <div class="acq-card">
+      <div class="acq-header">
+        <div>
+          <div class="acq-name">Acquisitietool MKB</div>
+          <div class="acq-sub">Lokale lead-feed voor accountmanagers — draait op mijn laptop</div>
+        </div>
+        <div class="acq-badge">Intern</div>
+      </div>
+      <div class="acq-body">
+        <p>Scrapet automatisch lokaal nieuws (RTV Drenthe, Google News, Coevorder Nieuws) op financieringssignalen: uitbreiding, overname, investering, nieuwbouw, nieuwe contracten. Gefilterd op regio Drenthe en Groningen.</p>
+        <p style="margin-top: 12px;">Per lead: gespreksopener gegenereerd, LinkedIn-zoekknop, Google-zoekknop. Geen handmatig googelen meer.</p>
+      </div>
+      <div class="acq-signals">
+        <span class="sig">📈 Uitbreiding</span>
+        <span class="sig">🤝 Overname</span>
+        <span class="sig">💰 Investering</span>
+        <span class="sig">🏗️ Nieuwbouw</span>
+        <span class="sig">📋 Contract</span>
+        <span class="sig">🚀 Starter</span>
+        <span class="sig">♻️ Verduurzaming</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. DEMO -->
   <div class="slide bg-mid">
     <div class="label">Nu · Live</div>
     <h2>Nu gaan we<br><span class="em">samen bouwen</span>.</h2>
@@ -300,7 +355,7 @@
 
 <div class="nav">
   <button id="prev" onclick="go(-1)" disabled>←</button>
-  <span class="counter" id="ctr">1 / 6</span>
+  <span class="counter" id="ctr">1 / 7</span>
   <button id="next" onclick="go(1)">→</button>
 </div>
 
